@@ -30,15 +30,60 @@
     <ClCompile Include="glad\glad_wgl.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="vector\kissmath.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\fv2.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\fv4.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\iv3.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\dv2.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\dv3.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\dv4.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\fv3.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\iv2.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\iv4.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\u8v2.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\u8v3.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\u8v4.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\bv2.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\bv3.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\bv4.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="input.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="kiss.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="vectors.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="window.hpp">
@@ -53,13 +98,49 @@
     <ClInclude Include="glad\khrplatform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="vector\kissmath.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
     <ClInclude Include="vector\types.hpp">
       <Filter>vector</Filter>
     </ClInclude>
-    <ClInclude Include="vector\vector.hpp">
+    <ClInclude Include="vector\fv2.hpp">
       <Filter>vector</Filter>
     </ClInclude>
-    <ClInclude Include="vector\kissmath.hpp">
+    <ClInclude Include="vector\fv4.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\iv3.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\dv2.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\dv3.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\dv4.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\fv3.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\iv2.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\iv4.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\u8v2.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\u8v3.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\u8v4.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\vector.hpp">
       <Filter>vector</Filter>
     </ClInclude>
     <ClInclude Include="vector\bv2.hpp">
@@ -69,24 +150,6 @@
       <Filter>vector</Filter>
     </ClInclude>
     <ClInclude Include="vector\bv4.hpp">
-      <Filter>vector</Filter>
-    </ClInclude>
-    <ClInclude Include="vector\fv2.hpp">
-      <Filter>vector</Filter>
-    </ClInclude>
-    <ClInclude Include="vector\fv3.hpp">
-      <Filter>vector</Filter>
-    </ClInclude>
-    <ClInclude Include="vector\fv4.hpp">
-      <Filter>vector</Filter>
-    </ClInclude>
-    <ClInclude Include="vector\iv2.hpp">
-      <Filter>vector</Filter>
-    </ClInclude>
-    <ClInclude Include="vector\iv3.hpp">
-      <Filter>vector</Filter>
-    </ClInclude>
-    <ClInclude Include="vector\iv4.hpp">
       <Filter>vector</Filter>
     </ClInclude>
   </ItemGroup>

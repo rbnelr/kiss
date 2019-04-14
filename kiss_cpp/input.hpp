@@ -5,7 +5,7 @@
 
 #include "glad/glad_wgl.h"
 
-#include "vectors.hpp"
+#include "vector/vector.hpp"
 
 struct Button {
 	bool	is_down;

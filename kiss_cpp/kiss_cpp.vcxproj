@@ -137,6 +137,22 @@
     <ClCompile Include="glad\glad.c" />
     <ClCompile Include="glad\glad_wgl.c" />
     <ClCompile Include="input.cpp" />
+    <ClCompile Include="vector\bv2.cpp" />
+    <ClCompile Include="vector\bv3.cpp" />
+    <ClCompile Include="vector\bv4.cpp" />
+    <ClCompile Include="vector\dv2.cpp" />
+    <ClCompile Include="vector\dv3.cpp" />
+    <ClCompile Include="vector\dv4.cpp" />
+    <ClCompile Include="vector\fv2.cpp" />
+    <ClCompile Include="vector\fv3.cpp" />
+    <ClCompile Include="vector\fv4.cpp" />
+    <ClCompile Include="vector\iv2.cpp" />
+    <ClCompile Include="vector\iv3.cpp" />
+    <ClCompile Include="vector\iv4.cpp" />
+    <ClCompile Include="vector\kissmath.cpp" />
+    <ClCompile Include="vector\u8v2.cpp" />
+    <ClCompile Include="vector\u8v3.cpp" />
+    <ClCompile Include="vector\u8v4.cpp" />
     <ClCompile Include="window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -145,10 +161,12 @@
     <ClInclude Include="glad\khrplatform.h" />
     <ClInclude Include="input.hpp" />
     <ClInclude Include="kiss.hpp" />
-    <ClInclude Include="vectors.hpp" />
     <ClInclude Include="vector\bv2.hpp" />
     <ClInclude Include="vector\bv3.hpp" />
     <ClInclude Include="vector\bv4.hpp" />
+    <ClInclude Include="vector\dv2.hpp" />
+    <ClInclude Include="vector\dv3.hpp" />
+    <ClInclude Include="vector\dv4.hpp" />
     <ClInclude Include="vector\fv2.hpp" />
     <ClInclude Include="vector\fv3.hpp" />
     <ClInclude Include="vector\fv4.hpp" />
@@ -157,6 +175,9 @@
     <ClInclude Include="vector\iv4.hpp" />
     <ClInclude Include="vector\kissmath.hpp" />
     <ClInclude Include="vector\types.hpp" />
+    <ClInclude Include="vector\u8v2.hpp" />
+    <ClInclude Include="vector\u8v3.hpp" />
+    <ClInclude Include="vector\u8v4.hpp" />
     <ClInclude Include="vector\vector.hpp" />
     <ClInclude Include="window.hpp" />
   </ItemGroup>
