@@ -23,6 +23,9 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="srcgen.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="vector_srcgen.py" />
   </ItemGroup>
   <ItemGroup>
