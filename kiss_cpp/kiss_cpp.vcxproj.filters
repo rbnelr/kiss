@@ -7,11 +7,14 @@
     </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="vector">
+      <UniqueIdentifier>{b0846c6a-4524-484a-a228-49b80b90e4a9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -19,9 +22,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="window.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="kiss.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="glad\glad.c">
@@ -52,6 +52,42 @@
     </ClInclude>
     <ClInclude Include="glad\khrplatform.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\types.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\vector.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\kissmath.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\bv2.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\bv3.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\bv4.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\fv2.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\fv3.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\fv4.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\iv2.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\iv3.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\iv4.hpp">
+      <Filter>vector</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -3,6 +3,9 @@
 
 #include "glad/glad_wgl.h"
 
+#define WIN32_LEAN_AND_MEAN 1
+#include "windows.h"
+
 struct Window {
 
 	HWND	hwnd = NULL;
@@ -11,6 +14,9 @@ struct Window {
 
 	~Window ();
 };
+
+const iv2 default_pos = CW_USEDEFAULT;
+const iv2 default_size = CW_USEDEFAULT;
 
 constexpr LONG WINDOWED_STYLE =					WS_VISIBLE|WS_OVERLAPPEDWINDOW;
 constexpr LONG WINDOWED_EX_STYLE =				WS_EX_APPWINDOW|WS_EX_WINDOWEDGE;
@@ -48,9 +54,9 @@ void register_raw_input_devices (HWND hwnd) {
 	auto ret = RegisterRawInputDevices(rid, 2, sizeof(RAWINPUTDEVICE));
 }
 
-void open_window (wchar_t const* caption, iv2 initial_size, iv2 initial_pos) {
+void open_window (char const* caption, iv2 initial_size, iv2 initial_pos) {
 	
-	auto hinstance	= GetModuleHandleA(NULL);
+	auto hinstance	= GetModuleHandle(NULL);
 
 	auto hicon		= LoadIcon(NULL, IDI_WINLOGO);
 	auto hcursor	= LoadCursor(NULL, IDC_ARROW);
@@ -60,9 +66,14 @@ void open_window (wchar_t const* caption, iv2 initial_size, iv2 initial_pos) {
 
 	RECT border_sizes = find_windows_border_sizes(style, exstyle);
 
+	if (initial_size.x != CW_USEDEFAULT)
+		initial_size.x += border_sizes.left + border_sizes.right;
+	if (initial_size.y != CW_USEDEFAULT)
+		initial_size.y += border_sizes.top + border_sizes.bottom;
+
 	ATOM classatom;
 	{
-		WNDCLASSA wndclass = {}; // Initialize to zero
+		WNDCLASS wndclass = {}; // Initialize to zero
 		wndclass.style =			CS_OWNDC;
 		wndclass.lpfnWndProc =		wndproc;
 		wndclass.hInstance =		hinstance;
@@ -71,13 +82,13 @@ void open_window (wchar_t const* caption, iv2 initial_size, iv2 initial_pos) {
 		wndclass.lpszClassName =	"kisslib_gl_window";
 		wndclass.cbWndExtra =		sizeof(Window*);
 
-		classatom = RegisterClassA(&wndclass);
+		classatom = RegisterClass(&wndclass);
 	}
 
 	// TODO: restore window placement from file
 
 	HWND hwnd = CreateWindowEx(
-		exstyle, (LPCTSTR)classatom, caption,
+		exstyle, (LPCSTR)classatom, caption,
 		style & ~WS_VISIBLE, // not visible yet
 		initial_pos.x, initial_pos.y, initial_size.x, initial_size.y,
 		NULL, NULL, hinstance, NULL);
@@ -94,17 +105,17 @@ void open_window (wchar_t const* caption, iv2 initial_size, iv2 initial_pos) {
 	{ // create dummy context and window to get access to modern gl creation functions
 		ATOM dummy_classatom;
 		{
-			WNDCLASSA wndclass = {}; // Initialize to zero
+			WNDCLASS wndclass = {}; // Initialize to zero
 			wndclass.style =			CS_OWNDC;
 			wndclass.lpfnWndProc =		DefWindowProcA;
 			wndclass.hInstance =		hinstance;
 			wndclass.lpszClassName =	"kisslib_dummy_window";
 
-			dummy_classatom = RegisterClassA(&wndclass);
+			dummy_classatom = RegisterClass(&wndclass);
 		}
 
 		HWND dummy_hwnd = CreateWindowEx(
-			0, (LPCTSTR)dummy_classatom, L"",
+			0, (LPCSTR)dummy_classatom, "",
 			0,
 			CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
 			NULL, NULL, hinstance, NULL);

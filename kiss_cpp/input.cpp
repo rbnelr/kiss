@@ -3,7 +3,7 @@
 Input inp; // only one window supported, so only one input state
 
 // get input for a frame
-Input& get_input () {
+Input get_input () {
 	
 	{ // Pump messages
 		MSG msg;
@@ -43,6 +43,15 @@ LRESULT CALLBACK wndproc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 			//if (!fullscreen) {
 			//write_window_placement_save(hWnd);
 			//}
+			return 0;
+		}
+
+		case WM_MOUSEMOVE: {
+			auto x = LOWORD(lParam);
+			auto y = HIWORD(lParam);
+
+			inp._mouse_pos = iv2(x,y);
+
 			return 0;
 		}
 
