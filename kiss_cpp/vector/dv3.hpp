@@ -3,110 +3,127 @@
 
 #include "kissmath.hpp"
 
-//// forward declarations
-union dv2;
-union dv4;
-union bv3;
-union iv3;
-union s64v3;
-union u8v3;
 
-union dv3 {
-	struct {
-		f64	x, y, z;
+namespace vector {
+	//// forward declarations
+	union dv2;
+	union dv4;
+	union bv3;
+	union bv3;
+	union fv3;
+	union iv3;
+	union s64v3;
+	union u8v3;
+	
+	union dv3 {
+		struct {
+			f64	x, y, z;
+		};
+		f64		arr[3];
+		
+		f64& operator[] (int i);
+		f64 operator[] (int i) const;
+		
+		dv3 ();
+		// sets all components to one value
+		// implicit constructor -> v3(x,y,z) * 5 will be turned into v3(x,y,z) * v3(5) by to compiler to be able to execute operator*(v3, v3), which is desirable, also v3 a = 0; works
+		dv3 (f64 all);
+		// supply all components
+		dv3 (f64 x, f64 y, f64 z);
+		// extend vector
+		dv3 (dv2 xy, f64 z);
+		// truncate vector
+		dv3 (dv4 v);
+		
+		//// Truncating cast operators
+		
+		operator dv2 () const;
+		
+		//// Type cast operators
+		
+		operator bv3 () const;
+		operator fv3 () const;
+		operator iv3 () const;
+		operator s64v3 () const;
+		operator u8v3 () const;
+		
+		dv3 operator+= (dv3 r);
+		dv3 operator-= (dv3 r);
+		dv3 operator*= (dv3 r);
+		dv3 operator/= (dv3 r);
 	};
-	f64		arr[3];
 	
-	f64& operator[] (int i);
-	f64 operator[] (int i) const;
+	//// arthmethic ops
+	dv3 operator+ (dv3 v);
+	dv3 operator- (dv3 v);
+	dv3 operator+ (dv3 l, dv3 r);
+	dv3 operator- (dv3 l, dv3 r);
+	dv3 operator* (dv3 l, dv3 r);
+	dv3 operator/ (dv3 l, dv3 r);
 	
-	dv3 ();
-	// sets all components to one value
-	constexpr dv3 (f64 all);
-	// supply all components
-	constexpr dv3 (f64 x, f64 y, f64 z);
-	// extend vector
-	constexpr dv3 (dv2 xy, f64 z);
-	// truncate vector
-	constexpr dv3 (dv4 v);
+	//// comparison ops
+	bv3 operator< (dv3 l, dv3 r);
+	bv3 operator<= (dv3 l, dv3 r);
+	bv3 operator> (dv3 l, dv3 r);
+	bv3 operator>= (dv3 l, dv3 r);
+	bv3 operator== (dv3 l, dv3 r);
+	bv3 operator!= (dv3 l, dv3 r);
+	// vectors are equal, equivalent to all(l == r)
+	bool equal (dv3 l, dv3 r);
+	// componentwise ternary c ? l : r
+	dv3 select (dv3 c, dv3 l, dv3 r);
 	
-	dv3 operator+= (dv3 r);
-	dv3 operator-= (dv3 r);
-	dv3 operator*= (dv3 r);
-	dv3 operator/= (dv3 r);
+	//// misc ops
+	dv3 abs (dv3 v);
+	dv3 min (dv3 l, dv3 r);
+	dv3 max (dv3 l, dv3 r);
+	dv3 clamp (dv3 x, dv3 a=dv3(0), dv3 b=dv3(1));
+	// get min component of vector, optionally get component index via min_index
+	f64 min_component (dv3 v, int* min_index=nullptr);
+	// get max component of vector, optionally get component index via max_index
+	f64 max_component (dv3 v, int* max_index=nullptr);
 	
-	//// Conversion operators
-	operator iv3 () const;
-	operator s64v3 () const;
-	operator u8v3 () const;
-};
-
-//// arthmethic ops
-constexpr dv3 operator+ (dv3 v);
-constexpr dv3 operator- (dv3 v);
-constexpr dv3 operator+ (dv3 l, dv3 r);
-constexpr dv3 operator- (dv3 l, dv3 r);
-constexpr dv3 operator* (dv3 l, dv3 r);
-constexpr dv3 operator/ (dv3 l, dv3 r);
-
-//// comparison ops
-constexpr bv3 operator< (dv3 l, dv3 r);
-constexpr bv3 operator<= (dv3 l, dv3 r);
-constexpr bv3 operator> (dv3 l, dv3 r);
-constexpr bv3 operator>= (dv3 l, dv3 r);
-constexpr bv3 operator== (dv3 l, dv3 r);
-constexpr bv3 operator!= (dv3 l, dv3 r);
-// vectors are equal, equivalent to all(l == r)
-constexpr bool equal (dv3 l, dv3 r);
-// componentwise ternary c ? l : r
-constexpr dv3 select (dv3 c, dv3 l, dv3 r);
-
-//// misc ops
-dv3 abs (dv3 v);
-dv3 min (dv3 l, dv3 r);
-dv3 max (dv3 l, dv3 r);
-dv3 clamp (dv3 x, dv3 a=dv3(0), dv3 b=dv3(1));
-// get min component of vector, optionally get component index via min_index
-f64 min_component (dv3 v, int* min_index=nullptr);
-// get max component of vector, optionally get component index via max_index
-f64 max_component (dv3 v, int* max_index=nullptr);
-
-dv3 floor (dv3 v);
-dv3 ceil (dv3 v);
-dv3 round (dv3 v);
-s64v3 floori (dv3 v);
-s64v3 ceili (dv3 v);
-s64v3 roundi (dv3 v);
-dv3 pow (dv3 v, dv3 e);
-dv3 wrap (dv3 v, dv3 range);
-dv3 wrap (dv3 v, dv3 a, dv3 b);
-
-//// linear algebra ops
-// magnitude of vector
-f64 length (dv3 v);
-// squared magnitude of vector, cheaper than length() because it avoids the sqrt(), some algorithms only need the squared magnitude
-f64 length_sqr (dv3 v);
-// distance between points, equivalent to length(a - b)
-f64 distance (dv3 a, dv3 b);
-// normalize vector so that it has length() = 1, undefined for zero vector
-dv3 normalize (dv3 v);
-// normalize vector so that it has length() = 1, returns zero vector if vector was zero vector
-dv3 normalize_or_zero (dv3 v);
-
-// linear interpolation t=0 -> a ; t=1 -> b ; t=0.5 -> (a+b)/2
-dv3 lerp (dv3 a, dv3 b, dv3 t);
-// linear mapping (reverse linear interpolation), map(70, 0,100) -> 0.7 ; map(0.5, -1,+1) -> 0.75
-dv3 map (dv3 x, dv3 in_a, dv3 in_b);
-// linear mapping, lerp(out_a, out_b, map(x, in_a, in_b))
-dv3 map (dv3 x, dv3 in_a, dv3 in_b, dv3 out_a, dv3 out_b);
-dv3 smoothstep (dv3 x);
-dv3 bezier (dv3 a, dv3 b, dv3 c, f64 t);
-dv3 bezier (dv3 a, dv3 b, dv3 c, dv3 d, f64 t);
-dv3 bezier (dv3 a, dv3 b, dv3 c, dv3 d, dv3 e, f64 t);
-
-//// angle stuff
-constexpr dv3 to_rad (dv3 deg);
-// degress "literal", converts degrees to radiants
-constexpr dv3 deg (dv3 deg);
-constexpr dv3 to_deg (dv3 rad);
+	dv3 floor (dv3 v);
+	dv3 ceil (dv3 v);
+	dv3 round (dv3 v);
+	s64v3 floori (dv3 v);
+	s64v3 ceili (dv3 v);
+	s64v3 roundi (dv3 v);
+	dv3 pow (dv3 v, dv3 e);
+	dv3 wrap (dv3 v, dv3 range);
+	dv3 wrap (dv3 v, dv3 a, dv3 b);
+	
+	// linear interpolation t=0 -> a ; t=1 -> b ; t=0.5 -> (a+b)/2
+	dv3 lerp (dv3 a, dv3 b, dv3 t);
+	// linear mapping (reverse linear interpolation), map(70, 0,100) -> 0.7 ; map(0.5, -1,+1) -> 0.75
+	dv3 map (dv3 x, dv3 in_a, dv3 in_b);
+	// linear mapping, lerp(out_a, out_b, map(x, in_a, in_b))
+	dv3 map (dv3 x, dv3 in_a, dv3 in_b, dv3 out_a, dv3 out_b);
+	dv3 smoothstep (dv3 x);
+	dv3 bezier (dv3 a, dv3 b, dv3 c, f64 t);
+	dv3 bezier (dv3 a, dv3 b, dv3 c, dv3 d, f64 t);
+	dv3 bezier (dv3 a, dv3 b, dv3 c, dv3 d, dv3 e, f64 t);
+	
+	//// angle stuff
+	dv3 to_rad (dv3 deg);
+	// degress "literal", converts degrees to radiants
+	dv3 deg (dv3 deg);
+	dv3 to_deg (dv3 rad);
+	
+	//// linear algebra ops
+	// magnitude of vector
+	f64 length (dv3 v);
+	// squared magnitude of vector, cheaper than length() because it avoids the sqrt(), some algorithms only need the squared magnitude
+	f64 length_sqr (dv3 v);
+	// distance between points, equivalent to length(a - b)
+	f64 distance (dv3 a, dv3 b);
+	// normalize vector so that it has length() = 1, undefined for zero vector
+	dv3 normalize (dv3 v);
+	// normalize vector so that it has length() = 1, returns zero vector if vector was zero vector
+	dv3 normalize_or_zero (dv3 v);
+	// dot product
+	f64 dot (dv3 l, dv3 r);
+	// 3d cross product
+	dv3 cross (dv3 l, dv3 r);
+}// namespace vector
 

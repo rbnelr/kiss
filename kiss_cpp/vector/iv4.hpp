@@ -3,85 +3,103 @@
 
 #include "kissmath.hpp"
 
-//// forward declarations
-union iv2;
-union iv3;
-union bv4;
-union fv4;
-union dv4;
 
-union iv4 {
-	struct {
-		int	x, y, z, w;
+namespace vector {
+	//// forward declarations
+	union iv2;
+	union iv3;
+	union bv4;
+	union bv4;
+	union fv4;
+	union dv4;
+	union s64v4;
+	union u8v4;
+	
+	union iv4 {
+		struct {
+			int	x, y, z, w;
+		};
+		int		arr[4];
+		
+		int& operator[] (int i);
+		int operator[] (int i) const;
+		
+		iv4 ();
+		// sets all components to one value
+		// implicit constructor -> v3(x,y,z) * 5 will be turned into v3(x,y,z) * v3(5) by to compiler to be able to execute operator*(v3, v3), which is desirable, also v3 a = 0; works
+		iv4 (int all);
+		// supply all components
+		iv4 (int x, int y, int z, int w);
+		// extend vector
+		iv4 (iv2 xy, int z, int w);
+		// extend vector
+		iv4 (iv3 xyz, int w);
+		
+		//// Truncating cast operators
+		
+		operator iv2 () const;
+		operator iv3 () const;
+		
+		//// Type cast operators
+		
+		operator bv4 () const;
+		operator fv4 () const;
+		operator dv4 () const;
+		operator s64v4 () const;
+		operator u8v4 () const;
+		
+		iv4 operator+= (iv4 r);
+		iv4 operator-= (iv4 r);
+		iv4 operator*= (iv4 r);
+		iv4 operator/= (iv4 r);
 	};
-	int		arr[4];
 	
-	int& operator[] (int i);
-	int operator[] (int i) const;
+	//// arthmethic ops
+	iv4 operator+ (iv4 v);
+	iv4 operator- (iv4 v);
+	iv4 operator+ (iv4 l, iv4 r);
+	iv4 operator- (iv4 l, iv4 r);
+	iv4 operator* (iv4 l, iv4 r);
+	iv4 operator/ (iv4 l, iv4 r);
 	
-	iv4 ();
-	// sets all components to one value
-	constexpr iv4 (int all);
-	// supply all components
-	constexpr iv4 (int x, int y, int z, int w);
-	// extend vector
-	constexpr iv4 (iv2 xy, int z, int w);
-	// extend vector
-	constexpr iv4 (iv3 xyz, int w);
+	//// comparison ops
+	bv4 operator< (iv4 l, iv4 r);
+	bv4 operator<= (iv4 l, iv4 r);
+	bv4 operator> (iv4 l, iv4 r);
+	bv4 operator>= (iv4 l, iv4 r);
+	bv4 operator== (iv4 l, iv4 r);
+	bv4 operator!= (iv4 l, iv4 r);
+	// vectors are equal, equivalent to all(l == r)
+	bool equal (iv4 l, iv4 r);
+	// componentwise ternary c ? l : r
+	iv4 select (iv4 c, iv4 l, iv4 r);
 	
-	iv4 operator+= (iv4 r);
-	iv4 operator-= (iv4 r);
-	iv4 operator*= (iv4 r);
-	iv4 operator/= (iv4 r);
+	//// misc ops
+	iv4 abs (iv4 v);
+	iv4 min (iv4 l, iv4 r);
+	iv4 max (iv4 l, iv4 r);
+	iv4 clamp (iv4 x, iv4 a=iv4(0), iv4 b=iv4(1));
+	// get min component of vector, optionally get component index via min_index
+	int min_component (iv4 v, int* min_index=nullptr);
+	// get max component of vector, optionally get component index via max_index
+	int max_component (iv4 v, int* max_index=nullptr);
 	
-	//// Conversion operators
-	operator fv4 () const;
-	operator dv4 () const;
-};
-
-//// arthmethic ops
-constexpr iv4 operator+ (iv4 v);
-constexpr iv4 operator- (iv4 v);
-constexpr iv4 operator+ (iv4 l, iv4 r);
-constexpr iv4 operator- (iv4 l, iv4 r);
-constexpr iv4 operator* (iv4 l, iv4 r);
-constexpr iv4 operator/ (iv4 l, iv4 r);
-
-//// comparison ops
-constexpr bv4 operator< (iv4 l, iv4 r);
-constexpr bv4 operator<= (iv4 l, iv4 r);
-constexpr bv4 operator> (iv4 l, iv4 r);
-constexpr bv4 operator>= (iv4 l, iv4 r);
-constexpr bv4 operator== (iv4 l, iv4 r);
-constexpr bv4 operator!= (iv4 l, iv4 r);
-// vectors are equal, equivalent to all(l == r)
-constexpr bool equal (iv4 l, iv4 r);
-// componentwise ternary c ? l : r
-constexpr iv4 select (iv4 c, iv4 l, iv4 r);
-
-//// misc ops
-iv4 abs (iv4 v);
-iv4 min (iv4 l, iv4 r);
-iv4 max (iv4 l, iv4 r);
-iv4 clamp (iv4 x, iv4 a=iv4(0), iv4 b=iv4(1));
-// get min component of vector, optionally get component index via min_index
-int min_component (iv4 v, int* min_index=nullptr);
-// get max component of vector, optionally get component index via max_index
-int max_component (iv4 v, int* max_index=nullptr);
-
-iv4 wrap (iv4 v, iv4 range);
-iv4 wrap (iv4 v, iv4 a, iv4 b);
-
-//// linear algebra ops
-// magnitude of vector
-f32 length (iv4 v);
-// squared magnitude of vector, cheaper than length() because it avoids the sqrt(), some algorithms only need the squared magnitude
-int length_sqr (iv4 v);
-// distance between points, equivalent to length(a - b)
-f32 distance (iv4 a, iv4 b);
-// normalize vector so that it has length() = 1, undefined for zero vector
-fv4 normalize (iv4 v);
-// normalize vector so that it has length() = 1, returns zero vector if vector was zero vector
-fv4 normalize_or_zero (iv4 v);
-
+	iv4 wrap (iv4 v, iv4 range);
+	iv4 wrap (iv4 v, iv4 a, iv4 b);
+	
+	
+	//// linear algebra ops
+	// magnitude of vector
+	f32 length (iv4 v);
+	// squared magnitude of vector, cheaper than length() because it avoids the sqrt(), some algorithms only need the squared magnitude
+	int length_sqr (iv4 v);
+	// distance between points, equivalent to length(a - b)
+	f32 distance (iv4 a, iv4 b);
+	// normalize vector so that it has length() = 1, undefined for zero vector
+	fv4 normalize (iv4 v);
+	// normalize vector so that it has length() = 1, returns zero vector if vector was zero vector
+	fv4 normalize_or_zero (iv4 v);
+	// dot product
+	int dot (iv4 l, iv4 r);
+}// namespace vector
 

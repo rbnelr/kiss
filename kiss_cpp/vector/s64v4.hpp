@@ -3,85 +3,103 @@
 
 #include "kissmath.hpp"
 
-//// forward declarations
-union s64v2;
-union s64v3;
-union bv4;
-union fv4;
-union dv4;
 
-union s64v4 {
-	struct {
-		s64	x, y, z, w;
+namespace vector {
+	//// forward declarations
+	union s64v2;
+	union s64v3;
+	union bv4;
+	union bv4;
+	union fv4;
+	union dv4;
+	union iv4;
+	union u8v4;
+	
+	union s64v4 {
+		struct {
+			s64	x, y, z, w;
+		};
+		s64		arr[4];
+		
+		s64& operator[] (int i);
+		s64 operator[] (int i) const;
+		
+		s64v4 ();
+		// sets all components to one value
+		// implicit constructor -> v3(x,y,z) * 5 will be turned into v3(x,y,z) * v3(5) by to compiler to be able to execute operator*(v3, v3), which is desirable, also v3 a = 0; works
+		s64v4 (s64 all);
+		// supply all components
+		s64v4 (s64 x, s64 y, s64 z, s64 w);
+		// extend vector
+		s64v4 (s64v2 xy, s64 z, s64 w);
+		// extend vector
+		s64v4 (s64v3 xyz, s64 w);
+		
+		//// Truncating cast operators
+		
+		operator s64v2 () const;
+		operator s64v3 () const;
+		
+		//// Type cast operators
+		
+		operator bv4 () const;
+		operator fv4 () const;
+		operator dv4 () const;
+		operator iv4 () const;
+		operator u8v4 () const;
+		
+		s64v4 operator+= (s64v4 r);
+		s64v4 operator-= (s64v4 r);
+		s64v4 operator*= (s64v4 r);
+		s64v4 operator/= (s64v4 r);
 	};
-	s64		arr[4];
 	
-	s64& operator[] (int i);
-	s64 operator[] (int i) const;
+	//// arthmethic ops
+	s64v4 operator+ (s64v4 v);
+	s64v4 operator- (s64v4 v);
+	s64v4 operator+ (s64v4 l, s64v4 r);
+	s64v4 operator- (s64v4 l, s64v4 r);
+	s64v4 operator* (s64v4 l, s64v4 r);
+	s64v4 operator/ (s64v4 l, s64v4 r);
 	
-	s64v4 ();
-	// sets all components to one value
-	constexpr s64v4 (s64 all);
-	// supply all components
-	constexpr s64v4 (s64 x, s64 y, s64 z, s64 w);
-	// extend vector
-	constexpr s64v4 (s64v2 xy, s64 z, s64 w);
-	// extend vector
-	constexpr s64v4 (s64v3 xyz, s64 w);
+	//// comparison ops
+	bv4 operator< (s64v4 l, s64v4 r);
+	bv4 operator<= (s64v4 l, s64v4 r);
+	bv4 operator> (s64v4 l, s64v4 r);
+	bv4 operator>= (s64v4 l, s64v4 r);
+	bv4 operator== (s64v4 l, s64v4 r);
+	bv4 operator!= (s64v4 l, s64v4 r);
+	// vectors are equal, equivalent to all(l == r)
+	bool equal (s64v4 l, s64v4 r);
+	// componentwise ternary c ? l : r
+	s64v4 select (s64v4 c, s64v4 l, s64v4 r);
 	
-	s64v4 operator+= (s64v4 r);
-	s64v4 operator-= (s64v4 r);
-	s64v4 operator*= (s64v4 r);
-	s64v4 operator/= (s64v4 r);
+	//// misc ops
+	s64v4 abs (s64v4 v);
+	s64v4 min (s64v4 l, s64v4 r);
+	s64v4 max (s64v4 l, s64v4 r);
+	s64v4 clamp (s64v4 x, s64v4 a=s64v4(0), s64v4 b=s64v4(1));
+	// get min component of vector, optionally get component index via min_index
+	s64 min_component (s64v4 v, int* min_index=nullptr);
+	// get max component of vector, optionally get component index via max_index
+	s64 max_component (s64v4 v, int* max_index=nullptr);
 	
-	//// Conversion operators
-	operator fv4 () const;
-	operator dv4 () const;
-};
-
-//// arthmethic ops
-constexpr s64v4 operator+ (s64v4 v);
-constexpr s64v4 operator- (s64v4 v);
-constexpr s64v4 operator+ (s64v4 l, s64v4 r);
-constexpr s64v4 operator- (s64v4 l, s64v4 r);
-constexpr s64v4 operator* (s64v4 l, s64v4 r);
-constexpr s64v4 operator/ (s64v4 l, s64v4 r);
-
-//// comparison ops
-constexpr bv4 operator< (s64v4 l, s64v4 r);
-constexpr bv4 operator<= (s64v4 l, s64v4 r);
-constexpr bv4 operator> (s64v4 l, s64v4 r);
-constexpr bv4 operator>= (s64v4 l, s64v4 r);
-constexpr bv4 operator== (s64v4 l, s64v4 r);
-constexpr bv4 operator!= (s64v4 l, s64v4 r);
-// vectors are equal, equivalent to all(l == r)
-constexpr bool equal (s64v4 l, s64v4 r);
-// componentwise ternary c ? l : r
-constexpr s64v4 select (s64v4 c, s64v4 l, s64v4 r);
-
-//// misc ops
-s64v4 abs (s64v4 v);
-s64v4 min (s64v4 l, s64v4 r);
-s64v4 max (s64v4 l, s64v4 r);
-s64v4 clamp (s64v4 x, s64v4 a=s64v4(0), s64v4 b=s64v4(1));
-// get min component of vector, optionally get component index via min_index
-s64 min_component (s64v4 v, int* min_index=nullptr);
-// get max component of vector, optionally get component index via max_index
-s64 max_component (s64v4 v, int* max_index=nullptr);
-
-s64v4 wrap (s64v4 v, s64v4 range);
-s64v4 wrap (s64v4 v, s64v4 a, s64v4 b);
-
-//// linear algebra ops
-// magnitude of vector
-f64 length (s64v4 v);
-// squared magnitude of vector, cheaper than length() because it avoids the sqrt(), some algorithms only need the squared magnitude
-s64 length_sqr (s64v4 v);
-// distance between points, equivalent to length(a - b)
-f64 distance (s64v4 a, s64v4 b);
-// normalize vector so that it has length() = 1, undefined for zero vector
-dv4 normalize (s64v4 v);
-// normalize vector so that it has length() = 1, returns zero vector if vector was zero vector
-dv4 normalize_or_zero (s64v4 v);
-
+	s64v4 wrap (s64v4 v, s64v4 range);
+	s64v4 wrap (s64v4 v, s64v4 a, s64v4 b);
+	
+	
+	//// linear algebra ops
+	// magnitude of vector
+	f64 length (s64v4 v);
+	// squared magnitude of vector, cheaper than length() because it avoids the sqrt(), some algorithms only need the squared magnitude
+	s64 length_sqr (s64v4 v);
+	// distance between points, equivalent to length(a - b)
+	f64 distance (s64v4 a, s64v4 b);
+	// normalize vector so that it has length() = 1, undefined for zero vector
+	dv4 normalize (s64v4 v);
+	// normalize vector so that it has length() = 1, returns zero vector if vector was zero vector
+	dv4 normalize_or_zero (s64v4 v);
+	// dot product
+	s64 dot (s64v4 l, s64v4 r);
+}// namespace vector
 

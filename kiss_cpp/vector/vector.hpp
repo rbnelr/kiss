@@ -28,6 +28,21 @@
 #include "u8v3.hpp"
 #include "u8v4.hpp"
 
+// Matricies
+#include "m2.hpp"
+#include "m3.hpp"
+#include "m4.hpp"
+#include "m2x3.hpp"
+#include "m3x4.hpp"
+
+#include "f64m2.hpp"
+#include "f64m3.hpp"
+#include "f64m4.hpp"
+#include "f64m2x3.hpp"
+#include "f64m3x4.hpp"
+
+using namespace vector;
+
 // Typedefs that define 'standart' floats to use across program
 typedef float flt;
 

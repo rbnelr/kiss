@@ -3,85 +3,104 @@
 
 #include "kissmath.hpp"
 
-//// forward declarations
-union iv3;
-union iv4;
-union bv2;
-union fv2;
-union dv2;
 
-union iv2 {
-	struct {
-		int	x, y;
+namespace vector {
+	//// forward declarations
+	union iv3;
+	union iv4;
+	union bv2;
+	union bv2;
+	union fv2;
+	union dv2;
+	union s64v2;
+	union u8v2;
+	
+	union iv2 {
+		struct {
+			int	x, y;
+		};
+		int		arr[2];
+		
+		int& operator[] (int i);
+		int operator[] (int i) const;
+		
+		iv2 ();
+		// sets all components to one value
+		// implicit constructor -> v3(x,y,z) * 5 will be turned into v3(x,y,z) * v3(5) by to compiler to be able to execute operator*(v3, v3), which is desirable, also v3 a = 0; works
+		iv2 (int all);
+		// supply all components
+		iv2 (int x, int y);
+		// truncate vector
+		iv2 (iv3 v);
+		// truncate vector
+		iv2 (iv4 v);
+		
+		//// Truncating cast operators
+		
+		
+		//// Type cast operators
+		
+		operator bv2 () const;
+		operator fv2 () const;
+		operator dv2 () const;
+		operator s64v2 () const;
+		operator u8v2 () const;
+		
+		iv2 operator+= (iv2 r);
+		iv2 operator-= (iv2 r);
+		iv2 operator*= (iv2 r);
+		iv2 operator/= (iv2 r);
 	};
-	int		arr[2];
 	
-	int& operator[] (int i);
-	int operator[] (int i) const;
+	//// arthmethic ops
+	iv2 operator+ (iv2 v);
+	iv2 operator- (iv2 v);
+	iv2 operator+ (iv2 l, iv2 r);
+	iv2 operator- (iv2 l, iv2 r);
+	iv2 operator* (iv2 l, iv2 r);
+	iv2 operator/ (iv2 l, iv2 r);
 	
-	iv2 ();
-	// sets all components to one value
-	constexpr iv2 (int all);
-	// supply all components
-	constexpr iv2 (int x, int y);
-	// truncate vector
-	constexpr iv2 (iv3 v);
-	// truncate vector
-	constexpr iv2 (iv4 v);
+	//// comparison ops
+	bv2 operator< (iv2 l, iv2 r);
+	bv2 operator<= (iv2 l, iv2 r);
+	bv2 operator> (iv2 l, iv2 r);
+	bv2 operator>= (iv2 l, iv2 r);
+	bv2 operator== (iv2 l, iv2 r);
+	bv2 operator!= (iv2 l, iv2 r);
+	// vectors are equal, equivalent to all(l == r)
+	bool equal (iv2 l, iv2 r);
+	// componentwise ternary c ? l : r
+	iv2 select (iv2 c, iv2 l, iv2 r);
 	
-	iv2 operator+= (iv2 r);
-	iv2 operator-= (iv2 r);
-	iv2 operator*= (iv2 r);
-	iv2 operator/= (iv2 r);
+	//// misc ops
+	iv2 abs (iv2 v);
+	iv2 min (iv2 l, iv2 r);
+	iv2 max (iv2 l, iv2 r);
+	iv2 clamp (iv2 x, iv2 a=iv2(0), iv2 b=iv2(1));
+	// get min component of vector, optionally get component index via min_index
+	int min_component (iv2 v, int* min_index=nullptr);
+	// get max component of vector, optionally get component index via max_index
+	int max_component (iv2 v, int* max_index=nullptr);
 	
-	//// Conversion operators
-	operator fv2 () const;
-	operator dv2 () const;
-};
-
-//// arthmethic ops
-constexpr iv2 operator+ (iv2 v);
-constexpr iv2 operator- (iv2 v);
-constexpr iv2 operator+ (iv2 l, iv2 r);
-constexpr iv2 operator- (iv2 l, iv2 r);
-constexpr iv2 operator* (iv2 l, iv2 r);
-constexpr iv2 operator/ (iv2 l, iv2 r);
-
-//// comparison ops
-constexpr bv2 operator< (iv2 l, iv2 r);
-constexpr bv2 operator<= (iv2 l, iv2 r);
-constexpr bv2 operator> (iv2 l, iv2 r);
-constexpr bv2 operator>= (iv2 l, iv2 r);
-constexpr bv2 operator== (iv2 l, iv2 r);
-constexpr bv2 operator!= (iv2 l, iv2 r);
-// vectors are equal, equivalent to all(l == r)
-constexpr bool equal (iv2 l, iv2 r);
-// componentwise ternary c ? l : r
-constexpr iv2 select (iv2 c, iv2 l, iv2 r);
-
-//// misc ops
-iv2 abs (iv2 v);
-iv2 min (iv2 l, iv2 r);
-iv2 max (iv2 l, iv2 r);
-iv2 clamp (iv2 x, iv2 a=iv2(0), iv2 b=iv2(1));
-// get min component of vector, optionally get component index via min_index
-int min_component (iv2 v, int* min_index=nullptr);
-// get max component of vector, optionally get component index via max_index
-int max_component (iv2 v, int* max_index=nullptr);
-
-iv2 wrap (iv2 v, iv2 range);
-iv2 wrap (iv2 v, iv2 a, iv2 b);
-
-//// linear algebra ops
-// magnitude of vector
-f32 length (iv2 v);
-// squared magnitude of vector, cheaper than length() because it avoids the sqrt(), some algorithms only need the squared magnitude
-int length_sqr (iv2 v);
-// distance between points, equivalent to length(a - b)
-f32 distance (iv2 a, iv2 b);
-// normalize vector so that it has length() = 1, undefined for zero vector
-fv2 normalize (iv2 v);
-// normalize vector so that it has length() = 1, returns zero vector if vector was zero vector
-fv2 normalize_or_zero (iv2 v);
-
+	iv2 wrap (iv2 v, iv2 range);
+	iv2 wrap (iv2 v, iv2 a, iv2 b);
+	
+	
+	//// linear algebra ops
+	// magnitude of vector
+	f32 length (iv2 v);
+	// squared magnitude of vector, cheaper than length() because it avoids the sqrt(), some algorithms only need the squared magnitude
+	int length_sqr (iv2 v);
+	// distance between points, equivalent to length(a - b)
+	f32 distance (iv2 a, iv2 b);
+	// normalize vector so that it has length() = 1, undefined for zero vector
+	fv2 normalize (iv2 v);
+	// normalize vector so that it has length() = 1, returns zero vector if vector was zero vector
+	fv2 normalize_or_zero (iv2 v);
+	// dot product
+	int dot (iv2 l, iv2 r);
+	// 2d cross product hack for convinient 2d stuff
+	// same as cross(v3(l, 0), v3(r, 0)).z, ie. the cross product of the 2d vectors on the z=0 plane in 3d space and then return the z coord of that (signed mag of cross product)
+	int cross (iv2 l, iv2 r);
+}// namespace vector
 

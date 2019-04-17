@@ -4,76 +4,97 @@
 #include "bv2.hpp"
 #include "bv3.hpp"
 #include "bv4.hpp"
+#include "fv4.hpp"
+#include "dv4.hpp"
+#include "iv4.hpp"
+#include "s64v4.hpp"
+#include "u8v4.hpp"
 
-bool& bv4::operator[] (int i) {
-	return arr[i];
-}
-
-bool bv4::operator[] (int i) const {
-	return arr[i];
-}
-
-
-bv4::bv4 () {
+namespace vector {
 	
-}
-
-constexpr bv4::bv4 (bool all): x{all}, y{all}, z{all}, w{all} {
+	bool& bv4::operator[] (int i) {
+		return arr[i];
+	}
 	
-}
-
-constexpr bv4::bv4 (bool x, bool y, bool z, bool w): x{x}, y{y}, z{z}, w{w} {
+	bool bv4::operator[] (int i) const {
+		return arr[i];
+	}
 	
-}
-
-constexpr bv4::bv4 (bv2 xy, bool z, bool w): x{xy.x}, y{xy.y}, z{z}, w{w} {
 	
-}
-
-constexpr bv4::bv4 (bv3 xyz, bool w): x{xyz.x}, y{xyz.y}, z{xyz.z}, w{w} {
+	bv4::bv4 () {
+		
+	}
 	
-}
-
-
-//// reducing ops
-
-constexpr bool all (bv4 v) {
-	return v.x && v.y && v.z && v.w;
-}
-
-constexpr bool any (bv4 v) {
-	return v.x || v.y || v.z || v.w;
-}
-
-//// arthmethic ops
-
-constexpr bv4 operator! (bv4 v) {
-	return bv4(!v.x, !v.y, !v.z, !v.w);
-}
-
-constexpr bv4 operator&& (bv4 l, bv4 r) {
-	return bv4(l.x && r.x, l.y && r.y, l.z && r.z, l.w && r.w);
-}
-
-constexpr bv4 operator|| (bv4 l, bv4 r) {
-	return bv4(l.x || r.x, l.y || r.y, l.z || r.z, l.w || r.w);
-}
-
-//// comparison ops
-
-constexpr bv4 operator== (bv4 l, bv4 r) {
-	return bv4(l.x == r.x, l.y == r.y, l.z == r.z, l.w == r.w);
-}
-
-constexpr bv4 operator!= (bv4 l, bv4 r) {
-	return bv4(l.x != r.x, l.y != r.y, l.z != r.z, l.w != r.w);
-}
-
-constexpr bool equal (bv4 l, bv4 r) {
-	return all(l == r);
-}
-
-constexpr bv4 select (bv4 c, bv4 l, bv4 r) {
-	return c.x ? l.x : r.x, c.y ? l.y : r.y, c.z ? l.z : r.z, c.w ? l.w : r.w;
-}
+	bv4::bv4 (bool all): x{all}, y{all}, z{all}, w{all} {
+		
+	}
+	
+	bv4::bv4 (bool x, bool y, bool z, bool w): x{x}, y{y}, z{z}, w{w} {
+		
+	}
+	
+	bv4::bv4 (bv2 xy, bool z, bool w): x{xy.x}, y{xy.y}, z{z}, w{w} {
+		
+	}
+	
+	bv4::bv4 (bv3 xyz, bool w): x{xyz.x}, y{xyz.y}, z{xyz.z}, w{w} {
+		
+	}
+	
+	//// Truncating cast operators
+	
+	
+	bv4::operator bv2 () const {
+		return bv2(x, y);
+	}
+	
+	bv4::operator bv3 () const {
+		return bv3(x, y, z);
+	}
+	
+	//// Type cast operators
+	
+	
+	//// reducing ops
+	
+	bool all (bv4 v) {
+		return v.x && v.y && v.z && v.w;
+	}
+	
+	bool any (bv4 v) {
+		return v.x || v.y || v.z || v.w;
+	}
+	
+	//// arthmethic ops
+	
+	bv4 operator! (bv4 v) {
+		return bv4(!v.x, !v.y, !v.z, !v.w);
+	}
+	
+	bv4 operator&& (bv4 l, bv4 r) {
+		return bv4(l.x && r.x, l.y && r.y, l.z && r.z, l.w && r.w);
+	}
+	
+	bv4 operator|| (bv4 l, bv4 r) {
+		return bv4(l.x || r.x, l.y || r.y, l.z || r.z, l.w || r.w);
+	}
+	
+	//// comparison ops
+	
+	bv4 operator== (bv4 l, bv4 r) {
+		return bv4(l.x == r.x, l.y == r.y, l.z == r.z, l.w == r.w);
+	}
+	
+	bv4 operator!= (bv4 l, bv4 r) {
+		return bv4(l.x != r.x, l.y != r.y, l.z != r.z, l.w != r.w);
+	}
+	
+	bool equal (bv4 l, bv4 r) {
+		return all(l == r);
+	}
+	
+	bv4 select (bv4 c, bv4 l, bv4 r) {
+		return c.x ? l.x : r.x, c.y ? l.y : r.y, c.z ? l.z : r.z, c.w ? l.w : r.w;
+	}
+}// namespace vector
 

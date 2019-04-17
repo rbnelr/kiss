@@ -4,218 +4,252 @@
 #include "s64v2.hpp"
 #include "s64v3.hpp"
 #include "bv4.hpp"
+#include "bv4.hpp"
 #include "fv4.hpp"
 #include "dv4.hpp"
+#include "iv4.hpp"
+#include "u8v4.hpp"
 
-s64& s64v4::operator[] (int i) {
-	return arr[i];
-}
-
-s64 s64v4::operator[] (int i) const {
-	return arr[i];
-}
-
-
-s64v4::s64v4 () {
+namespace vector {
 	
-}
-
-constexpr s64v4::s64v4 (s64 all): x{all}, y{all}, z{all}, w{all} {
+	s64& s64v4::operator[] (int i) {
+		return arr[i];
+	}
 	
-}
-
-constexpr s64v4::s64v4 (s64 x, s64 y, s64 z, s64 w): x{x}, y{y}, z{z}, w{w} {
+	s64 s64v4::operator[] (int i) const {
+		return arr[i];
+	}
 	
-}
-
-constexpr s64v4::s64v4 (s64v2 xy, s64 z, s64 w): x{xy.x}, y{xy.y}, z{z}, w{w} {
 	
-}
-
-constexpr s64v4::s64v4 (s64v3 xyz, s64 w): x{xyz.x}, y{xyz.y}, z{xyz.z}, w{w} {
+	s64v4::s64v4 () {
+		
+	}
 	
-}
-
-
-s64v4 s64v4::operator+= (s64v4 r) {
-	x += r.x;
-	y += r.y;
-	z += r.z;
-	w += r.w;
-	return *this;
-}
-
-s64v4 s64v4::operator-= (s64v4 r) {
-	x -= r.x;
-	y -= r.y;
-	z -= r.z;
-	w -= r.w;
-	return *this;
-}
-
-s64v4 s64v4::operator*= (s64v4 r) {
-	x *= r.x;
-	y *= r.y;
-	z *= r.z;
-	w *= r.w;
-	return *this;
-}
-
-s64v4 s64v4::operator/= (s64v4 r) {
-	x /= r.x;
-	y /= r.y;
-	z /= r.z;
-	w /= r.w;
-	return *this;
-}
-
-//// Conversion operators
-
-s64v4::operator fv4 () const {
-	return fv4((f32)x, (f32)y, (f32)z, (f32)w);
-}
-
-s64v4::operator dv4 () const {
-	return dv4((f64)x, (f64)y, (f64)z, (f64)w);
-}
-
-//// arthmethic ops
-
-constexpr s64v4 operator+ (s64v4 v) {
-	return s64v4(+v.x, +v.y, +v.z, +v.w);
-}
-
-constexpr s64v4 operator- (s64v4 v) {
-	return s64v4(-v.x, -v.y, -v.z, -v.w);
-}
-
-constexpr s64v4 operator+ (s64v4 l, s64v4 r) {
-	return s64v4(l.x + r.x, l.y + r.y, l.z + r.z, l.w + r.w);
-}
-
-constexpr s64v4 operator- (s64v4 l, s64v4 r) {
-	return s64v4(l.x - r.x, l.y - r.y, l.z - r.z, l.w - r.w);
-}
-
-constexpr s64v4 operator* (s64v4 l, s64v4 r) {
-	return s64v4(l.x * r.x, l.y * r.y, l.z * r.z, l.w * r.w);
-}
-
-constexpr s64v4 operator/ (s64v4 l, s64v4 r) {
-	return s64v4(l.x / r.x, l.y / r.y, l.z / r.z, l.w / r.w);
-}
-
-//// comparison ops
-
-constexpr bv4 operator< (s64v4 l, s64v4 r) {
-	return bv4(l.x < r.x, l.y < r.y, l.z < r.z, l.w < r.w);
-}
-
-constexpr bv4 operator<= (s64v4 l, s64v4 r) {
-	return bv4(l.x <= r.x, l.y <= r.y, l.z <= r.z, l.w <= r.w);
-}
-
-constexpr bv4 operator> (s64v4 l, s64v4 r) {
-	return bv4(l.x > r.x, l.y > r.y, l.z > r.z, l.w > r.w);
-}
-
-constexpr bv4 operator>= (s64v4 l, s64v4 r) {
-	return bv4(l.x >= r.x, l.y >= r.y, l.z >= r.z, l.w >= r.w);
-}
-
-constexpr bv4 operator== (s64v4 l, s64v4 r) {
-	return bv4(l.x == r.x, l.y == r.y, l.z == r.z, l.w == r.w);
-}
-
-constexpr bv4 operator!= (s64v4 l, s64v4 r) {
-	return bv4(l.x != r.x, l.y != r.y, l.z != r.z, l.w != r.w);
-}
-
-constexpr bool equal (s64v4 l, s64v4 r) {
-	return all(l == r);
-}
-
-constexpr s64v4 select (s64v4 c, s64v4 l, s64v4 r) {
-	return c.x ? l.x : r.x, c.y ? l.y : r.y, c.z ? l.z : r.z, c.w ? l.w : r.w;
-}
-
-//// misc ops
-
-s64v4 abs (s64v4 v) {
-	return s64v4(abs(v.x), abs(v.y), abs(v.z), abs(v.w));
-}
-
-s64v4 min (s64v4 l, s64v4 r) {
-	return s64v4(min(l.x,r.x), min(l.y,r.y), min(l.z,r.z), min(l.w,r.w));
-}
-
-s64v4 max (s64v4 l, s64v4 r) {
-	return s64v4(max(l.x,r.x), max(l.y,r.y), max(l.z,r.z), max(l.w,r.w));
-}
-
-s64v4 clamp (s64v4 x, s64v4 a, s64v4 b) {
-	return min(max(x,a), b);
-}
-
-s64 min_component (s64v4 v, int* min_index) {
-	int index = 0;
-	s64 min_val = v.x;	
-	for (int i=1; i<4; ++i) {
-		if (v.arr[i] <= min_val) {
-			index = i;
-			min_val = v.arr[i];
+	s64v4::s64v4 (s64 all): x{all}, y{all}, z{all}, w{all} {
+		
+	}
+	
+	s64v4::s64v4 (s64 x, s64 y, s64 z, s64 w): x{x}, y{y}, z{z}, w{w} {
+		
+	}
+	
+	s64v4::s64v4 (s64v2 xy, s64 z, s64 w): x{xy.x}, y{xy.y}, z{z}, w{w} {
+		
+	}
+	
+	s64v4::s64v4 (s64v3 xyz, s64 w): x{xyz.x}, y{xyz.y}, z{xyz.z}, w{w} {
+		
+	}
+	
+	//// Truncating cast operators
+	
+	
+	s64v4::operator s64v2 () const {
+		return s64v2(x, y);
+	}
+	
+	s64v4::operator s64v3 () const {
+		return s64v3(x, y, z);
+	}
+	
+	//// Type cast operators
+	
+	
+	s64v4::operator bv4 () const {
+		return bv4((bool)x, (bool)y, (bool)z, (bool)w);
+	}
+	
+	s64v4::operator fv4 () const {
+		return fv4((f32)x, (f32)y, (f32)z, (f32)w);
+	}
+	
+	s64v4::operator dv4 () const {
+		return dv4((f64)x, (f64)y, (f64)z, (f64)w);
+	}
+	
+	s64v4::operator iv4 () const {
+		return iv4((int)x, (int)y, (int)z, (int)w);
+	}
+	
+	s64v4::operator u8v4 () const {
+		return u8v4((u8)x, (u8)y, (u8)z, (u8)w);
+	}
+	
+	
+	s64v4 s64v4::operator+= (s64v4 r) {
+		x += r.x;
+		y += r.y;
+		z += r.z;
+		w += r.w;
+		return *this;
+	}
+	
+	s64v4 s64v4::operator-= (s64v4 r) {
+		x -= r.x;
+		y -= r.y;
+		z -= r.z;
+		w -= r.w;
+		return *this;
+	}
+	
+	s64v4 s64v4::operator*= (s64v4 r) {
+		x *= r.x;
+		y *= r.y;
+		z *= r.z;
+		w *= r.w;
+		return *this;
+	}
+	
+	s64v4 s64v4::operator/= (s64v4 r) {
+		x /= r.x;
+		y /= r.y;
+		z /= r.z;
+		w /= r.w;
+		return *this;
+	}
+	
+	//// arthmethic ops
+	
+	s64v4 operator+ (s64v4 v) {
+		return s64v4(+v.x, +v.y, +v.z, +v.w);
+	}
+	
+	s64v4 operator- (s64v4 v) {
+		return s64v4(-v.x, -v.y, -v.z, -v.w);
+	}
+	
+	s64v4 operator+ (s64v4 l, s64v4 r) {
+		return s64v4(l.x + r.x, l.y + r.y, l.z + r.z, l.w + r.w);
+	}
+	
+	s64v4 operator- (s64v4 l, s64v4 r) {
+		return s64v4(l.x - r.x, l.y - r.y, l.z - r.z, l.w - r.w);
+	}
+	
+	s64v4 operator* (s64v4 l, s64v4 r) {
+		return s64v4(l.x * r.x, l.y * r.y, l.z * r.z, l.w * r.w);
+	}
+	
+	s64v4 operator/ (s64v4 l, s64v4 r) {
+		return s64v4(l.x / r.x, l.y / r.y, l.z / r.z, l.w / r.w);
+	}
+	
+	//// comparison ops
+	
+	bv4 operator< (s64v4 l, s64v4 r) {
+		return bv4(l.x < r.x, l.y < r.y, l.z < r.z, l.w < r.w);
+	}
+	
+	bv4 operator<= (s64v4 l, s64v4 r) {
+		return bv4(l.x <= r.x, l.y <= r.y, l.z <= r.z, l.w <= r.w);
+	}
+	
+	bv4 operator> (s64v4 l, s64v4 r) {
+		return bv4(l.x > r.x, l.y > r.y, l.z > r.z, l.w > r.w);
+	}
+	
+	bv4 operator>= (s64v4 l, s64v4 r) {
+		return bv4(l.x >= r.x, l.y >= r.y, l.z >= r.z, l.w >= r.w);
+	}
+	
+	bv4 operator== (s64v4 l, s64v4 r) {
+		return bv4(l.x == r.x, l.y == r.y, l.z == r.z, l.w == r.w);
+	}
+	
+	bv4 operator!= (s64v4 l, s64v4 r) {
+		return bv4(l.x != r.x, l.y != r.y, l.z != r.z, l.w != r.w);
+	}
+	
+	bool equal (s64v4 l, s64v4 r) {
+		return all(l == r);
+	}
+	
+	s64v4 select (s64v4 c, s64v4 l, s64v4 r) {
+		return c.x ? l.x : r.x, c.y ? l.y : r.y, c.z ? l.z : r.z, c.w ? l.w : r.w;
+	}
+	
+	//// misc ops
+	
+	s64v4 abs (s64v4 v) {
+		return s64v4(abs(v.x), abs(v.y), abs(v.z), abs(v.w));
+	}
+	
+	s64v4 min (s64v4 l, s64v4 r) {
+		return s64v4(min(l.x,r.x), min(l.y,r.y), min(l.z,r.z), min(l.w,r.w));
+	}
+	
+	s64v4 max (s64v4 l, s64v4 r) {
+		return s64v4(max(l.x,r.x), max(l.y,r.y), max(l.z,r.z), max(l.w,r.w));
+	}
+	
+	s64v4 clamp (s64v4 x, s64v4 a, s64v4 b) {
+		return min(max(x,a), b);
+	}
+	
+	s64 min_component (s64v4 v, int* min_index) {
+		int index = 0;
+		s64 min_val = v.x;	
+		for (int i=1; i<4; ++i) {
+			if (v.arr[i] <= min_val) {
+				index = i;
+				min_val = v.arr[i];
+			}
 		}
+		if (min_index) *min_index = index;
+		return min_val;
 	}
-	if (min_index) *min_index = index;
-	return min_val;
-}
-
-s64 max_component (s64v4 v, int* max_index) {
-	int index = 0;
-	s64 max_val = v.x;	
-	for (int i=1; i<4; ++i) {
-		if (v.arr[i] >= max_val) {
-			index = i;
-			max_val = v.arr[i];
+	
+	s64 max_component (s64v4 v, int* max_index) {
+		int index = 0;
+		s64 max_val = v.x;	
+		for (int i=1; i<4; ++i) {
+			if (v.arr[i] >= max_val) {
+				index = i;
+				max_val = v.arr[i];
+			}
 		}
+		if (max_index) *max_index = index;
+		return max_val;
 	}
-	if (max_index) *max_index = index;
-	return max_val;
-}
-
-
-s64v4 wrap (s64v4 v, s64v4 range) {
-	return s64v4(wrap(v.x,range.x), wrap(v.y,range.y), wrap(v.z,range.z), wrap(v.w,range.w));
-}
-
-s64v4 wrap (s64v4 v, s64v4 a, s64v4 b) {
-	return s64v4(wrap(v.x,a.x,b.x), wrap(v.y,a.y,b.y), wrap(v.z,a.z,b.z), wrap(v.w,a.w,b.w));
-}
-
-//// linear algebra ops
-
-f64 length (s64v4 v) {
-	return sqrt((f64)(v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w));
-}
-
-s64 length_sqr (s64v4 v) {
-	return v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w;
-}
-
-f64 distance (s64v4 a, s64v4 b) {
-	return length(a - b);
-}
-
-dv4 normalize (s64v4 v) {
-	return dv4(v) / length(v);
-}
-
-dv4 normalize_or_zero (s64v4 v) {
-	f64 len = length(v);
-	if (len == f64(0)) {
-		return f64(0);
+	
+	
+	s64v4 wrap (s64v4 v, s64v4 range) {
+		return s64v4(wrap(v.x,range.x), wrap(v.y,range.y), wrap(v.z,range.z), wrap(v.w,range.w));
 	}
-	return dv4(v) / dv4(len);
-}
-
+	
+	s64v4 wrap (s64v4 v, s64v4 a, s64v4 b) {
+		return s64v4(wrap(v.x,a.x,b.x), wrap(v.y,a.y,b.y), wrap(v.z,a.z,b.z), wrap(v.w,a.w,b.w));
+	}
+	
+	
+	//// linear algebra ops
+	
+	f64 length (s64v4 v) {
+		return sqrt((f64)(v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w));
+	}
+	
+	s64 length_sqr (s64v4 v) {
+		return v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w;
+	}
+	
+	f64 distance (s64v4 a, s64v4 b) {
+		return length(a - b);
+	}
+	
+	dv4 normalize (s64v4 v) {
+		return dv4(v) / length(v);
+	}
+	
+	dv4 normalize_or_zero (s64v4 v) {
+		f64 len = length(v);
+		if (len == f64(0)) {
+			return f64(0);
+		}
+		return dv4(v) / dv4(len);
+	}
+	
+	s64 dot (s64v4 l, s64v4 r) {
+		return l.x * r.x + l.y * r.y + l.z * r.z + l.w * r.w;
+	}
+}// namespace vector
 

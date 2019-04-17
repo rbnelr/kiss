@@ -14,4 +14,3 @@
 #define ODD(i)			(((i) % 2) == 1)
 
 #define BOOL_XOR(a, b)	(((a) != 0) != ((b) != 0))
-

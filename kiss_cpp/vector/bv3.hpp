@@ -3,48 +3,63 @@
 
 #include "kissmath.hpp"
 
-//// forward declarations
-union bv2;
-union bv4;
-union bv3;
 
-union bv3 {
-	struct {
-		bool	x, y, z;
+namespace vector {
+	//// forward declarations
+	union bv2;
+	union bv4;
+	union bv3;
+	union fv3;
+	union dv3;
+	union iv3;
+	union s64v3;
+	union u8v3;
+	
+	union bv3 {
+		struct {
+			bool	x, y, z;
+		};
+		bool		arr[3];
+		
+		bool& operator[] (int i);
+		bool operator[] (int i) const;
+		
+		bv3 ();
+		// sets all components to one value
+		// implicit constructor -> v3(x,y,z) * 5 will be turned into v3(x,y,z) * v3(5) by to compiler to be able to execute operator*(v3, v3), which is desirable, also v3 a = 0; works
+		bv3 (bool all);
+		// supply all components
+		bv3 (bool x, bool y, bool z);
+		// extend vector
+		bv3 (bv2 xy, bool z);
+		// truncate vector
+		bv3 (bv4 v);
+		
+		//// Truncating cast operators
+		
+		operator bv2 () const;
+		
+		//// Type cast operators
+		
 	};
-	bool		arr[3];
 	
-	bool& operator[] (int i);
-	bool operator[] (int i) const;
+	//// reducing ops
+	// all components are true
+	bool all (bv3 v);
+	// any components is true
+	bool any (bv3 v);
 	
-	bv3 ();
-	// sets all components to one value
-	constexpr bv3 (bool all);
-	// supply all components
-	constexpr bv3 (bool x, bool y, bool z);
-	// extend vector
-	constexpr bv3 (bv2 xy, bool z);
-	// truncate vector
-	constexpr bv3 (bv4 v);
+	//// arthmethic ops
+	bv3 operator! (bv3 v);
+	bv3 operator&& (bv3 l, bv3 r);
+	bv3 operator|| (bv3 l, bv3 r);
 	
-};
-
-//// reducing ops
-// all components are true
-constexpr bool all (bv3 v);
-// any components is true
-constexpr bool any (bv3 v);
-
-//// arthmethic ops
-constexpr bv3 operator! (bv3 v);
-constexpr bv3 operator&& (bv3 l, bv3 r);
-constexpr bv3 operator|| (bv3 l, bv3 r);
-
-//// comparison ops
-constexpr bv3 operator== (bv3 l, bv3 r);
-constexpr bv3 operator!= (bv3 l, bv3 r);
-// vectors are equal, equivalent to all(l == r)
-constexpr bool equal (bv3 l, bv3 r);
-// componentwise ternary c ? l : r
-constexpr bv3 select (bv3 c, bv3 l, bv3 r);
+	//// comparison ops
+	bv3 operator== (bv3 l, bv3 r);
+	bv3 operator!= (bv3 l, bv3 r);
+	// vectors are equal, equivalent to all(l == r)
+	bool equal (bv3 l, bv3 r);
+	// componentwise ternary c ? l : r
+	bv3 select (bv3 c, bv3 l, bv3 r);
+}// namespace vector
 

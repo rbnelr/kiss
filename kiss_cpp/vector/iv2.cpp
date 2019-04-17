@@ -4,210 +4,240 @@
 #include "iv3.hpp"
 #include "iv4.hpp"
 #include "bv2.hpp"
+#include "bv2.hpp"
 #include "fv2.hpp"
 #include "dv2.hpp"
+#include "s64v2.hpp"
+#include "u8v2.hpp"
 
-int& iv2::operator[] (int i) {
-	return arr[i];
-}
-
-int iv2::operator[] (int i) const {
-	return arr[i];
-}
-
-
-iv2::iv2 () {
+namespace vector {
 	
-}
-
-constexpr iv2::iv2 (int all): x{all}, y{all} {
+	int& iv2::operator[] (int i) {
+		return arr[i];
+	}
 	
-}
-
-constexpr iv2::iv2 (int x, int y): x{x}, y{y} {
+	int iv2::operator[] (int i) const {
+		return arr[i];
+	}
 	
-}
-
-constexpr iv2::iv2 (iv3 v): x{v.x}, y{v.y} {
 	
-}
-
-constexpr iv2::iv2 (iv4 v): x{v.x}, y{v.y} {
+	iv2::iv2 () {
+		
+	}
 	
-}
-
-
-iv2 iv2::operator+= (iv2 r) {
-	x += r.x;
-	y += r.y;
-	return *this;
-}
-
-iv2 iv2::operator-= (iv2 r) {
-	x -= r.x;
-	y -= r.y;
-	return *this;
-}
-
-iv2 iv2::operator*= (iv2 r) {
-	x *= r.x;
-	y *= r.y;
-	return *this;
-}
-
-iv2 iv2::operator/= (iv2 r) {
-	x /= r.x;
-	y /= r.y;
-	return *this;
-}
-
-//// Conversion operators
-
-iv2::operator fv2 () const {
-	return fv2((f32)x, (f32)y);
-}
-
-iv2::operator dv2 () const {
-	return dv2((f64)x, (f64)y);
-}
-
-//// arthmethic ops
-
-constexpr iv2 operator+ (iv2 v) {
-	return iv2(+v.x, +v.y);
-}
-
-constexpr iv2 operator- (iv2 v) {
-	return iv2(-v.x, -v.y);
-}
-
-constexpr iv2 operator+ (iv2 l, iv2 r) {
-	return iv2(l.x + r.x, l.y + r.y);
-}
-
-constexpr iv2 operator- (iv2 l, iv2 r) {
-	return iv2(l.x - r.x, l.y - r.y);
-}
-
-constexpr iv2 operator* (iv2 l, iv2 r) {
-	return iv2(l.x * r.x, l.y * r.y);
-}
-
-constexpr iv2 operator/ (iv2 l, iv2 r) {
-	return iv2(l.x / r.x, l.y / r.y);
-}
-
-//// comparison ops
-
-constexpr bv2 operator< (iv2 l, iv2 r) {
-	return bv2(l.x < r.x, l.y < r.y);
-}
-
-constexpr bv2 operator<= (iv2 l, iv2 r) {
-	return bv2(l.x <= r.x, l.y <= r.y);
-}
-
-constexpr bv2 operator> (iv2 l, iv2 r) {
-	return bv2(l.x > r.x, l.y > r.y);
-}
-
-constexpr bv2 operator>= (iv2 l, iv2 r) {
-	return bv2(l.x >= r.x, l.y >= r.y);
-}
-
-constexpr bv2 operator== (iv2 l, iv2 r) {
-	return bv2(l.x == r.x, l.y == r.y);
-}
-
-constexpr bv2 operator!= (iv2 l, iv2 r) {
-	return bv2(l.x != r.x, l.y != r.y);
-}
-
-constexpr bool equal (iv2 l, iv2 r) {
-	return all(l == r);
-}
-
-constexpr iv2 select (iv2 c, iv2 l, iv2 r) {
-	return c.x ? l.x : r.x, c.y ? l.y : r.y;
-}
-
-//// misc ops
-
-iv2 abs (iv2 v) {
-	return iv2(abs(v.x), abs(v.y));
-}
-
-iv2 min (iv2 l, iv2 r) {
-	return iv2(min(l.x,r.x), min(l.y,r.y));
-}
-
-iv2 max (iv2 l, iv2 r) {
-	return iv2(max(l.x,r.x), max(l.y,r.y));
-}
-
-iv2 clamp (iv2 x, iv2 a, iv2 b) {
-	return min(max(x,a), b);
-}
-
-int min_component (iv2 v, int* min_index) {
-	int index = 0;
-	int min_val = v.x;	
-	for (int i=1; i<2; ++i) {
-		if (v.arr[i] <= min_val) {
-			index = i;
-			min_val = v.arr[i];
+	iv2::iv2 (int all): x{all}, y{all} {
+		
+	}
+	
+	iv2::iv2 (int x, int y): x{x}, y{y} {
+		
+	}
+	
+	iv2::iv2 (iv3 v): x{v.x}, y{v.y} {
+		
+	}
+	
+	iv2::iv2 (iv4 v): x{v.x}, y{v.y} {
+		
+	}
+	
+	//// Truncating cast operators
+	
+	
+	//// Type cast operators
+	
+	
+	iv2::operator bv2 () const {
+		return bv2((bool)x, (bool)y);
+	}
+	
+	iv2::operator fv2 () const {
+		return fv2((f32)x, (f32)y);
+	}
+	
+	iv2::operator dv2 () const {
+		return dv2((f64)x, (f64)y);
+	}
+	
+	iv2::operator s64v2 () const {
+		return s64v2((s64)x, (s64)y);
+	}
+	
+	iv2::operator u8v2 () const {
+		return u8v2((u8)x, (u8)y);
+	}
+	
+	
+	iv2 iv2::operator+= (iv2 r) {
+		x += r.x;
+		y += r.y;
+		return *this;
+	}
+	
+	iv2 iv2::operator-= (iv2 r) {
+		x -= r.x;
+		y -= r.y;
+		return *this;
+	}
+	
+	iv2 iv2::operator*= (iv2 r) {
+		x *= r.x;
+		y *= r.y;
+		return *this;
+	}
+	
+	iv2 iv2::operator/= (iv2 r) {
+		x /= r.x;
+		y /= r.y;
+		return *this;
+	}
+	
+	//// arthmethic ops
+	
+	iv2 operator+ (iv2 v) {
+		return iv2(+v.x, +v.y);
+	}
+	
+	iv2 operator- (iv2 v) {
+		return iv2(-v.x, -v.y);
+	}
+	
+	iv2 operator+ (iv2 l, iv2 r) {
+		return iv2(l.x + r.x, l.y + r.y);
+	}
+	
+	iv2 operator- (iv2 l, iv2 r) {
+		return iv2(l.x - r.x, l.y - r.y);
+	}
+	
+	iv2 operator* (iv2 l, iv2 r) {
+		return iv2(l.x * r.x, l.y * r.y);
+	}
+	
+	iv2 operator/ (iv2 l, iv2 r) {
+		return iv2(l.x / r.x, l.y / r.y);
+	}
+	
+	//// comparison ops
+	
+	bv2 operator< (iv2 l, iv2 r) {
+		return bv2(l.x < r.x, l.y < r.y);
+	}
+	
+	bv2 operator<= (iv2 l, iv2 r) {
+		return bv2(l.x <= r.x, l.y <= r.y);
+	}
+	
+	bv2 operator> (iv2 l, iv2 r) {
+		return bv2(l.x > r.x, l.y > r.y);
+	}
+	
+	bv2 operator>= (iv2 l, iv2 r) {
+		return bv2(l.x >= r.x, l.y >= r.y);
+	}
+	
+	bv2 operator== (iv2 l, iv2 r) {
+		return bv2(l.x == r.x, l.y == r.y);
+	}
+	
+	bv2 operator!= (iv2 l, iv2 r) {
+		return bv2(l.x != r.x, l.y != r.y);
+	}
+	
+	bool equal (iv2 l, iv2 r) {
+		return all(l == r);
+	}
+	
+	iv2 select (iv2 c, iv2 l, iv2 r) {
+		return c.x ? l.x : r.x, c.y ? l.y : r.y;
+	}
+	
+	//// misc ops
+	
+	iv2 abs (iv2 v) {
+		return iv2(abs(v.x), abs(v.y));
+	}
+	
+	iv2 min (iv2 l, iv2 r) {
+		return iv2(min(l.x,r.x), min(l.y,r.y));
+	}
+	
+	iv2 max (iv2 l, iv2 r) {
+		return iv2(max(l.x,r.x), max(l.y,r.y));
+	}
+	
+	iv2 clamp (iv2 x, iv2 a, iv2 b) {
+		return min(max(x,a), b);
+	}
+	
+	int min_component (iv2 v, int* min_index) {
+		int index = 0;
+		int min_val = v.x;	
+		for (int i=1; i<2; ++i) {
+			if (v.arr[i] <= min_val) {
+				index = i;
+				min_val = v.arr[i];
+			}
 		}
+		if (min_index) *min_index = index;
+		return min_val;
 	}
-	if (min_index) *min_index = index;
-	return min_val;
-}
-
-int max_component (iv2 v, int* max_index) {
-	int index = 0;
-	int max_val = v.x;	
-	for (int i=1; i<2; ++i) {
-		if (v.arr[i] >= max_val) {
-			index = i;
-			max_val = v.arr[i];
+	
+	int max_component (iv2 v, int* max_index) {
+		int index = 0;
+		int max_val = v.x;	
+		for (int i=1; i<2; ++i) {
+			if (v.arr[i] >= max_val) {
+				index = i;
+				max_val = v.arr[i];
+			}
 		}
+		if (max_index) *max_index = index;
+		return max_val;
 	}
-	if (max_index) *max_index = index;
-	return max_val;
-}
-
-
-iv2 wrap (iv2 v, iv2 range) {
-	return iv2(wrap(v.x,range.x), wrap(v.y,range.y));
-}
-
-iv2 wrap (iv2 v, iv2 a, iv2 b) {
-	return iv2(wrap(v.x,a.x,b.x), wrap(v.y,a.y,b.y));
-}
-
-//// linear algebra ops
-
-f32 length (iv2 v) {
-	return sqrt((f32)(v.x * v.x + v.y * v.y));
-}
-
-int length_sqr (iv2 v) {
-	return v.x * v.x + v.y * v.y;
-}
-
-f32 distance (iv2 a, iv2 b) {
-	return length(a - b);
-}
-
-fv2 normalize (iv2 v) {
-	return fv2(v) / length(v);
-}
-
-fv2 normalize_or_zero (iv2 v) {
-	f32 len = length(v);
-	if (len == f32(0)) {
-		return f32(0);
+	
+	
+	iv2 wrap (iv2 v, iv2 range) {
+		return iv2(wrap(v.x,range.x), wrap(v.y,range.y));
 	}
-	return fv2(v) / fv2(len);
-}
-
+	
+	iv2 wrap (iv2 v, iv2 a, iv2 b) {
+		return iv2(wrap(v.x,a.x,b.x), wrap(v.y,a.y,b.y));
+	}
+	
+	
+	//// linear algebra ops
+	
+	f32 length (iv2 v) {
+		return sqrt((f32)(v.x * v.x + v.y * v.y));
+	}
+	
+	int length_sqr (iv2 v) {
+		return v.x * v.x + v.y * v.y;
+	}
+	
+	f32 distance (iv2 a, iv2 b) {
+		return length(a - b);
+	}
+	
+	fv2 normalize (iv2 v) {
+		return fv2(v) / length(v);
+	}
+	
+	fv2 normalize_or_zero (iv2 v) {
+		f32 len = length(v);
+		if (len == f32(0)) {
+			return f32(0);
+		}
+		return fv2(v) / fv2(len);
+	}
+	
+	int dot (iv2 l, iv2 r) {
+		return l.x * r.x + l.y * r.y;
+	}
+	
+	int cross (iv2 l, iv2 r) {
+		return l.x * r.y - l.y * r.x;
+	}
+}// namespace vector
 

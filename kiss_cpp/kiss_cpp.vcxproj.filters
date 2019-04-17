@@ -30,16 +30,13 @@
     <ClCompile Include="glad\glad_wgl.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="vector\kissmath.cpp">
+    <ClCompile Include="vector\bv2.cpp">
       <Filter>vector</Filter>
     </ClCompile>
-    <ClCompile Include="vector\fv2.cpp">
+    <ClCompile Include="vector\bv3.cpp">
       <Filter>vector</Filter>
     </ClCompile>
-    <ClCompile Include="vector\fv4.cpp">
-      <Filter>vector</Filter>
-    </ClCompile>
-    <ClCompile Include="vector\iv3.cpp">
+    <ClCompile Include="vector\bv4.cpp">
       <Filter>vector</Filter>
     </ClCompile>
     <ClCompile Include="vector\dv2.cpp">
@@ -51,13 +48,34 @@
     <ClCompile Include="vector\dv4.cpp">
       <Filter>vector</Filter>
     </ClCompile>
+    <ClCompile Include="vector\fv2.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
     <ClCompile Include="vector\fv3.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\fv4.cpp">
       <Filter>vector</Filter>
     </ClCompile>
     <ClCompile Include="vector\iv2.cpp">
       <Filter>vector</Filter>
     </ClCompile>
+    <ClCompile Include="vector\iv3.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
     <ClCompile Include="vector\iv4.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\kissmath.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\s64v2.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\s64v3.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\s64v4.cpp">
       <Filter>vector</Filter>
     </ClCompile>
     <ClCompile Include="vector\u8v2.cpp">
@@ -69,13 +87,34 @@
     <ClCompile Include="vector\u8v4.cpp">
       <Filter>vector</Filter>
     </ClCompile>
-    <ClCompile Include="vector\bv2.cpp">
+    <ClCompile Include="vector\f64m2.cpp">
       <Filter>vector</Filter>
     </ClCompile>
-    <ClCompile Include="vector\bv3.cpp">
+    <ClCompile Include="vector\f64m3.cpp">
       <Filter>vector</Filter>
     </ClCompile>
-    <ClCompile Include="vector\bv4.cpp">
+    <ClCompile Include="vector\f64m4.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\m2.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\m3.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\m4.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\f64m2x3.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\f64m3x4.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\m2x3.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\m3x4.cpp">
       <Filter>vector</Filter>
     </ClCompile>
   </ItemGroup>
@@ -98,19 +137,13 @@
     <ClInclude Include="glad\khrplatform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="vector\kissmath.hpp">
+    <ClInclude Include="vector\bv2.hpp">
       <Filter>vector</Filter>
     </ClInclude>
-    <ClInclude Include="vector\types.hpp">
+    <ClInclude Include="vector\bv3.hpp">
       <Filter>vector</Filter>
     </ClInclude>
-    <ClInclude Include="vector\fv2.hpp">
-      <Filter>vector</Filter>
-    </ClInclude>
-    <ClInclude Include="vector\fv4.hpp">
-      <Filter>vector</Filter>
-    </ClInclude>
-    <ClInclude Include="vector\iv3.hpp">
+    <ClInclude Include="vector\bv4.hpp">
       <Filter>vector</Filter>
     </ClInclude>
     <ClInclude Include="vector\dv2.hpp">
@@ -122,13 +155,55 @@
     <ClInclude Include="vector\dv4.hpp">
       <Filter>vector</Filter>
     </ClInclude>
+    <ClInclude Include="vector\f64m2.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\f64m3.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\f64m4.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\fv2.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
     <ClInclude Include="vector\fv3.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\fv4.hpp">
       <Filter>vector</Filter>
     </ClInclude>
     <ClInclude Include="vector\iv2.hpp">
       <Filter>vector</Filter>
     </ClInclude>
+    <ClInclude Include="vector\iv3.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
     <ClInclude Include="vector\iv4.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\kissmath.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\m2.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\m3.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\m4.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\s64v2.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\s64v3.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\s64v4.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\types.hpp">
       <Filter>vector</Filter>
     </ClInclude>
     <ClInclude Include="vector\u8v2.hpp">
@@ -140,16 +215,22 @@
     <ClInclude Include="vector\u8v4.hpp">
       <Filter>vector</Filter>
     </ClInclude>
+    <ClInclude Include="vector\util.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
     <ClInclude Include="vector\vector.hpp">
       <Filter>vector</Filter>
     </ClInclude>
-    <ClInclude Include="vector\bv2.hpp">
+    <ClInclude Include="vector\f64m2x3.hpp">
       <Filter>vector</Filter>
     </ClInclude>
-    <ClInclude Include="vector\bv3.hpp">
+    <ClInclude Include="vector\f64m3x4.hpp">
       <Filter>vector</Filter>
     </ClInclude>
-    <ClInclude Include="vector\bv4.hpp">
+    <ClInclude Include="vector\m2x3.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\m3x4.hpp">
       <Filter>vector</Filter>
     </ClInclude>
   </ItemGroup>

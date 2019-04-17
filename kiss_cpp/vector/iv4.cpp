@@ -4,218 +4,252 @@
 #include "iv2.hpp"
 #include "iv3.hpp"
 #include "bv4.hpp"
+#include "bv4.hpp"
 #include "fv4.hpp"
 #include "dv4.hpp"
+#include "s64v4.hpp"
+#include "u8v4.hpp"
 
-int& iv4::operator[] (int i) {
-	return arr[i];
-}
-
-int iv4::operator[] (int i) const {
-	return arr[i];
-}
-
-
-iv4::iv4 () {
+namespace vector {
 	
-}
-
-constexpr iv4::iv4 (int all): x{all}, y{all}, z{all}, w{all} {
+	int& iv4::operator[] (int i) {
+		return arr[i];
+	}
 	
-}
-
-constexpr iv4::iv4 (int x, int y, int z, int w): x{x}, y{y}, z{z}, w{w} {
+	int iv4::operator[] (int i) const {
+		return arr[i];
+	}
 	
-}
-
-constexpr iv4::iv4 (iv2 xy, int z, int w): x{xy.x}, y{xy.y}, z{z}, w{w} {
 	
-}
-
-constexpr iv4::iv4 (iv3 xyz, int w): x{xyz.x}, y{xyz.y}, z{xyz.z}, w{w} {
+	iv4::iv4 () {
+		
+	}
 	
-}
-
-
-iv4 iv4::operator+= (iv4 r) {
-	x += r.x;
-	y += r.y;
-	z += r.z;
-	w += r.w;
-	return *this;
-}
-
-iv4 iv4::operator-= (iv4 r) {
-	x -= r.x;
-	y -= r.y;
-	z -= r.z;
-	w -= r.w;
-	return *this;
-}
-
-iv4 iv4::operator*= (iv4 r) {
-	x *= r.x;
-	y *= r.y;
-	z *= r.z;
-	w *= r.w;
-	return *this;
-}
-
-iv4 iv4::operator/= (iv4 r) {
-	x /= r.x;
-	y /= r.y;
-	z /= r.z;
-	w /= r.w;
-	return *this;
-}
-
-//// Conversion operators
-
-iv4::operator fv4 () const {
-	return fv4((f32)x, (f32)y, (f32)z, (f32)w);
-}
-
-iv4::operator dv4 () const {
-	return dv4((f64)x, (f64)y, (f64)z, (f64)w);
-}
-
-//// arthmethic ops
-
-constexpr iv4 operator+ (iv4 v) {
-	return iv4(+v.x, +v.y, +v.z, +v.w);
-}
-
-constexpr iv4 operator- (iv4 v) {
-	return iv4(-v.x, -v.y, -v.z, -v.w);
-}
-
-constexpr iv4 operator+ (iv4 l, iv4 r) {
-	return iv4(l.x + r.x, l.y + r.y, l.z + r.z, l.w + r.w);
-}
-
-constexpr iv4 operator- (iv4 l, iv4 r) {
-	return iv4(l.x - r.x, l.y - r.y, l.z - r.z, l.w - r.w);
-}
-
-constexpr iv4 operator* (iv4 l, iv4 r) {
-	return iv4(l.x * r.x, l.y * r.y, l.z * r.z, l.w * r.w);
-}
-
-constexpr iv4 operator/ (iv4 l, iv4 r) {
-	return iv4(l.x / r.x, l.y / r.y, l.z / r.z, l.w / r.w);
-}
-
-//// comparison ops
-
-constexpr bv4 operator< (iv4 l, iv4 r) {
-	return bv4(l.x < r.x, l.y < r.y, l.z < r.z, l.w < r.w);
-}
-
-constexpr bv4 operator<= (iv4 l, iv4 r) {
-	return bv4(l.x <= r.x, l.y <= r.y, l.z <= r.z, l.w <= r.w);
-}
-
-constexpr bv4 operator> (iv4 l, iv4 r) {
-	return bv4(l.x > r.x, l.y > r.y, l.z > r.z, l.w > r.w);
-}
-
-constexpr bv4 operator>= (iv4 l, iv4 r) {
-	return bv4(l.x >= r.x, l.y >= r.y, l.z >= r.z, l.w >= r.w);
-}
-
-constexpr bv4 operator== (iv4 l, iv4 r) {
-	return bv4(l.x == r.x, l.y == r.y, l.z == r.z, l.w == r.w);
-}
-
-constexpr bv4 operator!= (iv4 l, iv4 r) {
-	return bv4(l.x != r.x, l.y != r.y, l.z != r.z, l.w != r.w);
-}
-
-constexpr bool equal (iv4 l, iv4 r) {
-	return all(l == r);
-}
-
-constexpr iv4 select (iv4 c, iv4 l, iv4 r) {
-	return c.x ? l.x : r.x, c.y ? l.y : r.y, c.z ? l.z : r.z, c.w ? l.w : r.w;
-}
-
-//// misc ops
-
-iv4 abs (iv4 v) {
-	return iv4(abs(v.x), abs(v.y), abs(v.z), abs(v.w));
-}
-
-iv4 min (iv4 l, iv4 r) {
-	return iv4(min(l.x,r.x), min(l.y,r.y), min(l.z,r.z), min(l.w,r.w));
-}
-
-iv4 max (iv4 l, iv4 r) {
-	return iv4(max(l.x,r.x), max(l.y,r.y), max(l.z,r.z), max(l.w,r.w));
-}
-
-iv4 clamp (iv4 x, iv4 a, iv4 b) {
-	return min(max(x,a), b);
-}
-
-int min_component (iv4 v, int* min_index) {
-	int index = 0;
-	int min_val = v.x;	
-	for (int i=1; i<4; ++i) {
-		if (v.arr[i] <= min_val) {
-			index = i;
-			min_val = v.arr[i];
+	iv4::iv4 (int all): x{all}, y{all}, z{all}, w{all} {
+		
+	}
+	
+	iv4::iv4 (int x, int y, int z, int w): x{x}, y{y}, z{z}, w{w} {
+		
+	}
+	
+	iv4::iv4 (iv2 xy, int z, int w): x{xy.x}, y{xy.y}, z{z}, w{w} {
+		
+	}
+	
+	iv4::iv4 (iv3 xyz, int w): x{xyz.x}, y{xyz.y}, z{xyz.z}, w{w} {
+		
+	}
+	
+	//// Truncating cast operators
+	
+	
+	iv4::operator iv2 () const {
+		return iv2(x, y);
+	}
+	
+	iv4::operator iv3 () const {
+		return iv3(x, y, z);
+	}
+	
+	//// Type cast operators
+	
+	
+	iv4::operator bv4 () const {
+		return bv4((bool)x, (bool)y, (bool)z, (bool)w);
+	}
+	
+	iv4::operator fv4 () const {
+		return fv4((f32)x, (f32)y, (f32)z, (f32)w);
+	}
+	
+	iv4::operator dv4 () const {
+		return dv4((f64)x, (f64)y, (f64)z, (f64)w);
+	}
+	
+	iv4::operator s64v4 () const {
+		return s64v4((s64)x, (s64)y, (s64)z, (s64)w);
+	}
+	
+	iv4::operator u8v4 () const {
+		return u8v4((u8)x, (u8)y, (u8)z, (u8)w);
+	}
+	
+	
+	iv4 iv4::operator+= (iv4 r) {
+		x += r.x;
+		y += r.y;
+		z += r.z;
+		w += r.w;
+		return *this;
+	}
+	
+	iv4 iv4::operator-= (iv4 r) {
+		x -= r.x;
+		y -= r.y;
+		z -= r.z;
+		w -= r.w;
+		return *this;
+	}
+	
+	iv4 iv4::operator*= (iv4 r) {
+		x *= r.x;
+		y *= r.y;
+		z *= r.z;
+		w *= r.w;
+		return *this;
+	}
+	
+	iv4 iv4::operator/= (iv4 r) {
+		x /= r.x;
+		y /= r.y;
+		z /= r.z;
+		w /= r.w;
+		return *this;
+	}
+	
+	//// arthmethic ops
+	
+	iv4 operator+ (iv4 v) {
+		return iv4(+v.x, +v.y, +v.z, +v.w);
+	}
+	
+	iv4 operator- (iv4 v) {
+		return iv4(-v.x, -v.y, -v.z, -v.w);
+	}
+	
+	iv4 operator+ (iv4 l, iv4 r) {
+		return iv4(l.x + r.x, l.y + r.y, l.z + r.z, l.w + r.w);
+	}
+	
+	iv4 operator- (iv4 l, iv4 r) {
+		return iv4(l.x - r.x, l.y - r.y, l.z - r.z, l.w - r.w);
+	}
+	
+	iv4 operator* (iv4 l, iv4 r) {
+		return iv4(l.x * r.x, l.y * r.y, l.z * r.z, l.w * r.w);
+	}
+	
+	iv4 operator/ (iv4 l, iv4 r) {
+		return iv4(l.x / r.x, l.y / r.y, l.z / r.z, l.w / r.w);
+	}
+	
+	//// comparison ops
+	
+	bv4 operator< (iv4 l, iv4 r) {
+		return bv4(l.x < r.x, l.y < r.y, l.z < r.z, l.w < r.w);
+	}
+	
+	bv4 operator<= (iv4 l, iv4 r) {
+		return bv4(l.x <= r.x, l.y <= r.y, l.z <= r.z, l.w <= r.w);
+	}
+	
+	bv4 operator> (iv4 l, iv4 r) {
+		return bv4(l.x > r.x, l.y > r.y, l.z > r.z, l.w > r.w);
+	}
+	
+	bv4 operator>= (iv4 l, iv4 r) {
+		return bv4(l.x >= r.x, l.y >= r.y, l.z >= r.z, l.w >= r.w);
+	}
+	
+	bv4 operator== (iv4 l, iv4 r) {
+		return bv4(l.x == r.x, l.y == r.y, l.z == r.z, l.w == r.w);
+	}
+	
+	bv4 operator!= (iv4 l, iv4 r) {
+		return bv4(l.x != r.x, l.y != r.y, l.z != r.z, l.w != r.w);
+	}
+	
+	bool equal (iv4 l, iv4 r) {
+		return all(l == r);
+	}
+	
+	iv4 select (iv4 c, iv4 l, iv4 r) {
+		return c.x ? l.x : r.x, c.y ? l.y : r.y, c.z ? l.z : r.z, c.w ? l.w : r.w;
+	}
+	
+	//// misc ops
+	
+	iv4 abs (iv4 v) {
+		return iv4(abs(v.x), abs(v.y), abs(v.z), abs(v.w));
+	}
+	
+	iv4 min (iv4 l, iv4 r) {
+		return iv4(min(l.x,r.x), min(l.y,r.y), min(l.z,r.z), min(l.w,r.w));
+	}
+	
+	iv4 max (iv4 l, iv4 r) {
+		return iv4(max(l.x,r.x), max(l.y,r.y), max(l.z,r.z), max(l.w,r.w));
+	}
+	
+	iv4 clamp (iv4 x, iv4 a, iv4 b) {
+		return min(max(x,a), b);
+	}
+	
+	int min_component (iv4 v, int* min_index) {
+		int index = 0;
+		int min_val = v.x;	
+		for (int i=1; i<4; ++i) {
+			if (v.arr[i] <= min_val) {
+				index = i;
+				min_val = v.arr[i];
+			}
 		}
+		if (min_index) *min_index = index;
+		return min_val;
 	}
-	if (min_index) *min_index = index;
-	return min_val;
-}
-
-int max_component (iv4 v, int* max_index) {
-	int index = 0;
-	int max_val = v.x;	
-	for (int i=1; i<4; ++i) {
-		if (v.arr[i] >= max_val) {
-			index = i;
-			max_val = v.arr[i];
+	
+	int max_component (iv4 v, int* max_index) {
+		int index = 0;
+		int max_val = v.x;	
+		for (int i=1; i<4; ++i) {
+			if (v.arr[i] >= max_val) {
+				index = i;
+				max_val = v.arr[i];
+			}
 		}
+		if (max_index) *max_index = index;
+		return max_val;
 	}
-	if (max_index) *max_index = index;
-	return max_val;
-}
-
-
-iv4 wrap (iv4 v, iv4 range) {
-	return iv4(wrap(v.x,range.x), wrap(v.y,range.y), wrap(v.z,range.z), wrap(v.w,range.w));
-}
-
-iv4 wrap (iv4 v, iv4 a, iv4 b) {
-	return iv4(wrap(v.x,a.x,b.x), wrap(v.y,a.y,b.y), wrap(v.z,a.z,b.z), wrap(v.w,a.w,b.w));
-}
-
-//// linear algebra ops
-
-f32 length (iv4 v) {
-	return sqrt((f32)(v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w));
-}
-
-int length_sqr (iv4 v) {
-	return v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w;
-}
-
-f32 distance (iv4 a, iv4 b) {
-	return length(a - b);
-}
-
-fv4 normalize (iv4 v) {
-	return fv4(v) / length(v);
-}
-
-fv4 normalize_or_zero (iv4 v) {
-	f32 len = length(v);
-	if (len == f32(0)) {
-		return f32(0);
+	
+	
+	iv4 wrap (iv4 v, iv4 range) {
+		return iv4(wrap(v.x,range.x), wrap(v.y,range.y), wrap(v.z,range.z), wrap(v.w,range.w));
 	}
-	return fv4(v) / fv4(len);
-}
-
+	
+	iv4 wrap (iv4 v, iv4 a, iv4 b) {
+		return iv4(wrap(v.x,a.x,b.x), wrap(v.y,a.y,b.y), wrap(v.z,a.z,b.z), wrap(v.w,a.w,b.w));
+	}
+	
+	
+	//// linear algebra ops
+	
+	f32 length (iv4 v) {
+		return sqrt((f32)(v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w));
+	}
+	
+	int length_sqr (iv4 v) {
+		return v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w;
+	}
+	
+	f32 distance (iv4 a, iv4 b) {
+		return length(a - b);
+	}
+	
+	fv4 normalize (iv4 v) {
+		return fv4(v) / length(v);
+	}
+	
+	fv4 normalize_or_zero (iv4 v) {
+		f32 len = length(v);
+		if (len == f32(0)) {
+			return f32(0);
+		}
+		return fv4(v) / fv4(len);
+	}
+	
+	int dot (iv4 l, iv4 r) {
+		return l.x * r.x + l.y * r.y + l.z * r.z + l.w * r.w;
+	}
+}// namespace vector
 

@@ -3,85 +3,104 @@
 
 #include "kissmath.hpp"
 
-//// forward declarations
-union u8v3;
-union u8v4;
-union bv2;
-union fv2;
-union dv2;
 
-union u8v2 {
-	struct {
-		u8	x, y;
+namespace vector {
+	//// forward declarations
+	union u8v3;
+	union u8v4;
+	union bv2;
+	union bv2;
+	union fv2;
+	union dv2;
+	union iv2;
+	union s64v2;
+	
+	union u8v2 {
+		struct {
+			u8	x, y;
+		};
+		u8		arr[2];
+		
+		u8& operator[] (int i);
+		u8 operator[] (int i) const;
+		
+		u8v2 ();
+		// sets all components to one value
+		// implicit constructor -> v3(x,y,z) * 5 will be turned into v3(x,y,z) * v3(5) by to compiler to be able to execute operator*(v3, v3), which is desirable, also v3 a = 0; works
+		u8v2 (u8 all);
+		// supply all components
+		u8v2 (u8 x, u8 y);
+		// truncate vector
+		u8v2 (u8v3 v);
+		// truncate vector
+		u8v2 (u8v4 v);
+		
+		//// Truncating cast operators
+		
+		
+		//// Type cast operators
+		
+		operator bv2 () const;
+		operator fv2 () const;
+		operator dv2 () const;
+		operator iv2 () const;
+		operator s64v2 () const;
+		
+		u8v2 operator+= (u8v2 r);
+		u8v2 operator-= (u8v2 r);
+		u8v2 operator*= (u8v2 r);
+		u8v2 operator/= (u8v2 r);
 	};
-	u8		arr[2];
 	
-	u8& operator[] (int i);
-	u8 operator[] (int i) const;
+	//// arthmethic ops
+	u8v2 operator+ (u8v2 v);
+	u8v2 operator- (u8v2 v);
+	u8v2 operator+ (u8v2 l, u8v2 r);
+	u8v2 operator- (u8v2 l, u8v2 r);
+	u8v2 operator* (u8v2 l, u8v2 r);
+	u8v2 operator/ (u8v2 l, u8v2 r);
 	
-	u8v2 ();
-	// sets all components to one value
-	constexpr u8v2 (u8 all);
-	// supply all components
-	constexpr u8v2 (u8 x, u8 y);
-	// truncate vector
-	constexpr u8v2 (u8v3 v);
-	// truncate vector
-	constexpr u8v2 (u8v4 v);
+	//// comparison ops
+	bv2 operator< (u8v2 l, u8v2 r);
+	bv2 operator<= (u8v2 l, u8v2 r);
+	bv2 operator> (u8v2 l, u8v2 r);
+	bv2 operator>= (u8v2 l, u8v2 r);
+	bv2 operator== (u8v2 l, u8v2 r);
+	bv2 operator!= (u8v2 l, u8v2 r);
+	// vectors are equal, equivalent to all(l == r)
+	bool equal (u8v2 l, u8v2 r);
+	// componentwise ternary c ? l : r
+	u8v2 select (u8v2 c, u8v2 l, u8v2 r);
 	
-	u8v2 operator+= (u8v2 r);
-	u8v2 operator-= (u8v2 r);
-	u8v2 operator*= (u8v2 r);
-	u8v2 operator/= (u8v2 r);
+	//// misc ops
+	u8v2 abs (u8v2 v);
+	u8v2 min (u8v2 l, u8v2 r);
+	u8v2 max (u8v2 l, u8v2 r);
+	u8v2 clamp (u8v2 x, u8v2 a=u8v2(0), u8v2 b=u8v2(1));
+	// get min component of vector, optionally get component index via min_index
+	u8 min_component (u8v2 v, int* min_index=nullptr);
+	// get max component of vector, optionally get component index via max_index
+	u8 max_component (u8v2 v, int* max_index=nullptr);
 	
-	//// Conversion operators
-	operator fv2 () const;
-	operator dv2 () const;
-};
-
-//// arthmethic ops
-constexpr u8v2 operator+ (u8v2 v);
-constexpr u8v2 operator- (u8v2 v);
-constexpr u8v2 operator+ (u8v2 l, u8v2 r);
-constexpr u8v2 operator- (u8v2 l, u8v2 r);
-constexpr u8v2 operator* (u8v2 l, u8v2 r);
-constexpr u8v2 operator/ (u8v2 l, u8v2 r);
-
-//// comparison ops
-constexpr bv2 operator< (u8v2 l, u8v2 r);
-constexpr bv2 operator<= (u8v2 l, u8v2 r);
-constexpr bv2 operator> (u8v2 l, u8v2 r);
-constexpr bv2 operator>= (u8v2 l, u8v2 r);
-constexpr bv2 operator== (u8v2 l, u8v2 r);
-constexpr bv2 operator!= (u8v2 l, u8v2 r);
-// vectors are equal, equivalent to all(l == r)
-constexpr bool equal (u8v2 l, u8v2 r);
-// componentwise ternary c ? l : r
-constexpr u8v2 select (u8v2 c, u8v2 l, u8v2 r);
-
-//// misc ops
-u8v2 abs (u8v2 v);
-u8v2 min (u8v2 l, u8v2 r);
-u8v2 max (u8v2 l, u8v2 r);
-u8v2 clamp (u8v2 x, u8v2 a=u8v2(0), u8v2 b=u8v2(1));
-// get min component of vector, optionally get component index via min_index
-u8 min_component (u8v2 v, int* min_index=nullptr);
-// get max component of vector, optionally get component index via max_index
-u8 max_component (u8v2 v, int* max_index=nullptr);
-
-u8v2 wrap (u8v2 v, u8v2 range);
-u8v2 wrap (u8v2 v, u8v2 a, u8v2 b);
-
-//// linear algebra ops
-// magnitude of vector
-f32 length (u8v2 v);
-// squared magnitude of vector, cheaper than length() because it avoids the sqrt(), some algorithms only need the squared magnitude
-u8 length_sqr (u8v2 v);
-// distance between points, equivalent to length(a - b)
-f32 distance (u8v2 a, u8v2 b);
-// normalize vector so that it has length() = 1, undefined for zero vector
-fv2 normalize (u8v2 v);
-// normalize vector so that it has length() = 1, returns zero vector if vector was zero vector
-fv2 normalize_or_zero (u8v2 v);
-
+	u8v2 wrap (u8v2 v, u8v2 range);
+	u8v2 wrap (u8v2 v, u8v2 a, u8v2 b);
+	
+	
+	//// linear algebra ops
+	// magnitude of vector
+	f32 length (u8v2 v);
+	// squared magnitude of vector, cheaper than length() because it avoids the sqrt(), some algorithms only need the squared magnitude
+	u8 length_sqr (u8v2 v);
+	// distance between points, equivalent to length(a - b)
+	f32 distance (u8v2 a, u8v2 b);
+	// normalize vector so that it has length() = 1, undefined for zero vector
+	fv2 normalize (u8v2 v);
+	// normalize vector so that it has length() = 1, returns zero vector if vector was zero vector
+	fv2 normalize_or_zero (u8v2 v);
+	// dot product
+	u8 dot (u8v2 l, u8v2 r);
+	// 2d cross product hack for convinient 2d stuff
+	// same as cross(v3(l, 0), v3(r, 0)).z, ie. the cross product of the 2d vectors on the z=0 plane in 3d space and then return the z coord of that (signed mag of cross product)
+	u8 cross (u8v2 l, u8v2 r);
+}// namespace vector
 
