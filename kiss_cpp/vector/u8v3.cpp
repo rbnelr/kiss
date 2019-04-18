@@ -64,7 +64,7 @@ namespace vector {
 	}
 	
 	u8v3::operator iv3 () const {
-		return iv3((int)x, (int)y, (int)z);
+		return iv3((s32)x, (s32)y, (s32)z);
 	}
 	
 	u8v3::operator s64v3 () const {
@@ -156,7 +156,7 @@ namespace vector {
 		return all(l == r);
 	}
 	
-	u8v3 select (u8v3 c, u8v3 l, u8v3 r) {
+	u8v3 select (bv3 c, u8v3 l, u8v3 r) {
 		return c.x ? l.x : r.x, c.y ? l.y : r.y, c.z ? l.z : r.z;
 	}
 	
@@ -213,6 +213,18 @@ namespace vector {
 		return u8v3(wrap(v.x,a.x,b.x), wrap(v.y,a.y,b.y), wrap(v.z,a.z,b.z));
 	}
 	
+	
+	fv3 to_rad (u8v3 deg) {
+		return (fv3)deg * DEG_TO_RAD;
+	}
+	
+	fv3 deg (u8v3 deg) {
+		return (fv3)deg * DEG_TO_RAD;
+	}
+	
+	fv3 to_deg (u8v3 rad) {
+		return (fv3)rad * RAD_TO_DEG;
+	}
 	
 	//// linear algebra ops
 	

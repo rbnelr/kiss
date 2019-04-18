@@ -17,21 +17,21 @@ namespace vector {
 	
 	union iv3 {
 		struct {
-			int	x, y, z;
+			s32	x, y, z;
 		};
-		int		arr[3];
+		s32		arr[3];
 		
-		int& operator[] (int i);
-		int operator[] (int i) const;
+		s32& operator[] (int i);
+		s32 operator[] (int i) const;
 		
 		iv3 ();
 		// sets all components to one value
 		// implicit constructor -> v3(x,y,z) * 5 will be turned into v3(x,y,z) * v3(5) by to compiler to be able to execute operator*(v3, v3), which is desirable, also v3 a = 0; works
-		iv3 (int all);
+		iv3 (s32 all);
 		// supply all components
-		iv3 (int x, int y, int z);
+		iv3 (s32 x, s32 y, s32 z);
 		// extend vector
-		iv3 (iv2 xy, int z);
+		iv3 (iv2 xy, s32 z);
 		// truncate vector
 		iv3 (iv4 v);
 		
@@ -71,7 +71,7 @@ namespace vector {
 	// vectors are equal, equivalent to all(l == r)
 	bool equal (iv3 l, iv3 r);
 	// componentwise ternary c ? l : r
-	iv3 select (iv3 c, iv3 l, iv3 r);
+	iv3 select (bv3 c, iv3 l, iv3 r);
 	
 	//// misc ops
 	iv3 abs (iv3 v);
@@ -79,19 +79,23 @@ namespace vector {
 	iv3 max (iv3 l, iv3 r);
 	iv3 clamp (iv3 x, iv3 a=iv3(0), iv3 b=iv3(1));
 	// get min component of vector, optionally get component index via min_index
-	int min_component (iv3 v, int* min_index=nullptr);
+	s32 min_component (iv3 v, int* min_index=nullptr);
 	// get max component of vector, optionally get component index via max_index
-	int max_component (iv3 v, int* max_index=nullptr);
+	s32 max_component (iv3 v, int* max_index=nullptr);
 	
 	iv3 wrap (iv3 v, iv3 range);
 	iv3 wrap (iv3 v, iv3 a, iv3 b);
 	
+	fv3 to_rad (iv3 deg);
+	// degress "literal", converts degrees to radiants
+	fv3 deg (iv3 deg);
+	fv3 to_deg (iv3 rad);
 	
 	//// linear algebra ops
 	// magnitude of vector
 	f32 length (iv3 v);
 	// squared magnitude of vector, cheaper than length() because it avoids the sqrt(), some algorithms only need the squared magnitude
-	int length_sqr (iv3 v);
+	s32 length_sqr (iv3 v);
 	// distance between points, equivalent to length(a - b)
 	f32 distance (iv3 a, iv3 b);
 	// normalize vector so that it has length() = 1, undefined for zero vector
@@ -99,7 +103,7 @@ namespace vector {
 	// normalize vector so that it has length() = 1, returns zero vector if vector was zero vector
 	fv3 normalize_or_zero (iv3 v);
 	// dot product
-	int dot (iv3 l, iv3 r);
+	s32 dot (iv3 l, iv3 r);
 	// 3d cross product
 	iv3 cross (iv3 l, iv3 r);
 }// namespace vector

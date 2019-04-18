@@ -12,11 +12,11 @@
 
 namespace vector {
 	
-	int& iv2::operator[] (int i) {
+	s32& iv2::operator[] (int i) {
 		return arr[i];
 	}
 	
-	int iv2::operator[] (int i) const {
+	s32 iv2::operator[] (int i) const {
 		return arr[i];
 	}
 	
@@ -25,11 +25,11 @@ namespace vector {
 		
 	}
 	
-	iv2::iv2 (int all): x{all}, y{all} {
+	iv2::iv2 (s32 all): x{all}, y{all} {
 		
 	}
 	
-	iv2::iv2 (int x, int y): x{x}, y{y} {
+	iv2::iv2 (s32 x, s32 y): x{x}, y{y} {
 		
 	}
 	
@@ -148,7 +148,7 @@ namespace vector {
 		return all(l == r);
 	}
 	
-	iv2 select (iv2 c, iv2 l, iv2 r) {
+	iv2 select (bv2 c, iv2 l, iv2 r) {
 		return c.x ? l.x : r.x, c.y ? l.y : r.y;
 	}
 	
@@ -170,9 +170,9 @@ namespace vector {
 		return min(max(x,a), b);
 	}
 	
-	int min_component (iv2 v, int* min_index) {
+	s32 min_component (iv2 v, int* min_index) {
 		int index = 0;
-		int min_val = v.x;	
+		s32 min_val = v.x;	
 		for (int i=1; i<2; ++i) {
 			if (v.arr[i] <= min_val) {
 				index = i;
@@ -183,9 +183,9 @@ namespace vector {
 		return min_val;
 	}
 	
-	int max_component (iv2 v, int* max_index) {
+	s32 max_component (iv2 v, int* max_index) {
 		int index = 0;
-		int max_val = v.x;	
+		s32 max_val = v.x;	
 		for (int i=1; i<2; ++i) {
 			if (v.arr[i] >= max_val) {
 				index = i;
@@ -206,13 +206,25 @@ namespace vector {
 	}
 	
 	
+	fv2 to_rad (iv2 deg) {
+		return (fv2)deg * DEG_TO_RAD;
+	}
+	
+	fv2 deg (iv2 deg) {
+		return (fv2)deg * DEG_TO_RAD;
+	}
+	
+	fv2 to_deg (iv2 rad) {
+		return (fv2)rad * RAD_TO_DEG;
+	}
+	
 	//// linear algebra ops
 	
 	f32 length (iv2 v) {
 		return sqrt((f32)(v.x * v.x + v.y * v.y));
 	}
 	
-	int length_sqr (iv2 v) {
+	s32 length_sqr (iv2 v) {
 		return v.x * v.x + v.y * v.y;
 	}
 	
@@ -232,11 +244,11 @@ namespace vector {
 		return fv2(v) / fv2(len);
 	}
 	
-	int dot (iv2 l, iv2 r) {
+	s32 dot (iv2 l, iv2 r) {
 		return l.x * r.x + l.y * r.y;
 	}
 	
-	int cross (iv2 l, iv2 r) {
+	s32 cross (iv2 l, iv2 r) {
 		return l.x * r.y - l.y * r.x;
 	}
 }// namespace vector

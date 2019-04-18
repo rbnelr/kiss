@@ -12,11 +12,11 @@
 
 namespace vector {
 	
-	int& iv3::operator[] (int i) {
+	s32& iv3::operator[] (int i) {
 		return arr[i];
 	}
 	
-	int iv3::operator[] (int i) const {
+	s32 iv3::operator[] (int i) const {
 		return arr[i];
 	}
 	
@@ -25,15 +25,15 @@ namespace vector {
 		
 	}
 	
-	iv3::iv3 (int all): x{all}, y{all}, z{all} {
+	iv3::iv3 (s32 all): x{all}, y{all}, z{all} {
 		
 	}
 	
-	iv3::iv3 (int x, int y, int z): x{x}, y{y}, z{z} {
+	iv3::iv3 (s32 x, s32 y, s32 z): x{x}, y{y}, z{z} {
 		
 	}
 	
-	iv3::iv3 (iv2 xy, int z): x{xy.x}, y{xy.y}, z{z} {
+	iv3::iv3 (iv2 xy, s32 z): x{xy.x}, y{xy.y}, z{z} {
 		
 	}
 	
@@ -156,7 +156,7 @@ namespace vector {
 		return all(l == r);
 	}
 	
-	iv3 select (iv3 c, iv3 l, iv3 r) {
+	iv3 select (bv3 c, iv3 l, iv3 r) {
 		return c.x ? l.x : r.x, c.y ? l.y : r.y, c.z ? l.z : r.z;
 	}
 	
@@ -178,9 +178,9 @@ namespace vector {
 		return min(max(x,a), b);
 	}
 	
-	int min_component (iv3 v, int* min_index) {
+	s32 min_component (iv3 v, int* min_index) {
 		int index = 0;
-		int min_val = v.x;	
+		s32 min_val = v.x;	
 		for (int i=1; i<3; ++i) {
 			if (v.arr[i] <= min_val) {
 				index = i;
@@ -191,9 +191,9 @@ namespace vector {
 		return min_val;
 	}
 	
-	int max_component (iv3 v, int* max_index) {
+	s32 max_component (iv3 v, int* max_index) {
 		int index = 0;
-		int max_val = v.x;	
+		s32 max_val = v.x;	
 		for (int i=1; i<3; ++i) {
 			if (v.arr[i] >= max_val) {
 				index = i;
@@ -214,13 +214,25 @@ namespace vector {
 	}
 	
 	
+	fv3 to_rad (iv3 deg) {
+		return (fv3)deg * DEG_TO_RAD;
+	}
+	
+	fv3 deg (iv3 deg) {
+		return (fv3)deg * DEG_TO_RAD;
+	}
+	
+	fv3 to_deg (iv3 rad) {
+		return (fv3)rad * RAD_TO_DEG;
+	}
+	
 	//// linear algebra ops
 	
 	f32 length (iv3 v) {
 		return sqrt((f32)(v.x * v.x + v.y * v.y + v.z * v.z));
 	}
 	
-	int length_sqr (iv3 v) {
+	s32 length_sqr (iv3 v) {
 		return v.x * v.x + v.y * v.y + v.z * v.z;
 	}
 	
@@ -240,7 +252,7 @@ namespace vector {
 		return fv3(v) / fv3(len);
 	}
 	
-	int dot (iv3 l, iv3 r) {
+	s32 dot (iv3 l, iv3 r) {
 		return l.x * r.x + l.y * r.y + l.z * r.z;
 	}
 	

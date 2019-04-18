@@ -72,7 +72,7 @@ namespace vector {
 	// vectors are equal, equivalent to all(l == r)
 	bool equal (s64v4 l, s64v4 r);
 	// componentwise ternary c ? l : r
-	s64v4 select (s64v4 c, s64v4 l, s64v4 r);
+	s64v4 select (bv4 c, s64v4 l, s64v4 r);
 	
 	//// misc ops
 	s64v4 abs (s64v4 v);
@@ -87,6 +87,10 @@ namespace vector {
 	s64v4 wrap (s64v4 v, s64v4 range);
 	s64v4 wrap (s64v4 v, s64v4 a, s64v4 b);
 	
+	dv4 to_rad (s64v4 deg);
+	// degress "literal", converts degrees to radiants
+	dv4 deg (s64v4 deg);
+	dv4 to_deg (s64v4 rad);
 	
 	//// linear algebra ops
 	// magnitude of vector

@@ -7,83 +7,82 @@
 #include <string>
 
 #include "dv4.hpp"
+#include "dv3.hpp"
 
 namespace vector {
 	
 	//// matrix forward declarations
-	struct f64m2;
-	struct f64m3;
-	struct f64m2x3;
-	struct f64m3x4;
-	struct m4;
+	struct dm2;
+	struct dm3;
+	struct dm4;
+	struct dm2x3;
+	struct fm3x4;
 	
-	struct f64m4 {
-		dv4 arr[4]; // column major for compatibility with OpenGL
+	struct dm3x4 {
+		dv3 arr[4]; // column major for compatibility with OpenGL
 		
 		//// Accessors
 		
 		// get cell with r,c indecies (r=row, c=column)
 		f64 get (int r, int c) const;
 		// get matrix column
-		dv4 get_column (int indx) const;
+		dv3 get_column (int indx) const;
 		// get matrix row
 		dv4 get_row (int indx) const;
 		
 		//// Constructors
 		
-		f64m4 ();
+		dm3x4 ();
 		// supply one value for all cells
-		f64m4 (f64 all);
+		dm3x4 (f64 all);
 		// supply all cells, in row major order for readability -> c<r><c> (r=row, c=column)
-		f64m4 (
+		dm3x4 (
 				f64 c00, f64 c01, f64 c02, f64 c03,
 				f64 c10, f64 c11, f64 c12, f64 c13,
-				f64 c20, f64 c21, f64 c22, f64 c23,
-				f64 c30, f64 c31, f64 c32, f64 c33);
+				f64 c20, f64 c21, f64 c22, f64 c23);
 		
 		// static rows() and columns() methods are preferred over constructors, to avoid confusion if column or row vectors are supplied to the constructor
 		// supply all row vectors
-		static f64m4 rows (dv4 row0, dv4 row1, dv4 row2, dv4 row3);
+		static dm3x4 rows (dv4 row0, dv4 row1, dv4 row2);
 		// supply all cells in row major order
-		static f64m4 rows (
+		static dm3x4 rows (
 				f64 c00, f64 c01, f64 c02, f64 c03,
 				f64 c10, f64 c11, f64 c12, f64 c13,
-				f64 c20, f64 c21, f64 c22, f64 c23,
-				f64 c30, f64 c31, f64 c32, f64 c33);
+				f64 c20, f64 c21, f64 c22, f64 c23);
 		// supply all column vectors
-		static f64m4 columns (dv4 col0, dv4 col1, dv4 col2, dv4 col3);
+		static dm3x4 columns (dv3 col0, dv3 col1, dv3 col2, dv3 col3);
 		// supply all cells in column major order
-		static f64m4 columns (
-				f64 c00, f64 c10, f64 c20, f64 c30,
-				f64 c01, f64 c11, f64 c21, f64 c31,
-				f64 c02, f64 c12, f64 c22, f64 c32,
-				f64 c03, f64 c13, f64 c23, f64 c33);
+		static dm3x4 columns (
+				f64 c00, f64 c10, f64 c20,
+				f64 c01, f64 c11, f64 c21,
+				f64 c02, f64 c12, f64 c22,
+				f64 c03, f64 c13, f64 c23);
 		
 		// identity matrix
-		static f64m4 identity ();
+		static dm3x4 identity ();
 		
 		// Casting operators
 		
 		// extend/truncate matrix of other size
-		operator f64m2 ();
+		operator dm2 ();
 		// extend/truncate matrix of other size
-		operator f64m3 ();
+		operator dm3 ();
 		// extend/truncate matrix of other size
-		operator f64m2x3 ();
+		operator dm4 ();
 		// extend/truncate matrix of other size
-		operator f64m3x4 ();
+		operator dm2x3 ();
 		// typecast
-		operator m4 ();
+		operator fm3x4 ();
 		
 		// Elementwise operators
 		
-		f64m4 operator+ (f64m4 m);
-		f64m4 operator- (f64m4 m);
+		dm3x4 operator+ (dm3x4 m);
+		dm3x4 operator- (dm3x4 m);
 	};
 	
-	f64m4 operator+ (f64m4 l, f64m4 r);
-	f64m4 operator- (f64m4 l, f64m4 r);
-	f64m4 operator* (f64m4 l, f64m4 r);
-	f64m4 operator/ (f64m4 l, f64m4 r);
+	dm3x4 operator+ (dm3x4 l, dm3x4 r);
+	dm3x4 operator- (dm3x4 l, dm3x4 r);
+	dm3x4 operator* (dm3x4 l, dm3x4 r);
+	dm3x4 operator/ (dm3x4 l, dm3x4 r);
 } // namespace vector
 

@@ -68,7 +68,7 @@ namespace vector {
 	}
 	
 	s64v4::operator iv4 () const {
-		return iv4((int)x, (int)y, (int)z, (int)w);
+		return iv4((s32)x, (s32)y, (s32)z, (s32)w);
 	}
 	
 	s64v4::operator u8v4 () const {
@@ -164,7 +164,7 @@ namespace vector {
 		return all(l == r);
 	}
 	
-	s64v4 select (s64v4 c, s64v4 l, s64v4 r) {
+	s64v4 select (bv4 c, s64v4 l, s64v4 r) {
 		return c.x ? l.x : r.x, c.y ? l.y : r.y, c.z ? l.z : r.z, c.w ? l.w : r.w;
 	}
 	
@@ -221,6 +221,18 @@ namespace vector {
 		return s64v4(wrap(v.x,a.x,b.x), wrap(v.y,a.y,b.y), wrap(v.z,a.z,b.z), wrap(v.w,a.w,b.w));
 	}
 	
+	
+	dv4 to_rad (s64v4 deg) {
+		return (dv4)deg * DEG_TO_RADd;
+	}
+	
+	dv4 deg (s64v4 deg) {
+		return (dv4)deg * DEG_TO_RADd;
+	}
+	
+	dv4 to_deg (s64v4 rad) {
+		return (dv4)rad * RAD_TO_DEGd;
+	}
 	
 	//// linear algebra ops
 	

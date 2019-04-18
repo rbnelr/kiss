@@ -60,7 +60,7 @@ namespace vector {
 	}
 	
 	s64v2::operator iv2 () const {
-		return iv2((int)x, (int)y);
+		return iv2((s32)x, (s32)y);
 	}
 	
 	s64v2::operator u8v2 () const {
@@ -148,7 +148,7 @@ namespace vector {
 		return all(l == r);
 	}
 	
-	s64v2 select (s64v2 c, s64v2 l, s64v2 r) {
+	s64v2 select (bv2 c, s64v2 l, s64v2 r) {
 		return c.x ? l.x : r.x, c.y ? l.y : r.y;
 	}
 	
@@ -205,6 +205,18 @@ namespace vector {
 		return s64v2(wrap(v.x,a.x,b.x), wrap(v.y,a.y,b.y));
 	}
 	
+	
+	dv2 to_rad (s64v2 deg) {
+		return (dv2)deg * DEG_TO_RADd;
+	}
+	
+	dv2 deg (s64v2 deg) {
+		return (dv2)deg * DEG_TO_RADd;
+	}
+	
+	dv2 to_deg (s64v2 rad) {
+		return (dv2)rad * RAD_TO_DEGd;
+	}
 	
 	//// linear algebra ops
 	

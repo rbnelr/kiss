@@ -52,15 +52,16 @@ namespace vector {
 	////// Scalar math ///////
 	
 	//// f32
+	
 	// wrap x into range [0,range), negative x wrap back to +range unlike c++ % operator, negative range supported
 	f32 wrap (f32 x, f32 range);
 	// wrap x into [a,b) range
 	f32 wrap (f32 x, f32 a, f32 b);
-	f32 wrap (f32 x, f32 a, f32 b, f32* quotient);
+	f32 wrap (f32 x, f32 a, f32 b, s32* quotient);
 	
-	int floori (f32 x);
-	int ceili (f32 x);
-	int roundi (f32 x);
+	s32 floori (f32 x);
+	s32 ceili (f32 x);
+	s32 roundi (f32 x);
 	
 	f32 min (f32 l, f32 r);
 	f32 max (f32 l, f32 r);
@@ -83,10 +84,6 @@ namespace vector {
 	f32 map (f32 x, f32 in_a, f32 in_b);
 	// linear mapping, lerp(out_a, out_b, map(x, in_a, in_b))
 	f32 map (f32 x, f32 in_a, f32 in_b, f32 out_a, f32 out_b);
-	f32 smoothstep (f32 x);
-	f32 bezier (f32 a, f32 b, f32 c, f32 t);
-	f32 bezier (f32 a, f32 b, f32 c, f32 d, f32 t);
-	f32 bezier (f32 a, f32 b, f32 c, f32 d, f32 e, f32 t);
 	
 	//// angle stuff
 	f32 to_rad (f32 deg);
@@ -95,11 +92,12 @@ namespace vector {
 	f32 to_deg (f32 rad);
 	
 	//// f64
+	
 	// wrap x into range [0,range), negative x wrap back to +range unlike c++ % operator, negative range supported
 	f64 wrap (f64 x, f64 range);
 	// wrap x into [a,b) range
 	f64 wrap (f64 x, f64 a, f64 b);
-	f64 wrap (f64 x, f64 a, f64 b, f64* quotient);
+	f64 wrap (f64 x, f64 a, f64 b, s64* quotient);
 	
 	s64 floori (f64 x);
 	s64 ceili (f64 x);
@@ -126,10 +124,6 @@ namespace vector {
 	f64 map (f64 x, f64 in_a, f64 in_b);
 	// linear mapping, lerp(out_a, out_b, map(x, in_a, in_b))
 	f64 map (f64 x, f64 in_a, f64 in_b, f64 out_a, f64 out_b);
-	f64 smoothstep (f64 x);
-	f64 bezier (f64 a, f64 b, f64 c, f64 t);
-	f64 bezier (f64 a, f64 b, f64 c, f64 d, f64 t);
-	f64 bezier (f64 a, f64 b, f64 c, f64 d, f64 e, f64 t);
 	
 	//// angle stuff
 	f64 to_rad (f64 deg);
@@ -138,6 +132,7 @@ namespace vector {
 	f64 to_deg (f64 rad);
 	
 	//// s32
+	
 	// wrap x into range [0,range), negative x wrap back to +range unlike c++ % operator, negative range supported
 	s32 wrap (s32 x, s32 range);
 	// wrap x into [a,b) range
@@ -157,8 +152,13 @@ namespace vector {
 	// normalize(x) for length(x) != 0 else 0
 	s32 normalize_or_zero (s32 x);
 	
+	f32 to_rad (s32 deg);
+	// degress "literal", converts degrees to radiants
+	f32 deg (s32 deg);
+	f32 to_deg (s32 rad);
 	
 	//// s64
+	
 	// wrap x into range [0,range), negative x wrap back to +range unlike c++ % operator, negative range supported
 	s64 wrap (s64 x, s64 range);
 	// wrap x into [a,b) range
@@ -178,8 +178,13 @@ namespace vector {
 	// normalize(x) for length(x) != 0 else 0
 	s64 normalize_or_zero (s64 x);
 	
+	f64 to_rad (s64 deg);
+	// degress "literal", converts degrees to radiants
+	f64 deg (s64 deg);
+	f64 to_deg (s64 rad);
 	
 	//// s8
+	
 	// wrap x into range [0,range), negative x wrap back to +range unlike c++ % operator, negative range supported
 	s8 wrap (s8 x, s8 range);
 	// wrap x into [a,b) range
@@ -199,8 +204,13 @@ namespace vector {
 	// normalize(x) for length(x) != 0 else 0
 	s8 normalize_or_zero (s8 x);
 	
+	f32 to_rad (s8 deg);
+	// degress "literal", converts degrees to radiants
+	f32 deg (s8 deg);
+	f32 to_deg (s8 rad);
 	
 	//// u32
+	
 	// wrap x into range [0,range), negative x wrap back to +range unlike c++ % operator, negative range supported
 	u32 wrap (u32 x, u32 range);
 	// wrap x into [a,b) range
@@ -211,8 +221,13 @@ namespace vector {
 	// equivalent to ternary c ? l : r, for conformity with vectors
 	u32 select (bool c, u32 l, u32 r);
 	
+	f32 to_rad (u32 deg);
+	// degress "literal", converts degrees to radiants
+	f32 deg (u32 deg);
+	f32 to_deg (u32 rad);
 	
 	//// u64
+	
 	// wrap x into range [0,range), negative x wrap back to +range unlike c++ % operator, negative range supported
 	u64 wrap (u64 x, u64 range);
 	// wrap x into [a,b) range
@@ -223,8 +238,13 @@ namespace vector {
 	// equivalent to ternary c ? l : r, for conformity with vectors
 	u64 select (bool c, u64 l, u64 r);
 	
+	f64 to_rad (u64 deg);
+	// degress "literal", converts degrees to radiants
+	f64 deg (u64 deg);
+	f64 to_deg (u64 rad);
 	
 	//// u8
+	
 	// wrap x into range [0,range), negative x wrap back to +range unlike c++ % operator, negative range supported
 	u8 wrap (u8 x, u8 range);
 	// wrap x into [a,b) range
@@ -235,5 +255,76 @@ namespace vector {
 	// equivalent to ternary c ? l : r, for conformity with vectors
 	u8 select (bool c, u8 l, u8 r);
 	
+	f32 to_rad (u8 deg);
+	// degress "literal", converts degrees to radiants
+	f32 deg (u8 deg);
+	f32 to_deg (u8 rad);
+	
+	//// templated math
+	
+	
+	template<typename T>
+	T smoothstep (T x) {
+		T t = clamp(x);
+		return t * t * (T(3) - T(2) * t);
+	}
+	
+	template<typename T>
+	T bezier (T a, T b, T c, f32 t) {
+		T d = lerp(a, b, t);
+		T e = lerp(b, c, t);
+		T f = lerp(d, e, t);
+		return f;
+	}
+	
+	template<typename T>
+	u8 bezier (T a, T b, T c, T d, f32 t) {
+		return bezier(
+				lerp(a, b, t),
+				lerp(b, c, t),
+				lerp(c, d, t),
+				t
+		);
+	}
+	
+	template<typename T>
+	u8 bezier (T a, T b, T c, T d, T e, f32 t) {
+		return bezier(
+				lerp(a, b, t),
+				lerp(b, c, t),
+				lerp(c, d, t),
+				lerp(d, e, t),
+				t
+		);
+	}
+	
+	template<typename T>
+	T bezier (T a, T b, T c, f64 t) {
+		T d = lerp(a, b, t);
+		T e = lerp(b, c, t);
+		T f = lerp(d, e, t);
+		return f;
+	}
+	
+	template<typename T>
+	u8 bezier (T a, T b, T c, T d, f64 t) {
+		return bezier(
+				lerp(a, b, t),
+				lerp(b, c, t),
+				lerp(c, d, t),
+				t
+		);
+	}
+	
+	template<typename T>
+	u8 bezier (T a, T b, T c, T d, T e, f64 t) {
+		return bezier(
+				lerp(a, b, t),
+				lerp(b, c, t),
+				lerp(c, d, t),
+				lerp(d, e, t),
+				t
+		);
+	}
 } // namespace vector
 

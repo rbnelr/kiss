@@ -11,13 +11,13 @@
 namespace vector {
 	
 	//// matrix forward declarations
-	struct m2;
-	struct m3;
-	struct m2x3;
-	struct m3x4;
-	struct f64m4;
+	struct fm2;
+	struct fm3;
+	struct fm2x3;
+	struct fm3x4;
+	struct dm4;
 	
-	struct m4 {
+	struct fm4 {
 		fv4 arr[4]; // column major for compatibility with OpenGL
 		
 		//// Accessors
@@ -31,11 +31,11 @@ namespace vector {
 		
 		//// Constructors
 		
-		m4 ();
+		fm4 ();
 		// supply one value for all cells
-		m4 (f32 all);
+		fm4 (f32 all);
 		// supply all cells, in row major order for readability -> c<r><c> (r=row, c=column)
-		m4 (
+		fm4 (
 				f32 c00, f32 c01, f32 c02, f32 c03,
 				f32 c10, f32 c11, f32 c12, f32 c13,
 				f32 c20, f32 c21, f32 c22, f32 c23,
@@ -43,47 +43,47 @@ namespace vector {
 		
 		// static rows() and columns() methods are preferred over constructors, to avoid confusion if column or row vectors are supplied to the constructor
 		// supply all row vectors
-		static m4 rows (fv4 row0, fv4 row1, fv4 row2, fv4 row3);
+		static fm4 rows (fv4 row0, fv4 row1, fv4 row2, fv4 row3);
 		// supply all cells in row major order
-		static m4 rows (
+		static fm4 rows (
 				f32 c00, f32 c01, f32 c02, f32 c03,
 				f32 c10, f32 c11, f32 c12, f32 c13,
 				f32 c20, f32 c21, f32 c22, f32 c23,
 				f32 c30, f32 c31, f32 c32, f32 c33);
 		// supply all column vectors
-		static m4 columns (fv4 col0, fv4 col1, fv4 col2, fv4 col3);
+		static fm4 columns (fv4 col0, fv4 col1, fv4 col2, fv4 col3);
 		// supply all cells in column major order
-		static m4 columns (
+		static fm4 columns (
 				f32 c00, f32 c10, f32 c20, f32 c30,
 				f32 c01, f32 c11, f32 c21, f32 c31,
 				f32 c02, f32 c12, f32 c22, f32 c32,
 				f32 c03, f32 c13, f32 c23, f32 c33);
 		
 		// identity matrix
-		static m4 identity ();
+		static fm4 identity ();
 		
 		// Casting operators
 		
 		// extend/truncate matrix of other size
-		operator m2 ();
+		operator fm2 ();
 		// extend/truncate matrix of other size
-		operator m3 ();
+		operator fm3 ();
 		// extend/truncate matrix of other size
-		operator m2x3 ();
+		operator fm2x3 ();
 		// extend/truncate matrix of other size
-		operator m3x4 ();
+		operator fm3x4 ();
 		// typecast
-		operator f64m4 ();
+		operator dm4 ();
 		
 		// Elementwise operators
 		
-		m4 operator+ (m4 m);
-		m4 operator- (m4 m);
+		fm4 operator+ (fm4 m);
+		fm4 operator- (fm4 m);
 	};
 	
-	m4 operator+ (m4 l, m4 r);
-	m4 operator- (m4 l, m4 r);
-	m4 operator* (m4 l, m4 r);
-	m4 operator/ (m4 l, m4 r);
+	fm4 operator+ (fm4 l, fm4 r);
+	fm4 operator- (fm4 l, fm4 r);
+	fm4 operator* (fm4 l, fm4 r);
+	fm4 operator/ (fm4 l, fm4 r);
 } // namespace vector
 

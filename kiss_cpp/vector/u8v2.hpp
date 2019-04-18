@@ -70,7 +70,7 @@ namespace vector {
 	// vectors are equal, equivalent to all(l == r)
 	bool equal (u8v2 l, u8v2 r);
 	// componentwise ternary c ? l : r
-	u8v2 select (u8v2 c, u8v2 l, u8v2 r);
+	u8v2 select (bv2 c, u8v2 l, u8v2 r);
 	
 	//// misc ops
 	u8v2 abs (u8v2 v);
@@ -85,6 +85,10 @@ namespace vector {
 	u8v2 wrap (u8v2 v, u8v2 range);
 	u8v2 wrap (u8v2 v, u8v2 a, u8v2 b);
 	
+	fv2 to_rad (u8v2 deg);
+	// degress "literal", converts degrees to radiants
+	fv2 deg (u8v2 deg);
+	fv2 to_deg (u8v2 rad);
 	
 	//// linear algebra ops
 	// magnitude of vector

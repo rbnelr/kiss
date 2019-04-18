@@ -64,7 +64,7 @@ namespace vector {
 	}
 	
 	dv4::operator iv4 () const {
-		return iv4((int)x, (int)y, (int)z, (int)w);
+		return iv4((s32)x, (s32)y, (s32)z, (s32)w);
 	}
 	
 	dv4::operator s64v4 () const {
@@ -164,7 +164,7 @@ namespace vector {
 		return all(l == r);
 	}
 	
-	dv4 select (dv4 c, dv4 l, dv4 r) {
+	dv4 select (bv4 c, dv4 l, dv4 r) {
 		return c.x ? l.x : r.x, c.y ? l.y : r.y, c.z ? l.z : r.z, c.w ? l.w : r.w;
 	}
 	
@@ -262,49 +262,18 @@ namespace vector {
 		return lerp(out_a, out_b, map(x, in_a, in_b));
 	}
 	
-	dv4 smoothstep (dv4 x) {
-		dv4 t = clamp(x);
-		return t * t * (dv4(3) - dv4(2) * t);
-	}
-	
-	dv4 bezier (dv4 a, dv4 b, dv4 c, f64 t) {
-		dv4 d = lerp(a, b, t);
-		dv4 e = lerp(b, c, t);
-		dv4 f = lerp(d, e, t);
-		return f;
-	}
-	
-	dv4 bezier (dv4 a, dv4 b, dv4 c, dv4 d, f64 t) {
-		return bezier(
-				lerp(a, b, t),
-				lerp(b, c, t),
-				lerp(c, d, t),
-				t
-		);
-	}
-	
-	dv4 bezier (dv4 a, dv4 b, dv4 c, dv4 d, dv4 e, f64 t) {
-		return bezier(
-				lerp(a, b, t),
-				lerp(b, c, t),
-				lerp(c, d, t),
-				lerp(d, e, t),
-				t
-		);
-	}
-	
 	//// angle stuff
 	
 	dv4 to_rad (dv4 deg) {
-		return deg * DEG_TO_RADd;
+		return (dv4)deg * DEG_TO_RADd;
 	}
 	
 	dv4 deg (dv4 deg) {
-		return deg * DEG_TO_RADd;
+		return (dv4)deg * DEG_TO_RADd;
 	}
 	
 	dv4 to_deg (dv4 rad) {
-		return rad * RAD_TO_DEGd;
+		return (dv4)rad * RAD_TO_DEGd;
 	}
 	
 	//// linear algebra ops

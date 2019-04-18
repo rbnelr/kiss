@@ -70,7 +70,7 @@ namespace vector {
 	// vectors are equal, equivalent to all(l == r)
 	bool equal (dv2 l, dv2 r);
 	// componentwise ternary c ? l : r
-	dv2 select (dv2 c, dv2 l, dv2 r);
+	dv2 select (bv2 c, dv2 l, dv2 r);
 	
 	//// misc ops
 	dv2 abs (dv2 v);
@@ -98,10 +98,6 @@ namespace vector {
 	dv2 map (dv2 x, dv2 in_a, dv2 in_b);
 	// linear mapping, lerp(out_a, out_b, map(x, in_a, in_b))
 	dv2 map (dv2 x, dv2 in_a, dv2 in_b, dv2 out_a, dv2 out_b);
-	dv2 smoothstep (dv2 x);
-	dv2 bezier (dv2 a, dv2 b, dv2 c, f64 t);
-	dv2 bezier (dv2 a, dv2 b, dv2 c, dv2 d, f64 t);
-	dv2 bezier (dv2 a, dv2 b, dv2 c, dv2 d, dv2 e, f64 t);
 	
 	//// angle stuff
 	dv2 to_rad (dv2 deg);

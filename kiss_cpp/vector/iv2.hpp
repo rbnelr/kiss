@@ -17,19 +17,19 @@ namespace vector {
 	
 	union iv2 {
 		struct {
-			int	x, y;
+			s32	x, y;
 		};
-		int		arr[2];
+		s32		arr[2];
 		
-		int& operator[] (int i);
-		int operator[] (int i) const;
+		s32& operator[] (int i);
+		s32 operator[] (int i) const;
 		
 		iv2 ();
 		// sets all components to one value
 		// implicit constructor -> v3(x,y,z) * 5 will be turned into v3(x,y,z) * v3(5) by to compiler to be able to execute operator*(v3, v3), which is desirable, also v3 a = 0; works
-		iv2 (int all);
+		iv2 (s32 all);
 		// supply all components
-		iv2 (int x, int y);
+		iv2 (s32 x, s32 y);
 		// truncate vector
 		iv2 (iv3 v);
 		// truncate vector
@@ -70,7 +70,7 @@ namespace vector {
 	// vectors are equal, equivalent to all(l == r)
 	bool equal (iv2 l, iv2 r);
 	// componentwise ternary c ? l : r
-	iv2 select (iv2 c, iv2 l, iv2 r);
+	iv2 select (bv2 c, iv2 l, iv2 r);
 	
 	//// misc ops
 	iv2 abs (iv2 v);
@@ -78,19 +78,23 @@ namespace vector {
 	iv2 max (iv2 l, iv2 r);
 	iv2 clamp (iv2 x, iv2 a=iv2(0), iv2 b=iv2(1));
 	// get min component of vector, optionally get component index via min_index
-	int min_component (iv2 v, int* min_index=nullptr);
+	s32 min_component (iv2 v, int* min_index=nullptr);
 	// get max component of vector, optionally get component index via max_index
-	int max_component (iv2 v, int* max_index=nullptr);
+	s32 max_component (iv2 v, int* max_index=nullptr);
 	
 	iv2 wrap (iv2 v, iv2 range);
 	iv2 wrap (iv2 v, iv2 a, iv2 b);
 	
+	fv2 to_rad (iv2 deg);
+	// degress "literal", converts degrees to radiants
+	fv2 deg (iv2 deg);
+	fv2 to_deg (iv2 rad);
 	
 	//// linear algebra ops
 	// magnitude of vector
 	f32 length (iv2 v);
 	// squared magnitude of vector, cheaper than length() because it avoids the sqrt(), some algorithms only need the squared magnitude
-	int length_sqr (iv2 v);
+	s32 length_sqr (iv2 v);
 	// distance between points, equivalent to length(a - b)
 	f32 distance (iv2 a, iv2 b);
 	// normalize vector so that it has length() = 1, undefined for zero vector
@@ -98,9 +102,9 @@ namespace vector {
 	// normalize vector so that it has length() = 1, returns zero vector if vector was zero vector
 	fv2 normalize_or_zero (iv2 v);
 	// dot product
-	int dot (iv2 l, iv2 r);
+	s32 dot (iv2 l, iv2 r);
 	// 2d cross product hack for convinient 2d stuff
 	// same as cross(v3(l, 0), v3(r, 0)).z, ie. the cross product of the 2d vectors on the z=0 plane in 3d space and then return the z coord of that (signed mag of cross product)
-	int cross (iv2 l, iv2 r);
+	s32 cross (iv2 l, iv2 r);
 }// namespace vector
 

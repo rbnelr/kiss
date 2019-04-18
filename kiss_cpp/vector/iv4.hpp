@@ -17,23 +17,23 @@ namespace vector {
 	
 	union iv4 {
 		struct {
-			int	x, y, z, w;
+			s32	x, y, z, w;
 		};
-		int		arr[4];
+		s32		arr[4];
 		
-		int& operator[] (int i);
-		int operator[] (int i) const;
+		s32& operator[] (int i);
+		s32 operator[] (int i) const;
 		
 		iv4 ();
 		// sets all components to one value
 		// implicit constructor -> v3(x,y,z) * 5 will be turned into v3(x,y,z) * v3(5) by to compiler to be able to execute operator*(v3, v3), which is desirable, also v3 a = 0; works
-		iv4 (int all);
+		iv4 (s32 all);
 		// supply all components
-		iv4 (int x, int y, int z, int w);
+		iv4 (s32 x, s32 y, s32 z, s32 w);
 		// extend vector
-		iv4 (iv2 xy, int z, int w);
+		iv4 (iv2 xy, s32 z, s32 w);
 		// extend vector
-		iv4 (iv3 xyz, int w);
+		iv4 (iv3 xyz, s32 w);
 		
 		//// Truncating cast operators
 		
@@ -72,7 +72,7 @@ namespace vector {
 	// vectors are equal, equivalent to all(l == r)
 	bool equal (iv4 l, iv4 r);
 	// componentwise ternary c ? l : r
-	iv4 select (iv4 c, iv4 l, iv4 r);
+	iv4 select (bv4 c, iv4 l, iv4 r);
 	
 	//// misc ops
 	iv4 abs (iv4 v);
@@ -80,19 +80,23 @@ namespace vector {
 	iv4 max (iv4 l, iv4 r);
 	iv4 clamp (iv4 x, iv4 a=iv4(0), iv4 b=iv4(1));
 	// get min component of vector, optionally get component index via min_index
-	int min_component (iv4 v, int* min_index=nullptr);
+	s32 min_component (iv4 v, int* min_index=nullptr);
 	// get max component of vector, optionally get component index via max_index
-	int max_component (iv4 v, int* max_index=nullptr);
+	s32 max_component (iv4 v, int* max_index=nullptr);
 	
 	iv4 wrap (iv4 v, iv4 range);
 	iv4 wrap (iv4 v, iv4 a, iv4 b);
 	
+	fv4 to_rad (iv4 deg);
+	// degress "literal", converts degrees to radiants
+	fv4 deg (iv4 deg);
+	fv4 to_deg (iv4 rad);
 	
 	//// linear algebra ops
 	// magnitude of vector
 	f32 length (iv4 v);
 	// squared magnitude of vector, cheaper than length() because it avoids the sqrt(), some algorithms only need the squared magnitude
-	int length_sqr (iv4 v);
+	s32 length_sqr (iv4 v);
 	// distance between points, equivalent to length(a - b)
 	f32 distance (iv4 a, iv4 b);
 	// normalize vector so that it has length() = 1, undefined for zero vector
@@ -100,6 +104,6 @@ namespace vector {
 	// normalize vector so that it has length() = 1, returns zero vector if vector was zero vector
 	fv4 normalize_or_zero (iv4 v);
 	// dot product
-	int dot (iv4 l, iv4 r);
+	s32 dot (iv4 l, iv4 r);
 }// namespace vector
 

@@ -71,7 +71,7 @@ namespace vector {
 	// vectors are equal, equivalent to all(l == r)
 	bool equal (dv3 l, dv3 r);
 	// componentwise ternary c ? l : r
-	dv3 select (dv3 c, dv3 l, dv3 r);
+	dv3 select (bv3 c, dv3 l, dv3 r);
 	
 	//// misc ops
 	dv3 abs (dv3 v);
@@ -99,10 +99,6 @@ namespace vector {
 	dv3 map (dv3 x, dv3 in_a, dv3 in_b);
 	// linear mapping, lerp(out_a, out_b, map(x, in_a, in_b))
 	dv3 map (dv3 x, dv3 in_a, dv3 in_b, dv3 out_a, dv3 out_b);
-	dv3 smoothstep (dv3 x);
-	dv3 bezier (dv3 a, dv3 b, dv3 c, f64 t);
-	dv3 bezier (dv3 a, dv3 b, dv3 c, dv3 d, f64 t);
-	dv3 bezier (dv3 a, dv3 b, dv3 c, dv3 d, dv3 e, f64 t);
 	
 	//// angle stuff
 	dv3 to_rad (dv3 deg);

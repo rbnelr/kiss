@@ -72,7 +72,7 @@ namespace vector {
 	// vectors are equal, equivalent to all(l == r)
 	bool equal (fv4 l, fv4 r);
 	// componentwise ternary c ? l : r
-	fv4 select (fv4 c, fv4 l, fv4 r);
+	fv4 select (bv4 c, fv4 l, fv4 r);
 	
 	//// misc ops
 	fv4 abs (fv4 v);
@@ -100,10 +100,6 @@ namespace vector {
 	fv4 map (fv4 x, fv4 in_a, fv4 in_b);
 	// linear mapping, lerp(out_a, out_b, map(x, in_a, in_b))
 	fv4 map (fv4 x, fv4 in_a, fv4 in_b, fv4 out_a, fv4 out_b);
-	fv4 smoothstep (fv4 x);
-	fv4 bezier (fv4 a, fv4 b, fv4 c, f32 t);
-	fv4 bezier (fv4 a, fv4 b, fv4 c, fv4 d, f32 t);
-	fv4 bezier (fv4 a, fv4 b, fv4 c, fv4 d, fv4 e, f32 t);
 	
 	//// angle stuff
 	fv4 to_rad (fv4 deg);

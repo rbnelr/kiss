@@ -7,12 +7,13 @@ namespace vector {
 	
 	//// f32
 	
+	
 	f32 wrap (f32 x, f32 range) {
 		f32 modded = std::fmod(x, range);
 		if (range > 0) {
 			if (modded < 0) modded += range;
 		} else {
-			if (modded > 0) modded -= range;
+			if (modded > 0) modded += range;
 		}
 		return modded;
 	}
@@ -26,26 +27,26 @@ namespace vector {
 		return modulo + a;
 	}
 	
-	f32 wrap (f32 x, f32 a, f32 b, f32* quotient) {
+	f32 wrap (f32 x, f32 a, f32 b, s32* quotient) {
 		x -= a;
 		f32 range = b -a;
 		
 		f32 modulo = wrap(x, range);
-		*quotient = floor(x / range);
+		*quotient = floori(x / range);
 		
 		return modulo + a;
 	}
 	
 	
-	int floori (f32 x) {
-		return (int)floor(x);
+	s32 floori (f32 x) {
+		return (s32)floor(x);
 	}
 	
-	int ceili (f32 x) {
-		return (int)ceil(x);
+	s32 ceili (f32 x) {
+		return (s32)ceil(x);
 	}
 	
-	int roundi (f32 x) {
+	s32 roundi (f32 x) {
 		return std::lround(x);
 	}
 	
@@ -101,59 +102,29 @@ namespace vector {
 		return lerp(out_a, out_b, map(x, in_a, in_b));
 	}
 	
-	f32 smoothstep (f32 x) {
-		f32 t = clamp(x);
-		return t * t * (f32(3) - f32(2) * t);
-	}
-	
-	f32 bezier (f32 a, f32 b, f32 c, f32 t) {
-		f32 d = lerp(a, b, t);
-		f32 e = lerp(b, c, t);
-		f32 f = lerp(d, e, t);
-		return f;
-	}
-	
-	f32 bezier (f32 a, f32 b, f32 c, f32 d, f32 t) {
-		return bezier(
-				lerp(a, b, t),
-				lerp(b, c, t),
-				lerp(c, d, t),
-				t
-		);
-	}
-	
-	f32 bezier (f32 a, f32 b, f32 c, f32 d, f32 e, f32 t) {
-		return bezier(
-				lerp(a, b, t),
-				lerp(b, c, t),
-				lerp(c, d, t),
-				lerp(d, e, t),
-				t
-		);
-	}
-	
 	//// angle stuff
 	
 	f32 to_rad (f32 deg) {
-		return deg * DEG_TO_RAD;
+		return (f32)deg * DEG_TO_RAD;
 	}
 	
 	f32 deg (f32 deg) {
-		return deg * DEG_TO_RAD;
+		return (f32)deg * DEG_TO_RAD;
 	}
 	
 	f32 to_deg (f32 rad) {
-		return rad * RAD_TO_DEG;
+		return (f32)rad * RAD_TO_DEG;
 	}
 	
 	//// f64
+	
 	
 	f64 wrap (f64 x, f64 range) {
 		f64 modded = std::fmod(x, range);
 		if (range > 0) {
 			if (modded < 0) modded += range;
 		} else {
-			if (modded > 0) modded -= range;
+			if (modded > 0) modded += range;
 		}
 		return modded;
 	}
@@ -167,12 +138,12 @@ namespace vector {
 		return modulo + a;
 	}
 	
-	f64 wrap (f64 x, f64 a, f64 b, f64* quotient) {
+	f64 wrap (f64 x, f64 a, f64 b, s64* quotient) {
 		x -= a;
 		f64 range = b -a;
 		
 		f64 modulo = wrap(x, range);
-		*quotient = floor(x / range);
+		*quotient = floori(x / range);
 		
 		return modulo + a;
 	}
@@ -242,59 +213,29 @@ namespace vector {
 		return lerp(out_a, out_b, map(x, in_a, in_b));
 	}
 	
-	f64 smoothstep (f64 x) {
-		f64 t = clamp(x);
-		return t * t * (f64(3) - f64(2) * t);
-	}
-	
-	f64 bezier (f64 a, f64 b, f64 c, f64 t) {
-		f64 d = lerp(a, b, t);
-		f64 e = lerp(b, c, t);
-		f64 f = lerp(d, e, t);
-		return f;
-	}
-	
-	f64 bezier (f64 a, f64 b, f64 c, f64 d, f64 t) {
-		return bezier(
-				lerp(a, b, t),
-				lerp(b, c, t),
-				lerp(c, d, t),
-				t
-		);
-	}
-	
-	f64 bezier (f64 a, f64 b, f64 c, f64 d, f64 e, f64 t) {
-		return bezier(
-				lerp(a, b, t),
-				lerp(b, c, t),
-				lerp(c, d, t),
-				lerp(d, e, t),
-				t
-		);
-	}
-	
 	//// angle stuff
 	
 	f64 to_rad (f64 deg) {
-		return deg * DEG_TO_RADd;
+		return (f64)deg * DEG_TO_RADd;
 	}
 	
 	f64 deg (f64 deg) {
-		return deg * DEG_TO_RADd;
+		return (f64)deg * DEG_TO_RADd;
 	}
 	
 	f64 to_deg (f64 rad) {
-		return rad * RAD_TO_DEGd;
+		return (f64)rad * RAD_TO_DEGd;
 	}
 	
 	//// s32
+	
 	
 	s32 wrap (s32 x, s32 range) {
 		s32 modded = x % range;
 		if (range > 0) {
 			if (modded < 0) modded += range;
 		} else {
-			if (modded > 0) modded -= range;
+			if (modded > 0) modded += range;
 		}
 		return modded;
 	}
@@ -347,14 +288,27 @@ namespace vector {
 	}
 	
 	
+	f32 to_rad (s32 deg) {
+		return (f32)deg * DEG_TO_RAD;
+	}
+	
+	f32 deg (s32 deg) {
+		return (f32)deg * DEG_TO_RAD;
+	}
+	
+	f32 to_deg (s32 rad) {
+		return (f32)rad * RAD_TO_DEG;
+	}
+	
 	//// s64
+	
 	
 	s64 wrap (s64 x, s64 range) {
 		s64 modded = x % range;
 		if (range > 0) {
 			if (modded < 0) modded += range;
 		} else {
-			if (modded > 0) modded -= range;
+			if (modded > 0) modded += range;
 		}
 		return modded;
 	}
@@ -407,14 +361,27 @@ namespace vector {
 	}
 	
 	
+	f64 to_rad (s64 deg) {
+		return (f64)deg * DEG_TO_RADd;
+	}
+	
+	f64 deg (s64 deg) {
+		return (f64)deg * DEG_TO_RADd;
+	}
+	
+	f64 to_deg (s64 rad) {
+		return (f64)rad * RAD_TO_DEGd;
+	}
+	
 	//// s8
+	
 	
 	s8 wrap (s8 x, s8 range) {
 		s8 modded = x % range;
 		if (range > 0) {
 			if (modded < 0) modded += range;
 		} else {
-			if (modded > 0) modded -= range;
+			if (modded > 0) modded += range;
 		}
 		return modded;
 	}
@@ -467,14 +434,27 @@ namespace vector {
 	}
 	
 	
+	f32 to_rad (s8 deg) {
+		return (f32)deg * DEG_TO_RAD;
+	}
+	
+	f32 deg (s8 deg) {
+		return (f32)deg * DEG_TO_RAD;
+	}
+	
+	f32 to_deg (s8 rad) {
+		return (f32)rad * RAD_TO_DEG;
+	}
+	
 	//// u32
+	
 	
 	u32 wrap (u32 x, u32 range) {
 		u32 modded = x % range;
 		if (range > 0) {
 			if (modded < 0) modded += range;
 		} else {
-			if (modded > 0) modded -= range;
+			if (modded > 0) modded += range;
 		}
 		return modded;
 	}
@@ -505,14 +485,27 @@ namespace vector {
 	}
 	
 	
+	f32 to_rad (u32 deg) {
+		return (f32)deg * DEG_TO_RAD;
+	}
+	
+	f32 deg (u32 deg) {
+		return (f32)deg * DEG_TO_RAD;
+	}
+	
+	f32 to_deg (u32 rad) {
+		return (f32)rad * RAD_TO_DEG;
+	}
+	
 	//// u64
+	
 	
 	u64 wrap (u64 x, u64 range) {
 		u64 modded = x % range;
 		if (range > 0) {
 			if (modded < 0) modded += range;
 		} else {
-			if (modded > 0) modded -= range;
+			if (modded > 0) modded += range;
 		}
 		return modded;
 	}
@@ -543,14 +536,27 @@ namespace vector {
 	}
 	
 	
+	f64 to_rad (u64 deg) {
+		return (f64)deg * DEG_TO_RADd;
+	}
+	
+	f64 deg (u64 deg) {
+		return (f64)deg * DEG_TO_RADd;
+	}
+	
+	f64 to_deg (u64 rad) {
+		return (f64)rad * RAD_TO_DEGd;
+	}
+	
 	//// u8
+	
 	
 	u8 wrap (u8 x, u8 range) {
 		u8 modded = x % range;
 		if (range > 0) {
 			if (modded < 0) modded += range;
 		} else {
-			if (modded > 0) modded -= range;
+			if (modded > 0) modded += range;
 		}
 		return modded;
 	}
@@ -579,6 +585,21 @@ namespace vector {
 	u8 select (bool c, u8 l, u8 r) {
 		return c ? l : r;
 	}
+	
+	
+	f32 to_rad (u8 deg) {
+		return (f32)deg * DEG_TO_RAD;
+	}
+	
+	f32 deg (u8 deg) {
+		return (f32)deg * DEG_TO_RAD;
+	}
+	
+	f32 to_deg (u8 rad) {
+		return (f32)rad * RAD_TO_DEG;
+	}
+	
+	//// templated math
 	
 } // namespace vector
 

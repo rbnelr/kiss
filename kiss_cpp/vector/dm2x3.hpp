@@ -6,19 +6,20 @@
 
 #include <string>
 
+#include "dv3.hpp"
 #include "dv2.hpp"
 
 namespace vector {
 	
 	//// matrix forward declarations
-	struct f64m3;
-	struct f64m4;
-	struct f64m2x3;
-	struct f64m3x4;
-	struct m2;
+	struct dm2;
+	struct dm3;
+	struct dm4;
+	struct dm3x4;
+	struct fm2x3;
 	
-	struct f64m2 {
-		dv2 arr[2]; // column major for compatibility with OpenGL
+	struct dm2x3 {
+		dv2 arr[3]; // column major for compatibility with OpenGL
 		
 		//// Accessors
 		
@@ -27,57 +28,58 @@ namespace vector {
 		// get matrix column
 		dv2 get_column (int indx) const;
 		// get matrix row
-		dv2 get_row (int indx) const;
+		dv3 get_row (int indx) const;
 		
 		//// Constructors
 		
-		f64m2 ();
+		dm2x3 ();
 		// supply one value for all cells
-		f64m2 (f64 all);
+		dm2x3 (f64 all);
 		// supply all cells, in row major order for readability -> c<r><c> (r=row, c=column)
-		f64m2 (
-				f64 c00, f64 c01,
-				f64 c10, f64 c11);
+		dm2x3 (
+				f64 c00, f64 c01, f64 c02,
+				f64 c10, f64 c11, f64 c12);
 		
 		// static rows() and columns() methods are preferred over constructors, to avoid confusion if column or row vectors are supplied to the constructor
 		// supply all row vectors
-		static f64m2 rows (dv2 row0, dv2 row1);
+		static dm2x3 rows (dv3 row0, dv3 row1);
 		// supply all cells in row major order
-		static f64m2 rows (
-				f64 c00, f64 c01,
-				f64 c10, f64 c11);
+		static dm2x3 rows (
+				f64 c00, f64 c01, f64 c02,
+				f64 c10, f64 c11, f64 c12);
 		// supply all column vectors
-		static f64m2 columns (dv2 col0, dv2 col1);
+		static dm2x3 columns (dv2 col0, dv2 col1, dv2 col2);
 		// supply all cells in column major order
-		static f64m2 columns (
+		static dm2x3 columns (
 				f64 c00, f64 c10,
-				f64 c01, f64 c11);
+				f64 c01, f64 c11,
+				f64 c02, f64 c12);
 		
 		// identity matrix
-		static f64m2 identity ();
+		static dm2x3 identity ();
 		
 		// Casting operators
 		
 		// extend/truncate matrix of other size
-		operator f64m3 ();
+		operator dm2 ();
 		// extend/truncate matrix of other size
-		operator f64m4 ();
+		operator dm3 ();
 		// extend/truncate matrix of other size
-		operator f64m2x3 ();
+		operator dm4 ();
 		// extend/truncate matrix of other size
-		operator f64m3x4 ();
+		operator dm3x4 ();
 		// typecast
-		operator m2 ();
+		operator fm2x3 ();
 		
 		// Elementwise operators
 		
-		f64m2 operator+ (f64m2 m);
-		f64m2 operator- (f64m2 m);
+		dm2x3 operator+ (dm2x3 m);
+		dm2x3 operator- (dm2x3 m);
 	};
 	
-	f64m2 operator+ (f64m2 l, f64m2 r);
-	f64m2 operator- (f64m2 l, f64m2 r);
-	f64m2 operator* (f64m2 l, f64m2 r);
-	f64m2 operator/ (f64m2 l, f64m2 r);
+	dm2x3 operator+ (dm2x3 l, dm2x3 r);
+	dm2x3 operator- (dm2x3 l, dm2x3 r);
+	dm2x3 operator* (dm2x3 l, dm2x3 r);
+	dm2x3 operator/ (dm2x3 l, dm2x3 r);
 } // namespace vector
 

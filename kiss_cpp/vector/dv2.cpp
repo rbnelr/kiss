@@ -56,7 +56,7 @@ namespace vector {
 	}
 	
 	dv2::operator iv2 () const {
-		return iv2((int)x, (int)y);
+		return iv2((s32)x, (s32)y);
 	}
 	
 	dv2::operator s64v2 () const {
@@ -148,7 +148,7 @@ namespace vector {
 		return all(l == r);
 	}
 	
-	dv2 select (dv2 c, dv2 l, dv2 r) {
+	dv2 select (bv2 c, dv2 l, dv2 r) {
 		return c.x ? l.x : r.x, c.y ? l.y : r.y;
 	}
 	
@@ -246,49 +246,18 @@ namespace vector {
 		return lerp(out_a, out_b, map(x, in_a, in_b));
 	}
 	
-	dv2 smoothstep (dv2 x) {
-		dv2 t = clamp(x);
-		return t * t * (dv2(3) - dv2(2) * t);
-	}
-	
-	dv2 bezier (dv2 a, dv2 b, dv2 c, f64 t) {
-		dv2 d = lerp(a, b, t);
-		dv2 e = lerp(b, c, t);
-		dv2 f = lerp(d, e, t);
-		return f;
-	}
-	
-	dv2 bezier (dv2 a, dv2 b, dv2 c, dv2 d, f64 t) {
-		return bezier(
-				lerp(a, b, t),
-				lerp(b, c, t),
-				lerp(c, d, t),
-				t
-		);
-	}
-	
-	dv2 bezier (dv2 a, dv2 b, dv2 c, dv2 d, dv2 e, f64 t) {
-		return bezier(
-				lerp(a, b, t),
-				lerp(b, c, t),
-				lerp(c, d, t),
-				lerp(d, e, t),
-				t
-		);
-	}
-	
 	//// angle stuff
 	
 	dv2 to_rad (dv2 deg) {
-		return deg * DEG_TO_RADd;
+		return (dv2)deg * DEG_TO_RADd;
 	}
 	
 	dv2 deg (dv2 deg) {
-		return deg * DEG_TO_RADd;
+		return (dv2)deg * DEG_TO_RADd;
 	}
 	
 	dv2 to_deg (dv2 rad) {
-		return rad * RAD_TO_DEGd;
+		return (dv2)rad * RAD_TO_DEGd;
 	}
 	
 	//// linear algebra ops

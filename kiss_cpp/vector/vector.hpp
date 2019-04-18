@@ -29,17 +29,17 @@
 #include "u8v4.hpp"
 
 // Matricies
-#include "m2.hpp"
-#include "m3.hpp"
-#include "m4.hpp"
-#include "m2x3.hpp"
-#include "m3x4.hpp"
+#include "fm2.hpp"
+#include "fm3.hpp"
+#include "fm4.hpp"
+#include "fm2x3.hpp"
+#include "fm3x4.hpp"
 
-#include "f64m2.hpp"
-#include "f64m3.hpp"
-#include "f64m4.hpp"
-#include "f64m2x3.hpp"
-#include "f64m3x4.hpp"
+#include "dm2.hpp"
+#include "dm3.hpp"
+#include "dm4.hpp"
+#include "dm2x3.hpp"
+#include "dm3x4.hpp"
 
 using namespace vector;
 

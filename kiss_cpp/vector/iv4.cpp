@@ -12,11 +12,11 @@
 
 namespace vector {
 	
-	int& iv4::operator[] (int i) {
+	s32& iv4::operator[] (int i) {
 		return arr[i];
 	}
 	
-	int iv4::operator[] (int i) const {
+	s32 iv4::operator[] (int i) const {
 		return arr[i];
 	}
 	
@@ -25,19 +25,19 @@ namespace vector {
 		
 	}
 	
-	iv4::iv4 (int all): x{all}, y{all}, z{all}, w{all} {
+	iv4::iv4 (s32 all): x{all}, y{all}, z{all}, w{all} {
 		
 	}
 	
-	iv4::iv4 (int x, int y, int z, int w): x{x}, y{y}, z{z}, w{w} {
+	iv4::iv4 (s32 x, s32 y, s32 z, s32 w): x{x}, y{y}, z{z}, w{w} {
 		
 	}
 	
-	iv4::iv4 (iv2 xy, int z, int w): x{xy.x}, y{xy.y}, z{z}, w{w} {
+	iv4::iv4 (iv2 xy, s32 z, s32 w): x{xy.x}, y{xy.y}, z{z}, w{w} {
 		
 	}
 	
-	iv4::iv4 (iv3 xyz, int w): x{xyz.x}, y{xyz.y}, z{xyz.z}, w{w} {
+	iv4::iv4 (iv3 xyz, s32 w): x{xyz.x}, y{xyz.y}, z{xyz.z}, w{w} {
 		
 	}
 	
@@ -164,7 +164,7 @@ namespace vector {
 		return all(l == r);
 	}
 	
-	iv4 select (iv4 c, iv4 l, iv4 r) {
+	iv4 select (bv4 c, iv4 l, iv4 r) {
 		return c.x ? l.x : r.x, c.y ? l.y : r.y, c.z ? l.z : r.z, c.w ? l.w : r.w;
 	}
 	
@@ -186,9 +186,9 @@ namespace vector {
 		return min(max(x,a), b);
 	}
 	
-	int min_component (iv4 v, int* min_index) {
+	s32 min_component (iv4 v, int* min_index) {
 		int index = 0;
-		int min_val = v.x;	
+		s32 min_val = v.x;	
 		for (int i=1; i<4; ++i) {
 			if (v.arr[i] <= min_val) {
 				index = i;
@@ -199,9 +199,9 @@ namespace vector {
 		return min_val;
 	}
 	
-	int max_component (iv4 v, int* max_index) {
+	s32 max_component (iv4 v, int* max_index) {
 		int index = 0;
-		int max_val = v.x;	
+		s32 max_val = v.x;	
 		for (int i=1; i<4; ++i) {
 			if (v.arr[i] >= max_val) {
 				index = i;
@@ -222,13 +222,25 @@ namespace vector {
 	}
 	
 	
+	fv4 to_rad (iv4 deg) {
+		return (fv4)deg * DEG_TO_RAD;
+	}
+	
+	fv4 deg (iv4 deg) {
+		return (fv4)deg * DEG_TO_RAD;
+	}
+	
+	fv4 to_deg (iv4 rad) {
+		return (fv4)rad * RAD_TO_DEG;
+	}
+	
 	//// linear algebra ops
 	
 	f32 length (iv4 v) {
 		return sqrt((f32)(v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w));
 	}
 	
-	int length_sqr (iv4 v) {
+	s32 length_sqr (iv4 v) {
 		return v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w;
 	}
 	
@@ -248,7 +260,7 @@ namespace vector {
 		return fv4(v) / fv4(len);
 	}
 	
-	int dot (iv4 l, iv4 r) {
+	s32 dot (iv4 l, iv4 r) {
 		return l.x * r.x + l.y * r.y + l.z * r.z + l.w * r.w;
 	}
 }// namespace vector
