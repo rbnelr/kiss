@@ -164,8 +164,8 @@ def _function(file, ret, name, args, body, clsname=None, init_list=None, templat
 
 def function(file, ret, name, args, body,										constexpr='auto', template=None, comment=None):
 	return _function(file, ret, name, args, body,											constexpr=constexpr, template=template, comment=comment)
-def method(file, clsname, ret, name, args, body,								constexpr='auto', template=None, comment=None, const=False):
-	return _function(file, ret, name, args, body, clsname=clsname,							constexpr=constexpr, template=template, comment=comment, const=const)
+def method(file, clsname, ret, name, args, body, explicit=False,				constexpr='auto', template=None, comment=None, const=False):
+	return _function(file, ret, name, args, body, clsname=clsname, explicit=explicit,		constexpr=constexpr, template=template, comment=comment, const=const)
 def static_method(file, clsname, ret, name, args, body,							constexpr='auto', template=None, comment=None, const=False):
 	return _function(file, ret, name, args, body, clsname=clsname,							constexpr=constexpr, template=template, comment=comment, const=const, static=True)
 def constructor(file, clsname, args, body='', init_list=None, explicit=False,	constexpr='auto', template=None, comment=None):
@@ -487,7 +487,7 @@ def gen_vector(V, f):
 		tmp = ', '.join(f'({tt}){d}' for d in dims)
 		body = f'return {to_type}({tmp});'
 		
-		return method(f, f'{V}', '', f'operator {to_type}', '', body, const=True)
+		return method(f, f'{V}', '', f'operator {to_type}', '', body, const=True, explicit=True)
 
 	other_size_vecs = [v for v in all_vectors if v.size != size and v.scalar_type == T]
 	other_type_vecs = [v for v in all_vectors if v.size == size and v.scalar_type != T]
@@ -548,7 +548,7 @@ def gen_vector(V, f):
 		U = get_type(T, vsz)
 		vdims = dims[:vsz]
 		
-		src += method(f, f'{V}', '', f'operator {U}', '', f'return {U}(%s);' % ', '.join(vdims), const=True)
+		src += method(f, f'{V}', '', f'operator {U}', '', f'return {U}(%s);' % ', '.join(vdims), const=True, explicit=True)
 		
 	src += '\n//// Type cast operators\n\n'
 	if str(T) != 'bool':
@@ -662,19 +662,23 @@ def gen_vector(V, f):
 		src += function(f, f'{T}', 'dot', f'{V} l, {V} r', f'return %s;' % ' + '.join(f'l.{d} * r.{d}' for d in dims), comment='dot product')
 		
 		if size == 3:
-			body = f'''
+			src += function(f, f'{V}', 'cross', f'{V} l, {V} r', comment='3d cross product', body=f'''
 				return {V}(
 					l.y * r.z - l.z * r.y,
 					l.z * r.x - l.x * r.z,
 					l.x * r.y - l.y * r.x);
-			'''
-			comment='3d cross product'
-			src += function(f, f'{V}', 'cross', f'{V} l, {V} r', comment=comment, body=body)
+			''')
 				
 		elif size == 2:
-			body = 'return l.x * r.y - l.y * r.x;'
-			comment='2d cross product hack for convinient 2d stuff\nsame as cross(v3(l, 0), v3(r, 0)).z, ie. the cross product of the 2d vectors on the z=0 plane in 3d space and then return the z coord of that (signed mag of cross product)'
-			src += function(f, f'{T}', 'cross', f'{V} l, {V} r', comment=comment, body=body)
+			src += function(f, f'{T}', 'cross', f'{V} l, {V} r', 'return l.x * r.y - l.y * r.x;',
+				comment='''
+				2d cross product hack for convinient 2d stuff
+				same as cross(v3(l, 0), v3(r, 0)).z,
+				ie. the cross product of the 2d vectors on the z=0 plane in 3d space and then return the z coord of that (signed mag of cross product)
+				''')
+			
+			src += function(f, f'{V}', 'rotate90', f'{V} v', f'return {V}(-v.y, v.x);',
+				comment=f'rotate 2d vector counterclockwise 90 deg, ie. {V}(-y, x) which is fast')
 
 	src += '}// namespace vector\n'
 	return src
@@ -779,12 +783,12 @@ def gen_matrix(M, f):
 			else:
 				return '        1' if r == c else '        0'
 
-		src += method(f, f'{M}', '', f'operator {m.name}', '',
+		src += method(f, f'{M}', '', f'operator {m.name}', '', explicit=True, const=True,
 			comment='extend/truncate matrix of other size',
 			body=f'return {m.name}(\n%s);' % ',\n'.join(', '.join(cell(c,r) for c in range(m.size[1])) for r in range(m.size[0])))
 
 	for m in other_type_mats:
-		src += method(f, f'{M}', '', f'operator {m.name}', '',
+		src += method(f, f'{M}', '', f'operator {m.name}', '', explicit=True, const=True,
 			comment='typecast',
 			body=f'return {m.name}(\n%s);' % ',\n'.join(', '.join(f'({m.scalar_type})arr[{r}][{c}]' for c in range(m.size[1])) for r in range(m.size[0])))
 	
@@ -817,16 +821,16 @@ def gen_matrix(M, f):
 		src += function(f, f'{M}', f'operator{op}', f'{M} {mpass} l, {T} r', elementwise(f'l.arr[{{c}}][{{r}}] {op} r'))
 		src += function(f, f'{M}', f'operator{op}', f'{T} l, {M} {mpass} r', elementwise(f'l {op} r.arr[{{c}}][{{r}}]'))
 	
-	src += '\n// Matrix multiplication\n\n'
+	src += '\n// Matrix ops\n\n'
 
+	dims = ['x', 'y', 'z', 'w']
 	def matmul(op, m=None):
-		dims = ['x', 'y', 'z', 'w']
-
 		if op == 'mm':
-			if size[1] != m.size[0] or M.scalar_type != m.scalar_type:
+			if M.scalar_type != m.scalar_type or size[1] != m.size[0]:
 				return ''
 			if (str(T), (size[0], m.size[1])) not in _types:
 				return f'// {M} * {m} -> {size[0]}x{m.size[1]} ; matrix not implemented\n'
+
 			ret = get_type(T, (size[0], m.size[1])).name
 			args = f'{M} const& l, {m} const& r'
 			body = f'{ret} ret;\n%s\nreturn ret;' % '\n'.join(f'ret.arr[{c}] = l * r.arr[{c}];' for c in range(m.size[1]))
@@ -839,12 +843,35 @@ def gen_matrix(M, f):
 			args = f'{V} l, {M} const& r'
 			body = f'{RV} ret;\n%s\nreturn ret;' % '\n'.join(f'ret.{dims[c]} = %s;' % ' + '.join(f'l.{dims[r]} * r.arr[{c}].{dims[r]}' for r in range(size[0])) for c in range(size[1]))
 		return function(f, ret, 'operator*', args, body)
+	def matmul_shortform(op, r):
+		if r == None:
+			return ''
+		if op == 'mm':
+			sqr = get_type(T, (size[1],size[1]))
+		
+			return function(f, f'{M}', 'operator*', f'{M} const& l, {r} const& r', f'''
+				return l * ({sqr})r;
+			''', comment=f'{M} * {r} = {M}, shortform for {M} * ({sqr}){r} = {M}')
+		elif op == 'mv':
+			v = get_type(T, size[1])
+		
+			return function(f, f'{r}', 'operator*', f'{M} const& l, {r} r', f'''
+				return l * {v}(r, 1);
+			''', comment=f'{M} * {r} = {r}, shortform for {M} * {v}({r}, 1) = {r}')
+			
 
 	for m in all_matricies:
 		src += matmul('mm', m)
-
 	src += matmul('mv')
 	src += matmul('vm')
+	
+	if size[0] == size[1]-1:
+		src += f'\n// Matrix op shortforms for working with {size[0]}x{size[0]+1} matricies as {size[0]}x{size[0]} matricies plus translation\n\n'
+
+		src += matmul_shortform('mm', get_type(T, (size[0],size[0])))
+		src += matmul_shortform('mm', get_type(T, size))
+
+		src += matmul_shortform('mv', get_type(T, size[0]))
 
 	src += '} // namespace vector\n'
 	return src
@@ -861,16 +888,33 @@ def transformations(f):
 		
 	src += 'namespace vector {\n'
 
-	src += function(f, 'fm2', 'scale2', 'fv2 v', '''
+	src += function(f, 'fm2', 'scale', 'fv2 v', '''
 		return fm2(
 			v.x,   0,
 			  0, v.y
 		);
 	''')
-	src += function(f, 'fm2x3', 'translate2', 'fv2 v', '''
+	src += function(f, 'fm2x3', 'translate', 'fv2 v', '''
 		return fm2x3(
 			1, 0, v.x,
 			0, 1, v.y
+		);
+	''')
+	
+	src += '\n'
+
+	src += function(f, 'fm3', 'scale', 'fv3 v', '''
+		return fm3(
+			v.x,   0,   0,
+			  0, v.y,   0,
+			  0,   0, v.z
+		);
+	''')
+	src += function(f, 'fm3x4', 'translate', 'fv3 v', '''
+		return fm3x4(
+			1, 0, 0, v.x,
+			0, 1, 0, v.y,
+			0, 0, 1, v.z
 		);
 	''')
 	

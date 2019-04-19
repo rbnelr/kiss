@@ -100,20 +100,20 @@ namespace vector {
 	// Casting operators
 	
 	
-	dm3x4::operator dm2 () {
+	dm3x4::operator dm2 () const {
 		return dm2(
 				arr[0][0], arr[1][0],
 				arr[0][1], arr[1][1]);
 	}
 	
-	dm3x4::operator dm3 () {
+	dm3x4::operator dm3 () const {
 		return dm3(
 				arr[0][0], arr[1][0], arr[2][0],
 				arr[0][1], arr[1][1], arr[2][1],
 				arr[0][2], arr[1][2], arr[2][2]);
 	}
 	
-	dm3x4::operator dm4 () {
+	dm3x4::operator dm4 () const {
 		return dm4(
 				arr[0][0], arr[1][0], arr[2][0], arr[3][0],
 				arr[0][1], arr[1][1], arr[2][1], arr[3][1],
@@ -121,13 +121,13 @@ namespace vector {
 				        0,         0,         0,         1);
 	}
 	
-	dm3x4::operator dm2x3 () {
+	dm3x4::operator dm2x3 () const {
 		return dm2x3(
 				arr[0][0], arr[1][0], arr[2][0],
 				arr[0][1], arr[1][1], arr[2][1]);
 	}
 	
-	dm3x4::operator fm3x4 () {
+	dm3x4::operator fm3x4 () const {
 		return fm3x4(
 				(f32)arr[0][0], (f32)arr[0][1], (f32)arr[0][2], (f32)arr[0][3],
 				(f32)arr[1][0], (f32)arr[1][1], (f32)arr[1][2], (f32)arr[1][3],
@@ -270,7 +270,7 @@ namespace vector {
 				l / r.arr[0][2], l / r.arr[1][2], l / r.arr[2][2], l / r.arr[3][2]);
 	}
 	
-	// Matrix multiplication
+	// Matrix ops
 	
 	
 	dm3x4 operator* (dm3x4 const& l, dm4 const& r) {
@@ -297,6 +297,21 @@ namespace vector {
 		ret.z = l.x * r.arr[2].x + l.y * r.arr[2].y + l.z * r.arr[2].z;
 		ret.w = l.x * r.arr[3].x + l.y * r.arr[3].y + l.z * r.arr[3].z;
 		return ret;
+	}
+	
+	// Matrix op shortforms for working with 3x4 matricies as 3x3 matricies plus translation
+	
+	
+	dm3x4 operator* (dm3x4 const& l, dm3 const& r) {
+		return l * (dm4)r;
+	}
+	
+	dm3x4 operator* (dm3x4 const& l, dm3x4 const& r) {
+		return l * (dm4)r;
+	}
+	
+	dv3 operator* (dm3x4 const& l, dv3 r) {
+		return l * dv4(r, 1);
 	}
 } // namespace vector
 

@@ -90,20 +90,20 @@ namespace vector {
 	// Casting operators
 	
 	
-	dm2x3::operator dm2 () {
+	dm2x3::operator dm2 () const {
 		return dm2(
 				arr[0][0], arr[1][0],
 				arr[0][1], arr[1][1]);
 	}
 	
-	dm2x3::operator dm3 () {
+	dm2x3::operator dm3 () const {
 		return dm3(
 				arr[0][0], arr[1][0], arr[2][0],
 				arr[0][1], arr[1][1], arr[2][1],
 				        0,         0,         1);
 	}
 	
-	dm2x3::operator dm4 () {
+	dm2x3::operator dm4 () const {
 		return dm4(
 				arr[0][0], arr[1][0], arr[2][0],         0,
 				arr[0][1], arr[1][1], arr[2][1],         0,
@@ -111,14 +111,14 @@ namespace vector {
 				        0,         0,         0,         1);
 	}
 	
-	dm2x3::operator dm3x4 () {
+	dm2x3::operator dm3x4 () const {
 		return dm3x4(
 				arr[0][0], arr[1][0], arr[2][0],         0,
 				arr[0][1], arr[1][1], arr[2][1],         0,
 				        0,         0,         1,         0);
 	}
 	
-	dm2x3::operator fm2x3 () {
+	dm2x3::operator fm2x3 () const {
 		return fm2x3(
 				(f32)arr[0][0], (f32)arr[0][1], (f32)arr[0][2],
 				(f32)arr[1][0], (f32)arr[1][1], (f32)arr[1][2]);
@@ -246,7 +246,7 @@ namespace vector {
 				l / r.arr[0][1], l / r.arr[1][1], l / r.arr[2][1]);
 	}
 	
-	// Matrix multiplication
+	// Matrix ops
 	
 	
 	dm2x3 operator* (dm2x3 const& l, dm3 const& r) {
@@ -271,6 +271,21 @@ namespace vector {
 		ret.y = l.x * r.arr[1].x + l.y * r.arr[1].y;
 		ret.z = l.x * r.arr[2].x + l.y * r.arr[2].y;
 		return ret;
+	}
+	
+	// Matrix op shortforms for working with 2x3 matricies as 2x2 matricies plus translation
+	
+	
+	dm2x3 operator* (dm2x3 const& l, dm2 const& r) {
+		return l * (dm3)r;
+	}
+	
+	dm2x3 operator* (dm2x3 const& l, dm2x3 const& r) {
+		return l * (dm3)r;
+	}
+	
+	dv2 operator* (dm2x3 const& l, dv2 r) {
+		return l * dv3(r, 1);
 	}
 } // namespace vector
 

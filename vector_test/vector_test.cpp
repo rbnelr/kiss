@@ -38,6 +38,25 @@ void matrix_to_string (std::ostream* os, std::string const& str, float const* ce
 
 	*os << ")";
 }
+void vector_to_string (std::ostream* os, std::string const& str, float const* components, int len) {
+
+	int cell_w = 3 + 1 + 2; // aaa.bb
+
+	*os << str << '(';
+
+	*os << std::fixed << std::setprecision(3);
+
+	for (int i=0; i<len; ++i) {
+		*os << std::setw(cell_w) << components[i];
+
+		if (i < len-1)
+			*os << ", ";
+	}
+
+	*os << std::resetiosflags(std::ios_base::fixed);
+
+	*os << ")";
+}
 std::ostream& operator<< (std::ostream& ss, m3x4 const& m) {
 	matrix_to_string(&ss, "m3x4", &m.arr[0][0], 3,4);
 	return ss;
@@ -50,12 +69,25 @@ std::ostream& operator<< (std::ostream& ss, m4 const& m) {
 	matrix_to_string(&ss, "m4", &m.arr[0][0], 4,4);
 	return ss;
 }
+std::ostream& operator<< (std::ostream& ss, v3 const& v) {
+	vector_to_string(&ss, "v3", &v.arr[0], 3);
+	return ss;
+}
 
 template <typename T>
 std::string to_string (T const& m) {
 	std::stringstream ss;
 	ss << m;
 	return ss.str();
+}
+
+#define NOINLINE __declspec(noinline)
+
+NOINLINE m3x4 tranformation(v3 scl, v3 trnsl) {
+	return scale(scl) * translate(trnsl);
+}
+NOINLINE v3 apply_tranformation(m3x4 const& m, v3 v) {
+	return m * v;
 }
 
 int main() {
@@ -190,6 +222,8 @@ int main() {
 	v = cross(v3(1,0,0), v3(0,1,0));
 	f = cross(v2(1,0), v2(0,1));
 
+	v2 _2 = rotate90(v2(3,7));
+
 	m3x4 m;
 	
 	//#m = 0; // mat ctor explicit
@@ -244,8 +278,8 @@ int main() {
 	n = 2 * m2(1,2,3,4);
 	n = 2 / m2(1,2,3,4);
 
-	auto scl = scale2(v2(-2,4));
-	auto trnsl = translate2(v2(3,7));
+	auto scl = scale(v2(-2,4));
+	auto trnsl = translate(v2(3,7));
 
 	auto u = v2(1,1);
 
@@ -264,11 +298,16 @@ int main() {
 	transf = scl * trnsl;
 	uu = transf * u;
 
-	//transf = trnsl * scl;
-	//uu = transf * u;
-	//
-	//transf = trnsl * trnsl;
-	//uu = transf * u;
+	transf = trnsl * scl;
+	uu = transf * u;
+	
+	transf = trnsl * trnsl;
+	uu = transf * u;
+
+	auto T = tranformation(v3(-2,3,5), v3(1,3,7));
+	auto V = apply_tranformation(T, 1);
+
+	std::cout << T <<"\n"<< V;
 
 	return 0;
 }

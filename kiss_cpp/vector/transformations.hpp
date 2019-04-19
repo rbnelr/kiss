@@ -4,7 +4,10 @@
 #include "vector.hpp"
 
 namespace vector {
-	fm2 scale2 (fv2 v);
-	fm2x3 translate2 (fv2 v);
+	fm2 scale (fv2 v);
+	fm2x3 translate (fv2 v);
+	
+	fm3 scale (fv3 v);
+	fm3x4 translate (fv3 v);
 } // namespace vector
 

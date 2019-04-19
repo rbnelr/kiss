@@ -87,14 +87,14 @@ namespace vector {
 	// Casting operators
 	
 	
-	fm2::operator fm3 () {
+	fm2::operator fm3 () const {
 		return fm3(
 				arr[0][0], arr[1][0],         0,
 				arr[0][1], arr[1][1],         0,
 				        0,         0,         1);
 	}
 	
-	fm2::operator fm4 () {
+	fm2::operator fm4 () const {
 		return fm4(
 				arr[0][0], arr[1][0],         0,         0,
 				arr[0][1], arr[1][1],         0,         0,
@@ -102,20 +102,20 @@ namespace vector {
 				        0,         0,         0,         1);
 	}
 	
-	fm2::operator fm2x3 () {
+	fm2::operator fm2x3 () const {
 		return fm2x3(
 				arr[0][0], arr[1][0],         0,
 				arr[0][1], arr[1][1],         0);
 	}
 	
-	fm2::operator fm3x4 () {
+	fm2::operator fm3x4 () const {
 		return fm3x4(
 				arr[0][0], arr[1][0],         0,         0,
 				arr[0][1], arr[1][1],         0,         0,
 				        0,         0,         1,         0);
 	}
 	
-	fm2::operator dm2 () {
+	fm2::operator dm2 () const {
 		return dm2(
 				(f64)arr[0][0], (f64)arr[0][1],
 				(f64)arr[1][0], (f64)arr[1][1]);
@@ -243,7 +243,7 @@ namespace vector {
 				l / r.arr[0][1], l / r.arr[1][1]);
 	}
 	
-	// Matrix multiplication
+	// Matrix ops
 	
 	
 	fm2 operator* (fm2 const& l, fm2 const& r) {

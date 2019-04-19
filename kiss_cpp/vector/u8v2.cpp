@@ -251,5 +251,9 @@ namespace vector {
 	u8 cross (u8v2 l, u8v2 r) {
 		return l.x * r.y - l.y * r.x;
 	}
+	
+	u8v2 rotate90 (u8v2 v) {
+		return u8v2(-v.y, v.x);
+	}
 }// namespace vector
 

@@ -251,5 +251,9 @@ namespace vector {
 	s32 cross (iv2 l, iv2 r) {
 		return l.x * r.y - l.y * r.x;
 	}
+	
+	iv2 rotate90 (iv2 v) {
+		return iv2(-v.y, v.x);
+	}
 }// namespace vector
 

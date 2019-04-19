@@ -40,11 +40,11 @@ namespace vector {
 		
 		//// Type cast operators
 		
-		operator bv2 () const;
-		operator fv2 () const;
-		operator dv2 () const;
-		operator iv2 () const;
-		operator u8v2 () const;
+		explicit operator bv2 () const;
+		explicit operator fv2 () const;
+		explicit operator dv2 () const;
+		explicit operator iv2 () const;
+		explicit operator u8v2 () const;
 		
 		s64v2 operator+= (s64v2 r);
 		s64v2 operator-= (s64v2 r);
@@ -103,8 +103,13 @@ namespace vector {
 	dv2 normalize_or_zero (s64v2 v);
 	// dot product
 	s64 dot (s64v2 l, s64v2 r);
+	// 
 	// 2d cross product hack for convinient 2d stuff
-	// same as cross(v3(l, 0), v3(r, 0)).z, ie. the cross product of the 2d vectors on the z=0 plane in 3d space and then return the z coord of that (signed mag of cross product)
+	// same as cross(v3(l, 0), v3(r, 0)).z,
+	// ie. the cross product of the 2d vectors on the z=0 plane in 3d space and then return the z coord of that (signed mag of cross product)
+	// 
 	s64 cross (s64v2 l, s64v2 r);
+	// rotate 2d vector counterclockwise 90 deg, ie. s64v2(-y, x) which is fast
+	s64v2 rotate90 (s64v2 v);
 }// namespace vector
 

@@ -37,15 +37,15 @@ namespace vector {
 		
 		//// Truncating cast operators
 		
-		operator dv2 () const;
+		explicit operator dv2 () const;
 		
 		//// Type cast operators
 		
-		operator bv3 () const;
-		operator fv3 () const;
-		operator iv3 () const;
-		operator s64v3 () const;
-		operator u8v3 () const;
+		explicit operator bv3 () const;
+		explicit operator fv3 () const;
+		explicit operator iv3 () const;
+		explicit operator s64v3 () const;
+		explicit operator u8v3 () const;
 		
 		dv3 operator+= (dv3 r);
 		dv3 operator-= (dv3 r);

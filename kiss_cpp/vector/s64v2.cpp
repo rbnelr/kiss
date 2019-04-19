@@ -251,5 +251,9 @@ namespace vector {
 	s64 cross (s64v2 l, s64v2 r) {
 		return l.x * r.y - l.y * r.x;
 	}
+	
+	s64v2 rotate90 (s64v2 v) {
+		return s64v2(-v.y, v.x);
+	}
 }// namespace vector
 

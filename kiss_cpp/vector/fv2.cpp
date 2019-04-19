@@ -293,5 +293,9 @@ namespace vector {
 	f32 cross (fv2 l, fv2 r) {
 		return l.x * r.y - l.y * r.x;
 	}
+	
+	fv2 rotate90 (fv2 v) {
+		return fv2(-v.y, v.x);
+	}
 }// namespace vector
 

@@ -37,8 +37,8 @@ namespace vector {
 		
 		//// Truncating cast operators
 		
-		operator bv2 () const;
-		operator bv3 () const;
+		explicit operator bv2 () const;
+		explicit operator bv3 () const;
 		
 		//// Type cast operators
 		

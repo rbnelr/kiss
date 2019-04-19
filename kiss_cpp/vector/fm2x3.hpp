@@ -3,8 +3,8 @@
 
 #include "kissmath.hpp"
 
-#include "fv3.hpp"
 #include "fv2.hpp"
+#include "fv3.hpp"
 
 namespace vector {
 	
@@ -58,15 +58,15 @@ namespace vector {
 		// Casting operators
 		
 		// extend/truncate matrix of other size
-		operator fm2 ();
+		explicit operator fm2 () const;
 		// extend/truncate matrix of other size
-		operator fm3 ();
+		explicit operator fm3 () const;
 		// extend/truncate matrix of other size
-		operator fm4 ();
+		explicit operator fm4 () const;
 		// extend/truncate matrix of other size
-		operator fm3x4 ();
+		explicit operator fm3x4 () const;
 		// typecast
-		operator dm2x3 ();
+		explicit operator dm2x3 () const;
 		
 		// Elementwise operators
 		
@@ -101,11 +101,20 @@ namespace vector {
 	fm2x3 operator/ (fm2x3 const& l, f32 r);
 	fm2x3 operator/ (f32 l, fm2x3 const& r);
 	
-	// Matrix multiplication
+	// Matrix ops
 	
 	fm2x3 operator* (fm2x3 const& l, fm3 const& r);
 	// fm2x3 * fm3x4 -> 2x4 ; matrix not implemented
 	fv2 operator* (fm2x3 const& l, fv3 r);
 	fv3 operator* (fv2 l, fm2x3 const& r);
+	
+	// Matrix op shortforms for working with 2x3 matricies as 2x2 matricies plus translation
+	
+	// fm2x3 * fm2 = fm2x3, shortform for fm2x3 * (fm3)fm2 = fm2x3
+	fm2x3 operator* (fm2x3 const& l, fm2 const& r);
+	// fm2x3 * fm2x3 = fm2x3, shortform for fm2x3 * (fm3)fm2x3 = fm2x3
+	fm2x3 operator* (fm2x3 const& l, fm2x3 const& r);
+	// fm2x3 * fv2 = fv2, shortform for fm2x3 * fv3(fv2, 1) = fv2
+	fv2 operator* (fm2x3 const& l, fv2 r);
 } // namespace vector
 

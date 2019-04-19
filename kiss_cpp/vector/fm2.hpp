@@ -56,15 +56,15 @@ namespace vector {
 		// Casting operators
 		
 		// extend/truncate matrix of other size
-		operator fm3 ();
+		explicit operator fm3 () const;
 		// extend/truncate matrix of other size
-		operator fm4 ();
+		explicit operator fm4 () const;
 		// extend/truncate matrix of other size
-		operator fm2x3 ();
+		explicit operator fm2x3 () const;
 		// extend/truncate matrix of other size
-		operator fm3x4 ();
+		explicit operator fm3x4 () const;
 		// typecast
-		operator dm2 ();
+		explicit operator dm2 () const;
 		
 		// Elementwise operators
 		
@@ -99,7 +99,7 @@ namespace vector {
 	fm2 operator/ (fm2 const& l, f32 r);
 	fm2 operator/ (f32 l, fm2 const& r);
 	
-	// Matrix multiplication
+	// Matrix ops
 	
 	fm2 operator* (fm2 const& l, fm2 const& r);
 	fm2x3 operator* (fm2 const& l, fm2x3 const& r);

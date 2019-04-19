@@ -3,8 +3,8 @@
 
 #include "kissmath.hpp"
 
-#include "dv2.hpp"
 #include "dv3.hpp"
+#include "dv2.hpp"
 
 namespace vector {
 	
@@ -58,15 +58,15 @@ namespace vector {
 		// Casting operators
 		
 		// extend/truncate matrix of other size
-		operator dm2 ();
+		explicit operator dm2 () const;
 		// extend/truncate matrix of other size
-		operator dm3 ();
+		explicit operator dm3 () const;
 		// extend/truncate matrix of other size
-		operator dm4 ();
+		explicit operator dm4 () const;
 		// extend/truncate matrix of other size
-		operator dm3x4 ();
+		explicit operator dm3x4 () const;
 		// typecast
-		operator fm2x3 ();
+		explicit operator fm2x3 () const;
 		
 		// Elementwise operators
 		
@@ -101,11 +101,20 @@ namespace vector {
 	dm2x3 operator/ (dm2x3 const& l, f64 r);
 	dm2x3 operator/ (f64 l, dm2x3 const& r);
 	
-	// Matrix multiplication
+	// Matrix ops
 	
 	dm2x3 operator* (dm2x3 const& l, dm3 const& r);
 	// dm2x3 * dm3x4 -> 2x4 ; matrix not implemented
 	dv2 operator* (dm2x3 const& l, dv3 r);
 	dv3 operator* (dv2 l, dm2x3 const& r);
+	
+	// Matrix op shortforms for working with 2x3 matricies as 2x2 matricies plus translation
+	
+	// dm2x3 * dm2 = dm2x3, shortform for dm2x3 * (dm3)dm2 = dm2x3
+	dm2x3 operator* (dm2x3 const& l, dm2 const& r);
+	// dm2x3 * dm2x3 = dm2x3, shortform for dm2x3 * (dm3)dm2x3 = dm2x3
+	dm2x3 operator* (dm2x3 const& l, dm2x3 const& r);
+	// dm2x3 * dv2 = dv2, shortform for dm2x3 * dv3(dv2, 1) = dv2
+	dv2 operator* (dm2x3 const& l, dv2 r);
 } // namespace vector
 

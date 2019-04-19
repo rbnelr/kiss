@@ -97,13 +97,13 @@ namespace vector {
 	// Casting operators
 	
 	
-	dm3::operator dm2 () {
+	dm3::operator dm2 () const {
 		return dm2(
 				arr[0][0], arr[1][0],
 				arr[0][1], arr[1][1]);
 	}
 	
-	dm3::operator dm4 () {
+	dm3::operator dm4 () const {
 		return dm4(
 				arr[0][0], arr[1][0], arr[2][0],         0,
 				arr[0][1], arr[1][1], arr[2][1],         0,
@@ -111,20 +111,20 @@ namespace vector {
 				        0,         0,         0,         1);
 	}
 	
-	dm3::operator dm2x3 () {
+	dm3::operator dm2x3 () const {
 		return dm2x3(
 				arr[0][0], arr[1][0], arr[2][0],
 				arr[0][1], arr[1][1], arr[2][1]);
 	}
 	
-	dm3::operator dm3x4 () {
+	dm3::operator dm3x4 () const {
 		return dm3x4(
 				arr[0][0], arr[1][0], arr[2][0],         0,
 				arr[0][1], arr[1][1], arr[2][1],         0,
 				arr[0][2], arr[1][2], arr[2][2],         0);
 	}
 	
-	dm3::operator fm3 () {
+	dm3::operator fm3 () const {
 		return fm3(
 				(f32)arr[0][0], (f32)arr[0][1], (f32)arr[0][2],
 				(f32)arr[1][0], (f32)arr[1][1], (f32)arr[1][2],
@@ -267,7 +267,7 @@ namespace vector {
 				l / r.arr[0][2], l / r.arr[1][2], l / r.arr[2][2]);
 	}
 	
-	// Matrix multiplication
+	// Matrix ops
 	
 	
 	dm3 operator* (dm3 const& l, dm3 const& r) {
