@@ -102,7 +102,7 @@ all_matricies = list(chain.from_iterable(matricies))
 use_contexpr_where_possible = False
 all_inline = False
 
-def _function(file, ret, name, args, body, clsname=None, init_list=None, template=None, comment=None, const=False, static=False, constexpr='auto', inline='auto'):
+def _function(file, ret, name, args, body, clsname=None, init_list=None, template=None, comment=None, const=False, static=False, explicit=False, constexpr='auto', inline='auto'):
 	body = body.strip()
 	comment = ''.join(f'// '+ l.strip() +'\n' for l in comment.splitlines()) if comment else ''
 
@@ -122,6 +122,7 @@ def _function(file, ret, name, args, body, clsname=None, init_list=None, templat
 	static = 'static' if static else None
 	constexpr = 'constexpr' if constexpr else None
 	inline = 'inline' if inline else None
+	explicit = 'explicit' if explicit else ''
 
 	template = 'template<%s>\n' % template.replace('tn', 'typename') if template else ''
 
@@ -146,10 +147,10 @@ def _function(file, ret, name, args, body, clsname=None, init_list=None, templat
 
 	if file == 'header':
 		if inline or template:
-			decl = template + spaced_join(static, inline, constexpr, ret, name)
+			decl = template + spaced_join(static, inline, constexpr, explicit, ret, name)
 			return body_(decl, comment)
 		else:
-			decl = spaced_join(static, constexpr, ret, name)
+			decl = spaced_join(static, constexpr, explicit, ret, name)
 			return f'{comment}{decl} ({args}){const};\n'
 	elif file == 'source':
 		if inline or template:
@@ -161,19 +162,19 @@ def _function(file, ret, name, args, body, clsname=None, init_list=None, templat
 	else:
 		raise ValueError(f"Wrong file type '{file}'")
 
-def function(file, ret, name, args, body, template=None, comment=None):
-	return _function(file, ret, name, args, body, template=template, comment=comment)
-def method(file, clsname, ret, name, args, body, template=None, comment=None, const=False):
-	return _function(file, ret, name, args, body, clsname=clsname, template=template, comment=comment, const=const)
-def static_method(file, clsname, ret, name, args, body, template=None, comment=None, const=False):
-	return _function(file, ret, name, args, body, clsname=clsname, template=template, comment=comment, const=const, static=True)
-def constructor(file, clsname, args, body='', init_list=None, ret='', template=None, comment=None):
-	return _function(file, ret, clsname, args, body, clsname=clsname, template=template, comment=comment, init_list=init_list)
+def function(file, ret, name, args, body,										constexpr='auto', template=None, comment=None):
+	return _function(file, ret, name, args, body,											constexpr=constexpr, template=template, comment=comment)
+def method(file, clsname, ret, name, args, body,								constexpr='auto', template=None, comment=None, const=False):
+	return _function(file, ret, name, args, body, clsname=clsname,							constexpr=constexpr, template=template, comment=comment, const=const)
+def static_method(file, clsname, ret, name, args, body,							constexpr='auto', template=None, comment=None, const=False):
+	return _function(file, ret, name, args, body, clsname=clsname,							constexpr=constexpr, template=template, comment=comment, const=const, static=True)
+def constructor(file, clsname, args, body='', init_list=None, explicit=False,	constexpr='auto', template=None, comment=None):
+	return _function(file, '', clsname, args, body, clsname=clsname, init_list=init_list,	explicit=explicit,	constexpr=constexpr, template=template, comment=comment)
 
 def util(f):
 	if f == 'header':
-		return \
-	''' #define STRINGIFY(x) #x
+		return '''
+		#define STRINGIFY(x) #x
 		#define TO_STRING(x) STRINGIFY(x)
 
 		#define CONCAT(a,b) a##b
@@ -516,7 +517,7 @@ def gen_vector(V, f):
 		'''
 		
 	src += method(f, V, f'{T}&', 'operator[]', 'int i', 'return arr[i];')
-	src += method(f, V, f'{T}', 'operator[]', 'int i', 'return arr[i];', const=True)
+	src += method(f, V, f'{T} const&', 'operator[]', 'int i', 'return arr[i];', const=True)
 
 	src += '\n'
 	
@@ -687,6 +688,8 @@ def gen_matrix(M, f):
 	T = M.scalar_type
 	size = M.size
 
+	mpass = 'const&'
+
 	# standart math way of writing matrix size:
 	# size[0] = rows	ie. height
 	# size[1] = columns	ie. width
@@ -702,7 +705,6 @@ def gen_matrix(M, f):
 	forward_decl_vecs = [m.name for m in other_size_mats] + [m.name for m in other_type_mats]
 	if f == 'header':
 		src += '#include "kissmath.hpp"\n\n'
-		src += '\n#include <string>\n\n'
 
 		for v in set((V, RV)):
 			src += f'#include "{v}.hpp"\n'
@@ -738,10 +740,10 @@ def gen_matrix(M, f):
 		
 	src += '//// Accessors\n\n'
 	#src += method(f, f'{M}', f'{T}&', 'get', F'int r, int c', 'return arr[c][r];', comment='get cell with r,c indecies (r=row, c=column)')
-	src += method(f, f'{M}', f'{T}', 'get', F'int r, int c', 'return arr[c][r];', const=True, comment='get cell with r,c indecies (r=row, c=column)')
+	src += method(f, f'{M}', f'{T} const&', 'get', F'int r, int c', 'return arr[c][r];', const=True, comment='get cell with r,c indecies (r=row, c=column)')
 
 	#src += method(f, f'{M}', f'{V}&', 'get_column', F'int indx', 'return arr[indx];', comment='get matrix column')
-	src += method(f, f'{M}', f'{V}', 'get_column', F'int indx', 'return arr[indx];', const=True, comment='get matrix column')
+	src += method(f, f'{M}', f'{V} const&', 'get_column', F'int indx', 'return arr[indx];', const=True, comment='get matrix column')
 	
 	src += method(f, f'{M}', f'{RV}', 'get_row', F'int indx', f'return {RV}(%s);' % ', '.join(f'arr[{c}][indx]' for c in range(size[1])),
 		const=True, comment='get matrix row')
@@ -749,8 +751,8 @@ def gen_matrix(M, f):
 	src += '\n//// Constructors\n\n'
 	src += constructor(f, f'{M}', '')
 
-	src += constructor(f, f'{M}', args=f'{T} all',				init_list='\narr{%s}' % col_vec_cells('all'),		comment='supply one value for all cells')
-	src += constructor(f, f'{M}', args=row_major(str(T) +' c{r}{c}'), init_list='\narr{%s}' % col_vec_cells('c{r}{c}'),	comment='supply all cells, in row major order for readability -> c<r><c> (r=row, c=column)')
+	src += constructor(f, f'{M}', args=f'{T} all',						explicit=True, init_list='\narr{%s}' % col_vec_cells('all'),		comment='supply one value for all cells')
+	src += constructor(f, f'{M}', args=row_major(str(T) +' c{r}{c}'),	explicit=True, init_list='\narr{%s}' % col_vec_cells('c{r}{c}'),	comment='supply all cells, in row major order for readability -> c<r><c> (r=row, c=column)')
 	
 	src += '\n// static rows() and columns() methods are preferred over constructors, to avoid confusion if column or row vectors are supplied to the constructor\n'
 	
@@ -785,32 +787,97 @@ def gen_matrix(M, f):
 		src += method(f, f'{M}', '', f'operator {m.name}', '',
 			comment='typecast',
 			body=f'return {m.name}(\n%s);' % ',\n'.join(', '.join(f'({m.scalar_type})arr[{r}][{c}]' for c in range(m.size[1])) for r in range(m.size[0])))
-		
+	
 	src += '\n// Elementwise operators\n\n'
 
-	src += method(f, f'{M}', f'{M}', 'operator+', f'{M} m', elementwise('+m.arr[{c}][{r}]'))
-	src += method(f, f'{M}', f'{M}', 'operator-', f'{M} m', elementwise('-m.arr[{c}][{r}]'))
+	for op in ['+', '-', '*', '/']:
+		src += method(f, f'{M}', f'{M}&', f'operator{op}=', f'{T} r', f'*this = *this {op} r;\nreturn *this;')
+		
+	src += '\n// Matrix multiplication\n\n'
 
+	src += method(f, f'{M}', f'{M}&', 'operator*=', f'{M} {mpass} r', '*this = *this * r;\nreturn *this;')
+		
 	if f == 'header':
-		src += '};\n\n'
+		src += '};\n'
 
-	src += function(f, f'{M}', f'operator+', f'{M} l, {M} r', elementwise('l.arr[{c}][{r}] + r.arr[{c}][{r}]'))
-	src += function(f, f'{M}', f'operator-', f'{M} l, {M} r', elementwise('l.arr[{c}][{r}] - r.arr[{c}][{r}]'))
-	src += function(f, f'{M}', f'operator*', f'{M} l, {M} r', elementwise('l.arr[{c}][{r}] * r.arr[{c}][{r}]'))
-	src += function(f, f'{M}', f'operator/', f'{M} l, {M} r', elementwise('l.arr[{c}][{r}] / r.arr[{c}][{r}]'))
+	src += '\n// Elementwise operators\n\n'
 	
-	#	src += '\n#include <iostream>\n'
-	#src += function(f, 'std::ostream&', 'operator<<', f'std::ostream& os, const {M}& m', body=f'''
-	#	os << "{M}";
-	#	return os;
-	#''')
+	for op in ['+', '-']:
+		src += function(f, f'{M}', 'operator'+ op, f'{M} {mpass} m', elementwise(op +'m.arr[{c}][{r}]'))
+		
+	for op in ['+', '-', '*', '/']:
+		src += '\n'
+
+		name = f'operator{op}'
+
+		if op == '*':	name = 'mul_elementwise'
+		elif op == '/':	name = 'div_elementwise'
+
+		src += function(f, f'{M}', name, f'{M} {mpass} l, {M} {mpass} r', elementwise(f'l.arr[{{c}}][{{r}}] {op} r.arr[{{c}}][{{r}}]'))
+		src += function(f, f'{M}', f'operator{op}', f'{M} {mpass} l, {T} r', elementwise(f'l.arr[{{c}}][{{r}}] {op} r'))
+		src += function(f, f'{M}', f'operator{op}', f'{T} l, {M} {mpass} r', elementwise(f'l {op} r.arr[{{c}}][{{r}}]'))
 	
+	src += '\n// Matrix multiplication\n\n'
+
+	def matmul(op, m=None):
+		dims = ['x', 'y', 'z', 'w']
+
+		if op == 'mm':
+			if size[1] != m.size[0] or M.scalar_type != m.scalar_type:
+				return ''
+			if (str(T), (size[0], m.size[1])) not in _types:
+				return f'// {M} * {m} -> {size[0]}x{m.size[1]} ; matrix not implemented\n'
+			ret = get_type(T, (size[0], m.size[1])).name
+			args = f'{M} const& l, {m} const& r'
+			body = f'{ret} ret;\n%s\nreturn ret;' % '\n'.join(f'ret.arr[{c}] = l * r.arr[{c}];' for c in range(m.size[1]))
+		elif op == 'mv':
+			ret = f'{V}'
+			args = f'{M} const& l, {RV} r'
+			body = f'{V} ret;\n%s\nreturn ret;' % '\n'.join(f'ret.{dims[r]} = %s;' % ' + '.join(f'l.arr[{c}].{dims[r]} * r.{dims[c]}' for c in range(size[1])) for r in range(size[0]))
+		elif op == 'vm':
+			ret = f'{RV}'
+			args = f'{V} l, {M} const& r'
+			body = f'{RV} ret;\n%s\nreturn ret;' % '\n'.join(f'ret.{dims[c]} = %s;' % ' + '.join(f'l.{dims[r]} * r.arr[{c}].{dims[r]}' for r in range(size[0])) for c in range(size[1]))
+		return function(f, ret, 'operator*', args, body)
+
+	for m in all_matricies:
+		src += matmul('mm', m)
+
+	src += matmul('mv')
+	src += matmul('vm')
+
 	src += '} // namespace vector\n'
 	return src
 
 for tmat in matricies:
 	for m in tmat:
 		srcgen.generate(m.name, lambda f: gen_matrix(m, f))
+
+def transformations(f):
+	src = ''
+
+	if f == 'header':
+		src += '#include "vector.hpp"\n\n'
+		
+	src += 'namespace vector {\n'
+
+	src += function(f, 'fm2', 'scale2', 'fv2 v', '''
+		return fm2(
+			v.x,   0,
+			  0, v.y
+		);
+	''')
+	src += function(f, 'fm2x3', 'translate2', 'fv2 v', '''
+		return fm2x3(
+			1, 0, v.x,
+			0, 1, v.y
+		);
+	''')
+	
+	src += '} // namespace vector\n'
+	return src
+
+srcgen.generate('transformations', transformations)
 
 def main(f):
 	# main file to include
@@ -844,9 +911,15 @@ def main(f):
 		src += "// Typedefs that define 'standart' floats to use across program\n"
 		src += 'typedef float flt;\n\n'
 
-		src += 'typedef fv2 v2;\n'
-		src += 'typedef fv3 v3;\n'
-		src += 'typedef fv4 v4;\n'
+		for v in all_vectors:
+			if v.scalar_type.name == 'f32':
+				src += f'typedef {v} v{v.size};\n'
+
+		for m in all_matricies:
+			if m.scalar_type.name == 'f32':
+				src += f'typedef {m} {m.name[1:]};\n'
+				
+		src += '#include "transformations.hpp"\n\n'
 
 	return src
 	

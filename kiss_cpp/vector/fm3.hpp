@@ -3,9 +3,6 @@
 
 #include "kissmath.hpp"
 
-
-#include <string>
-
 #include "fv3.hpp"
 
 namespace vector {
@@ -23,9 +20,9 @@ namespace vector {
 		//// Accessors
 		
 		// get cell with r,c indecies (r=row, c=column)
-		f32 get (int r, int c) const;
+		f32 const& get (int r, int c) const;
 		// get matrix column
-		fv3 get_column (int indx) const;
+		fv3 const& get_column (int indx) const;
 		// get matrix row
 		fv3 get_row (int indx) const;
 		
@@ -33,9 +30,9 @@ namespace vector {
 		
 		fm3 ();
 		// supply one value for all cells
-		fm3 (f32 all);
+		explicit fm3 (f32 all);
 		// supply all cells, in row major order for readability -> c<r><c> (r=row, c=column)
-		fm3 (
+		explicit fm3 (
 				f32 c00, f32 c01, f32 c02,
 				f32 c10, f32 c11, f32 c12,
 				f32 c20, f32 c21, f32 c22);
@@ -74,13 +71,42 @@ namespace vector {
 		
 		// Elementwise operators
 		
-		fm3 operator+ (fm3 m);
-		fm3 operator- (fm3 m);
+		fm3& operator+= (f32 r);
+		fm3& operator-= (f32 r);
+		fm3& operator*= (f32 r);
+		fm3& operator/= (f32 r);
+		
+		// Matrix multiplication
+		
+		fm3& operator*= (fm3 const& r);
 	};
 	
-	fm3 operator+ (fm3 l, fm3 r);
-	fm3 operator- (fm3 l, fm3 r);
-	fm3 operator* (fm3 l, fm3 r);
-	fm3 operator/ (fm3 l, fm3 r);
+	// Elementwise operators
+	
+	fm3 operator+ (fm3 const& m);
+	fm3 operator- (fm3 const& m);
+	
+	fm3 operator+ (fm3 const& l, fm3 const& r);
+	fm3 operator+ (fm3 const& l, f32 r);
+	fm3 operator+ (f32 l, fm3 const& r);
+	
+	fm3 operator- (fm3 const& l, fm3 const& r);
+	fm3 operator- (fm3 const& l, f32 r);
+	fm3 operator- (f32 l, fm3 const& r);
+	
+	fm3 mul_elementwise (fm3 const& l, fm3 const& r);
+	fm3 operator* (fm3 const& l, f32 r);
+	fm3 operator* (f32 l, fm3 const& r);
+	
+	fm3 div_elementwise (fm3 const& l, fm3 const& r);
+	fm3 operator/ (fm3 const& l, f32 r);
+	fm3 operator/ (f32 l, fm3 const& r);
+	
+	// Matrix multiplication
+	
+	fm3 operator* (fm3 const& l, fm3 const& r);
+	fm3x4 operator* (fm3 const& l, fm3x4 const& r);
+	fv3 operator* (fm3 const& l, fv3 r);
+	fv3 operator* (fv3 l, fm3 const& r);
 } // namespace vector
 

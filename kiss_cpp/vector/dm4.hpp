@@ -3,9 +3,6 @@
 
 #include "kissmath.hpp"
 
-
-#include <string>
-
 #include "dv4.hpp"
 
 namespace vector {
@@ -23,9 +20,9 @@ namespace vector {
 		//// Accessors
 		
 		// get cell with r,c indecies (r=row, c=column)
-		f64 get (int r, int c) const;
+		f64 const& get (int r, int c) const;
 		// get matrix column
-		dv4 get_column (int indx) const;
+		dv4 const& get_column (int indx) const;
 		// get matrix row
 		dv4 get_row (int indx) const;
 		
@@ -33,9 +30,9 @@ namespace vector {
 		
 		dm4 ();
 		// supply one value for all cells
-		dm4 (f64 all);
+		explicit dm4 (f64 all);
 		// supply all cells, in row major order for readability -> c<r><c> (r=row, c=column)
-		dm4 (
+		explicit dm4 (
 				f64 c00, f64 c01, f64 c02, f64 c03,
 				f64 c10, f64 c11, f64 c12, f64 c13,
 				f64 c20, f64 c21, f64 c22, f64 c23,
@@ -77,13 +74,41 @@ namespace vector {
 		
 		// Elementwise operators
 		
-		dm4 operator+ (dm4 m);
-		dm4 operator- (dm4 m);
+		dm4& operator+= (f64 r);
+		dm4& operator-= (f64 r);
+		dm4& operator*= (f64 r);
+		dm4& operator/= (f64 r);
+		
+		// Matrix multiplication
+		
+		dm4& operator*= (dm4 const& r);
 	};
 	
-	dm4 operator+ (dm4 l, dm4 r);
-	dm4 operator- (dm4 l, dm4 r);
-	dm4 operator* (dm4 l, dm4 r);
-	dm4 operator/ (dm4 l, dm4 r);
+	// Elementwise operators
+	
+	dm4 operator+ (dm4 const& m);
+	dm4 operator- (dm4 const& m);
+	
+	dm4 operator+ (dm4 const& l, dm4 const& r);
+	dm4 operator+ (dm4 const& l, f64 r);
+	dm4 operator+ (f64 l, dm4 const& r);
+	
+	dm4 operator- (dm4 const& l, dm4 const& r);
+	dm4 operator- (dm4 const& l, f64 r);
+	dm4 operator- (f64 l, dm4 const& r);
+	
+	dm4 mul_elementwise (dm4 const& l, dm4 const& r);
+	dm4 operator* (dm4 const& l, f64 r);
+	dm4 operator* (f64 l, dm4 const& r);
+	
+	dm4 div_elementwise (dm4 const& l, dm4 const& r);
+	dm4 operator/ (dm4 const& l, f64 r);
+	dm4 operator/ (f64 l, dm4 const& r);
+	
+	// Matrix multiplication
+	
+	dm4 operator* (dm4 const& l, dm4 const& r);
+	dv4 operator* (dm4 const& l, dv4 r);
+	dv4 operator* (dv4 l, dm4 const& r);
 } // namespace vector
 

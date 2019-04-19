@@ -1,5 +1,63 @@
 #include "vector/vector.hpp"
 
+#include <string>
+#include <iostream>
+#include <sstream>
+#include <iomanip>
+
+void matrix_to_string (std::ostream* os, std::string const& str, float const* cells_column_maj, int rows, int columns) {
+
+	int cell_w = 3 + 1 + 2; // aaa.bb
+	
+	*os << str << '(';
+
+	auto indent = str.size() + 1;
+
+	*os << std::fixed << std::setprecision(2);
+
+	for (int row=0; row<rows;) {
+		for (int col=0; col<columns;) {
+			float cell = cells_column_maj[col * rows + row];
+
+			if (row > 0 && col == 0)
+				*os << std::setw(indent + cell_w);
+			else
+				*os << std::setw(cell_w);
+
+			*os << cell;
+			
+			if (++col == columns) break;
+			*os << ", ";
+		}
+
+		if (++row == rows) break;
+		*os << ",\n";
+	}
+	
+	*os << std::resetiosflags(std::ios_base::fixed);
+
+	*os << ")";
+}
+std::ostream& operator<< (std::ostream& ss, m3x4 const& m) {
+	matrix_to_string(&ss, "m3x4", &m.arr[0][0], 3,4);
+	return ss;
+}
+std::ostream& operator<< (std::ostream& ss, m2 const& m) {
+	matrix_to_string(&ss, "m2", &m.arr[0][0], 2,2);
+	return ss;
+}
+std::ostream& operator<< (std::ostream& ss, m4 const& m) {
+	matrix_to_string(&ss, "m4", &m.arr[0][0], 4,4);
+	return ss;
+}
+
+template <typename T>
+std::string to_string (T const& m) {
+	std::stringstream ss;
+	ss << m;
+	return ss.str();
+}
+
 int main() {
 
 	f32 f;
@@ -120,32 +178,97 @@ int main() {
 	f = deg(360);
 	f = to_deg(f);
 
-	//m3x4 a;
-	//
-	//a = 0;
-	//a = m3x4(0);
-	//
-	//a = m3x4(	1, 2, 3, 4,
-	//		 5, 6, 7, 8,
-	//		 9,10,11,12);
-	//
-	//a = m3x4::rows(	1, 2, 3, 4,
-	//			   5, 6, 7, 8,
-	//			   9,10,11,12);
-	//a = m3x4::rows(	v4(1, 2, 3, 4),
-	//			   v4(5, 6, 7, 8),
-	//			   v4(9,10,11,12));
-	//
-	//a = m3x4::columns(	1, 2, 3, 4,
-	//				  5, 6, 7, 8,
-	//				  9,10,11,12);
-	//a = m3x4::columns(	v3(1, 2, 3),
-	//				  v3(4, 5, 6),
-	//				  v3(7, 8, 9),
-	//				  v3(10,11,12));
+	f = length(v3(1,2,3));
+	f = length(v3(1,1,1));
+	f = length(v2(1,1));
+	f = length(v2(0.7f,0.7f));
+	f = length_sqr(v3(5,5,5));
+	f = distance(2, v2(0.5f, 7));
 
+	f = dot(v2(0,1), v2(1,0));
+	f = dot(v2(0,1), v2(0,1));
+	v = cross(v3(1,0,0), v3(0,1,0));
+	f = cross(v2(1,0), v2(0,1));
 
+	m3x4 m;
+	
+	//#m = 0; // mat ctor explicit
+	m = m3x4(0);
+	
+	m = m3x4(1, 2, 3, 4,
+			 5, 6, 7, 8,
+			 9,10,11,12);
+	
+	m = m3x4::rows(1, 2, 3, 4,
+				   5, 6, 7, 8,
+				   9,10,11,12);
+	m = m3x4::rows(v4(1, 2, 3, 4),
+				   v4(5, 6, 7, 8),
+				   v4(9,10,11,12));
 
+	m = m3x4::columns( 1,  2,  3,
+					   4,  5,  6,
+					   7,  8,  9,
+					  10, 11, 12);
+	m = m3x4::columns(v3(1, 2, 3),
+					  v3(4, 5, 6),
+					  v3(7, 8, 9),
+					  v3(10,11,12));
+
+ 	auto n = m2(m);
+	n = (m2)m;
+	auto o = m4(m);
+	o = (m4)m;
+
+	m = m3x4::identity();
+
+	auto mm = dm3x4(m);
+
+	n = m2(1,2,3,4) + m2(2,3,4,5);
+	n = m2(1,2,3,4) - m2(2,3,4,5);
+	n = mul_elementwise(m2(1,2,3,4), m2(2,3,4,5));
+	n = div_elementwise(m2(1,2,3,4), m2(2,3,4,5));
+
+	n = m2(1,2,3,4) + 2;
+	n = m2(1,2,3,4) - 2;
+	n = m2(1,2,3,4) * 2;
+	n = m2(1,2,3,4) / 2;
+
+	n += 2;
+	n -= 2;
+	n *= 2;
+	n /= 2;
+
+	n = 2 + m2(1,2,3,4);
+	n = 2 - m2(1,2,3,4);
+	n = 2 * m2(1,2,3,4);
+	n = 2 / m2(1,2,3,4);
+
+	auto scl = scale2(v2(-2,4));
+	auto trnsl = translate2(v2(3,7));
+
+	auto u = v2(1,1);
+
+	auto uu = scl * u;
+	uu = (v2)(trnsl * v3(u, 1));
+
+	uu = scl * (v2)(trnsl * v3(u, 1));
+
+	auto transf = scl * trnsl;
+	uu = (v2)(transf * v3(u, 1));
+
+	transf = trnsl * (m3)scl;
+	uu = (v2)(transf * v3(u, 1));
+
+	// shorthands
+	transf = scl * trnsl;
+	uu = transf * u;
+
+	//transf = trnsl * scl;
+	//uu = transf * u;
+	//
+	//transf = trnsl * trnsl;
+	//uu = transf * u;
 
 	return 0;
 }

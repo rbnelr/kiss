@@ -12,11 +12,11 @@ namespace vector {
 	//// Accessors
 	
 	
-	f32 fm2x3::get (int r, int c) const {
+	f32 const& fm2x3::get (int r, int c) const {
 		return arr[c][r];
 	}
 	
-	fv2 fm2x3::get_column (int indx) const {
+	fv2 const& fm2x3::get_column (int indx) const {
 		return arr[indx];
 	}
 	
@@ -127,40 +127,150 @@ namespace vector {
 	// Elementwise operators
 	
 	
-	fm2x3 fm2x3::operator+ (fm2x3 m) {
+	fm2x3& fm2x3::operator+= (f32 r) {
+		*this = *this + r;
+		return *this;
+	}
+	
+	fm2x3& fm2x3::operator-= (f32 r) {
+		*this = *this - r;
+		return *this;
+	}
+	
+	fm2x3& fm2x3::operator*= (f32 r) {
+		*this = *this * r;
+		return *this;
+	}
+	
+	fm2x3& fm2x3::operator/= (f32 r) {
+		*this = *this / r;
+		return *this;
+	}
+	
+	// Matrix multiplication
+	
+	
+	fm2x3& fm2x3::operator*= (fm2x3 const& r) {
+		*this = *this * r;
+		return *this;
+	}
+	
+	// Elementwise operators
+	
+	
+	fm2x3 operator+ (fm2x3 const& m) {
 		return fm2x3(
 				+m.arr[0][0], +m.arr[1][0], +m.arr[2][0],
 				+m.arr[0][1], +m.arr[1][1], +m.arr[2][1]);
 	}
 	
-	fm2x3 fm2x3::operator- (fm2x3 m) {
+	fm2x3 operator- (fm2x3 const& m) {
 		return fm2x3(
 				-m.arr[0][0], -m.arr[1][0], -m.arr[2][0],
 				-m.arr[0][1], -m.arr[1][1], -m.arr[2][1]);
 	}
 	
-	fm2x3 operator+ (fm2x3 l, fm2x3 r) {
+	
+	fm2x3 operator+ (fm2x3 const& l, fm2x3 const& r) {
 		return fm2x3(
 				l.arr[0][0] + r.arr[0][0], l.arr[1][0] + r.arr[1][0], l.arr[2][0] + r.arr[2][0],
 				l.arr[0][1] + r.arr[0][1], l.arr[1][1] + r.arr[1][1], l.arr[2][1] + r.arr[2][1]);
 	}
 	
-	fm2x3 operator- (fm2x3 l, fm2x3 r) {
+	fm2x3 operator+ (fm2x3 const& l, f32 r) {
+		return fm2x3(
+				l.arr[0][0] + r, l.arr[1][0] + r, l.arr[2][0] + r,
+				l.arr[0][1] + r, l.arr[1][1] + r, l.arr[2][1] + r);
+	}
+	
+	fm2x3 operator+ (f32 l, fm2x3 const& r) {
+		return fm2x3(
+				l + r.arr[0][0], l + r.arr[1][0], l + r.arr[2][0],
+				l + r.arr[0][1], l + r.arr[1][1], l + r.arr[2][1]);
+	}
+	
+	
+	fm2x3 operator- (fm2x3 const& l, fm2x3 const& r) {
 		return fm2x3(
 				l.arr[0][0] - r.arr[0][0], l.arr[1][0] - r.arr[1][0], l.arr[2][0] - r.arr[2][0],
 				l.arr[0][1] - r.arr[0][1], l.arr[1][1] - r.arr[1][1], l.arr[2][1] - r.arr[2][1]);
 	}
 	
-	fm2x3 operator* (fm2x3 l, fm2x3 r) {
+	fm2x3 operator- (fm2x3 const& l, f32 r) {
+		return fm2x3(
+				l.arr[0][0] - r, l.arr[1][0] - r, l.arr[2][0] - r,
+				l.arr[0][1] - r, l.arr[1][1] - r, l.arr[2][1] - r);
+	}
+	
+	fm2x3 operator- (f32 l, fm2x3 const& r) {
+		return fm2x3(
+				l - r.arr[0][0], l - r.arr[1][0], l - r.arr[2][0],
+				l - r.arr[0][1], l - r.arr[1][1], l - r.arr[2][1]);
+	}
+	
+	
+	fm2x3 mul_elementwise (fm2x3 const& l, fm2x3 const& r) {
 		return fm2x3(
 				l.arr[0][0] * r.arr[0][0], l.arr[1][0] * r.arr[1][0], l.arr[2][0] * r.arr[2][0],
 				l.arr[0][1] * r.arr[0][1], l.arr[1][1] * r.arr[1][1], l.arr[2][1] * r.arr[2][1]);
 	}
 	
-	fm2x3 operator/ (fm2x3 l, fm2x3 r) {
+	fm2x3 operator* (fm2x3 const& l, f32 r) {
+		return fm2x3(
+				l.arr[0][0] * r, l.arr[1][0] * r, l.arr[2][0] * r,
+				l.arr[0][1] * r, l.arr[1][1] * r, l.arr[2][1] * r);
+	}
+	
+	fm2x3 operator* (f32 l, fm2x3 const& r) {
+		return fm2x3(
+				l * r.arr[0][0], l * r.arr[1][0], l * r.arr[2][0],
+				l * r.arr[0][1], l * r.arr[1][1], l * r.arr[2][1]);
+	}
+	
+	
+	fm2x3 div_elementwise (fm2x3 const& l, fm2x3 const& r) {
 		return fm2x3(
 				l.arr[0][0] / r.arr[0][0], l.arr[1][0] / r.arr[1][0], l.arr[2][0] / r.arr[2][0],
 				l.arr[0][1] / r.arr[0][1], l.arr[1][1] / r.arr[1][1], l.arr[2][1] / r.arr[2][1]);
+	}
+	
+	fm2x3 operator/ (fm2x3 const& l, f32 r) {
+		return fm2x3(
+				l.arr[0][0] / r, l.arr[1][0] / r, l.arr[2][0] / r,
+				l.arr[0][1] / r, l.arr[1][1] / r, l.arr[2][1] / r);
+	}
+	
+	fm2x3 operator/ (f32 l, fm2x3 const& r) {
+		return fm2x3(
+				l / r.arr[0][0], l / r.arr[1][0], l / r.arr[2][0],
+				l / r.arr[0][1], l / r.arr[1][1], l / r.arr[2][1]);
+	}
+	
+	// Matrix multiplication
+	
+	
+	fm2x3 operator* (fm2x3 const& l, fm3 const& r) {
+		fm2x3 ret;
+		ret.arr[0] = l * r.arr[0];
+		ret.arr[1] = l * r.arr[1];
+		ret.arr[2] = l * r.arr[2];
+		return ret;
+	}
+	// fm2x3 * fm3x4 -> 2x4 ; matrix not implemented
+	
+	fv2 operator* (fm2x3 const& l, fv3 r) {
+		fv2 ret;
+		ret.x = l.arr[0].x * r.x + l.arr[1].x * r.y + l.arr[2].x * r.z;
+		ret.y = l.arr[0].y * r.x + l.arr[1].y * r.y + l.arr[2].y * r.z;
+		return ret;
+	}
+	
+	fv3 operator* (fv2 l, fm2x3 const& r) {
+		fv3 ret;
+		ret.x = l.x * r.arr[0].x + l.y * r.arr[0].y;
+		ret.y = l.x * r.arr[1].x + l.y * r.arr[1].y;
+		ret.z = l.x * r.arr[2].x + l.y * r.arr[2].y;
+		return ret;
 	}
 } // namespace vector
 

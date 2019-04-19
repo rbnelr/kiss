@@ -87,6 +87,8 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <PreprocessToFile>
+      </PreprocessToFile>
     </ClCompile>
     <Link>
       <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -98,6 +100,8 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <PreprocessToFile>
+      </PreprocessToFile>
     </ClCompile>
     <Link>
       <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -111,6 +115,8 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <PreprocessToFile>
+      </PreprocessToFile>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -126,6 +132,8 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <PreprocessToFile>
+      </PreprocessToFile>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -163,6 +171,7 @@
     <ClCompile Include="vector\s64v2.cpp" />
     <ClCompile Include="vector\s64v3.cpp" />
     <ClCompile Include="vector\s64v4.cpp" />
+    <ClCompile Include="vector\transformations.cpp" />
     <ClCompile Include="vector\u8v2.cpp" />
     <ClCompile Include="vector\u8v3.cpp" />
     <ClCompile Include="vector\u8v4.cpp" />
@@ -200,6 +209,7 @@
     <ClInclude Include="vector\s64v2.hpp" />
     <ClInclude Include="vector\s64v3.hpp" />
     <ClInclude Include="vector\s64v4.hpp" />
+    <ClInclude Include="vector\transformations.hpp" />
     <ClInclude Include="vector\types.hpp" />
     <ClInclude Include="vector\u8v2.hpp" />
     <ClInclude Include="vector\u8v3.hpp" />
@@ -207,6 +217,9 @@
     <ClInclude Include="vector\util.hpp" />
     <ClInclude Include="vector\vector.hpp" />
     <ClInclude Include="window.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="TODO.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -16,7 +16,7 @@ namespace vector {
 		return arr[i];
 	}
 	
-	f64 dv4::operator[] (int i) const {
+	f64 const& dv4::operator[] (int i) const {
 		return arr[i];
 	}
 	

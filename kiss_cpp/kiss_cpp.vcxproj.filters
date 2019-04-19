@@ -117,6 +117,9 @@
     <ClCompile Include="vector\fm4.cpp">
       <Filter>vector</Filter>
     </ClCompile>
+    <ClCompile Include="vector\transformations.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="input.hpp">
@@ -233,5 +236,11 @@
     <ClInclude Include="vector\fm4.hpp">
       <Filter>vector</Filter>
     </ClInclude>
+    <ClInclude Include="vector\transformations.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="TODO.txt" />
   </ItemGroup>
 </Project>

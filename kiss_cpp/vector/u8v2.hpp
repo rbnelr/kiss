@@ -22,7 +22,7 @@ namespace vector {
 		u8		arr[2];
 		
 		u8& operator[] (int i);
-		u8 operator[] (int i) const;
+		u8 const& operator[] (int i) const;
 		
 		u8v2 ();
 		// sets all components to one value

@@ -22,7 +22,7 @@ namespace vector {
 		bool		arr[4];
 		
 		bool& operator[] (int i);
-		bool operator[] (int i) const;
+		bool const& operator[] (int i) const;
 		
 		bv4 ();
 		// sets all components to one value

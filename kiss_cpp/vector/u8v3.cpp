@@ -16,7 +16,7 @@ namespace vector {
 		return arr[i];
 	}
 	
-	u8 u8v3::operator[] (int i) const {
+	u8 const& u8v3::operator[] (int i) const {
 		return arr[i];
 	}
 	

@@ -12,11 +12,11 @@ namespace vector {
 	//// Accessors
 	
 	
-	f64 dm2x3::get (int r, int c) const {
+	f64 const& dm2x3::get (int r, int c) const {
 		return arr[c][r];
 	}
 	
-	dv2 dm2x3::get_column (int indx) const {
+	dv2 const& dm2x3::get_column (int indx) const {
 		return arr[indx];
 	}
 	
@@ -127,40 +127,150 @@ namespace vector {
 	// Elementwise operators
 	
 	
-	dm2x3 dm2x3::operator+ (dm2x3 m) {
+	dm2x3& dm2x3::operator+= (f64 r) {
+		*this = *this + r;
+		return *this;
+	}
+	
+	dm2x3& dm2x3::operator-= (f64 r) {
+		*this = *this - r;
+		return *this;
+	}
+	
+	dm2x3& dm2x3::operator*= (f64 r) {
+		*this = *this * r;
+		return *this;
+	}
+	
+	dm2x3& dm2x3::operator/= (f64 r) {
+		*this = *this / r;
+		return *this;
+	}
+	
+	// Matrix multiplication
+	
+	
+	dm2x3& dm2x3::operator*= (dm2x3 const& r) {
+		*this = *this * r;
+		return *this;
+	}
+	
+	// Elementwise operators
+	
+	
+	dm2x3 operator+ (dm2x3 const& m) {
 		return dm2x3(
 				+m.arr[0][0], +m.arr[1][0], +m.arr[2][0],
 				+m.arr[0][1], +m.arr[1][1], +m.arr[2][1]);
 	}
 	
-	dm2x3 dm2x3::operator- (dm2x3 m) {
+	dm2x3 operator- (dm2x3 const& m) {
 		return dm2x3(
 				-m.arr[0][0], -m.arr[1][0], -m.arr[2][0],
 				-m.arr[0][1], -m.arr[1][1], -m.arr[2][1]);
 	}
 	
-	dm2x3 operator+ (dm2x3 l, dm2x3 r) {
+	
+	dm2x3 operator+ (dm2x3 const& l, dm2x3 const& r) {
 		return dm2x3(
 				l.arr[0][0] + r.arr[0][0], l.arr[1][0] + r.arr[1][0], l.arr[2][0] + r.arr[2][0],
 				l.arr[0][1] + r.arr[0][1], l.arr[1][1] + r.arr[1][1], l.arr[2][1] + r.arr[2][1]);
 	}
 	
-	dm2x3 operator- (dm2x3 l, dm2x3 r) {
+	dm2x3 operator+ (dm2x3 const& l, f64 r) {
+		return dm2x3(
+				l.arr[0][0] + r, l.arr[1][0] + r, l.arr[2][0] + r,
+				l.arr[0][1] + r, l.arr[1][1] + r, l.arr[2][1] + r);
+	}
+	
+	dm2x3 operator+ (f64 l, dm2x3 const& r) {
+		return dm2x3(
+				l + r.arr[0][0], l + r.arr[1][0], l + r.arr[2][0],
+				l + r.arr[0][1], l + r.arr[1][1], l + r.arr[2][1]);
+	}
+	
+	
+	dm2x3 operator- (dm2x3 const& l, dm2x3 const& r) {
 		return dm2x3(
 				l.arr[0][0] - r.arr[0][0], l.arr[1][0] - r.arr[1][0], l.arr[2][0] - r.arr[2][0],
 				l.arr[0][1] - r.arr[0][1], l.arr[1][1] - r.arr[1][1], l.arr[2][1] - r.arr[2][1]);
 	}
 	
-	dm2x3 operator* (dm2x3 l, dm2x3 r) {
+	dm2x3 operator- (dm2x3 const& l, f64 r) {
+		return dm2x3(
+				l.arr[0][0] - r, l.arr[1][0] - r, l.arr[2][0] - r,
+				l.arr[0][1] - r, l.arr[1][1] - r, l.arr[2][1] - r);
+	}
+	
+	dm2x3 operator- (f64 l, dm2x3 const& r) {
+		return dm2x3(
+				l - r.arr[0][0], l - r.arr[1][0], l - r.arr[2][0],
+				l - r.arr[0][1], l - r.arr[1][1], l - r.arr[2][1]);
+	}
+	
+	
+	dm2x3 mul_elementwise (dm2x3 const& l, dm2x3 const& r) {
 		return dm2x3(
 				l.arr[0][0] * r.arr[0][0], l.arr[1][0] * r.arr[1][0], l.arr[2][0] * r.arr[2][0],
 				l.arr[0][1] * r.arr[0][1], l.arr[1][1] * r.arr[1][1], l.arr[2][1] * r.arr[2][1]);
 	}
 	
-	dm2x3 operator/ (dm2x3 l, dm2x3 r) {
+	dm2x3 operator* (dm2x3 const& l, f64 r) {
+		return dm2x3(
+				l.arr[0][0] * r, l.arr[1][0] * r, l.arr[2][0] * r,
+				l.arr[0][1] * r, l.arr[1][1] * r, l.arr[2][1] * r);
+	}
+	
+	dm2x3 operator* (f64 l, dm2x3 const& r) {
+		return dm2x3(
+				l * r.arr[0][0], l * r.arr[1][0], l * r.arr[2][0],
+				l * r.arr[0][1], l * r.arr[1][1], l * r.arr[2][1]);
+	}
+	
+	
+	dm2x3 div_elementwise (dm2x3 const& l, dm2x3 const& r) {
 		return dm2x3(
 				l.arr[0][0] / r.arr[0][0], l.arr[1][0] / r.arr[1][0], l.arr[2][0] / r.arr[2][0],
 				l.arr[0][1] / r.arr[0][1], l.arr[1][1] / r.arr[1][1], l.arr[2][1] / r.arr[2][1]);
+	}
+	
+	dm2x3 operator/ (dm2x3 const& l, f64 r) {
+		return dm2x3(
+				l.arr[0][0] / r, l.arr[1][0] / r, l.arr[2][0] / r,
+				l.arr[0][1] / r, l.arr[1][1] / r, l.arr[2][1] / r);
+	}
+	
+	dm2x3 operator/ (f64 l, dm2x3 const& r) {
+		return dm2x3(
+				l / r.arr[0][0], l / r.arr[1][0], l / r.arr[2][0],
+				l / r.arr[0][1], l / r.arr[1][1], l / r.arr[2][1]);
+	}
+	
+	// Matrix multiplication
+	
+	
+	dm2x3 operator* (dm2x3 const& l, dm3 const& r) {
+		dm2x3 ret;
+		ret.arr[0] = l * r.arr[0];
+		ret.arr[1] = l * r.arr[1];
+		ret.arr[2] = l * r.arr[2];
+		return ret;
+	}
+	// dm2x3 * dm3x4 -> 2x4 ; matrix not implemented
+	
+	dv2 operator* (dm2x3 const& l, dv3 r) {
+		dv2 ret;
+		ret.x = l.arr[0].x * r.x + l.arr[1].x * r.y + l.arr[2].x * r.z;
+		ret.y = l.arr[0].y * r.x + l.arr[1].y * r.y + l.arr[2].y * r.z;
+		return ret;
+	}
+	
+	dv3 operator* (dv2 l, dm2x3 const& r) {
+		dv3 ret;
+		ret.x = l.x * r.arr[0].x + l.y * r.arr[0].y;
+		ret.y = l.x * r.arr[1].x + l.y * r.arr[1].y;
+		ret.z = l.x * r.arr[2].x + l.y * r.arr[2].y;
+		return ret;
 	}
 } // namespace vector
 

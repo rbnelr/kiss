@@ -16,7 +16,7 @@ namespace vector {
 		return arr[i];
 	}
 	
-	bool bv4::operator[] (int i) const {
+	bool const& bv4::operator[] (int i) const {
 		return arr[i];
 	}
 	

@@ -16,7 +16,7 @@ namespace vector {
 		return arr[i];
 	}
 	
-	f32 fv3::operator[] (int i) const {
+	f32 const& fv3::operator[] (int i) const {
 		return arr[i];
 	}
 	

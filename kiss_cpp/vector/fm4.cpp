@@ -12,11 +12,11 @@ namespace vector {
 	//// Accessors
 	
 	
-	f32 fm4::get (int r, int c) const {
+	f32 const& fm4::get (int r, int c) const {
 		return arr[c][r];
 	}
 	
-	fv4 fm4::get_column (int indx) const {
+	fv4 const& fm4::get_column (int indx) const {
 		return arr[indx];
 	}
 	
@@ -144,7 +144,38 @@ namespace vector {
 	// Elementwise operators
 	
 	
-	fm4 fm4::operator+ (fm4 m) {
+	fm4& fm4::operator+= (f32 r) {
+		*this = *this + r;
+		return *this;
+	}
+	
+	fm4& fm4::operator-= (f32 r) {
+		*this = *this - r;
+		return *this;
+	}
+	
+	fm4& fm4::operator*= (f32 r) {
+		*this = *this * r;
+		return *this;
+	}
+	
+	fm4& fm4::operator/= (f32 r) {
+		*this = *this / r;
+		return *this;
+	}
+	
+	// Matrix multiplication
+	
+	
+	fm4& fm4::operator*= (fm4 const& r) {
+		*this = *this * r;
+		return *this;
+	}
+	
+	// Elementwise operators
+	
+	
+	fm4 operator+ (fm4 const& m) {
 		return fm4(
 				+m.arr[0][0], +m.arr[1][0], +m.arr[2][0], +m.arr[3][0],
 				+m.arr[0][1], +m.arr[1][1], +m.arr[2][1], +m.arr[3][1],
@@ -152,7 +183,7 @@ namespace vector {
 				+m.arr[0][3], +m.arr[1][3], +m.arr[2][3], +m.arr[3][3]);
 	}
 	
-	fm4 fm4::operator- (fm4 m) {
+	fm4 operator- (fm4 const& m) {
 		return fm4(
 				-m.arr[0][0], -m.arr[1][0], -m.arr[2][0], -m.arr[3][0],
 				-m.arr[0][1], -m.arr[1][1], -m.arr[2][1], -m.arr[3][1],
@@ -160,7 +191,8 @@ namespace vector {
 				-m.arr[0][3], -m.arr[1][3], -m.arr[2][3], -m.arr[3][3]);
 	}
 	
-	fm4 operator+ (fm4 l, fm4 r) {
+	
+	fm4 operator+ (fm4 const& l, fm4 const& r) {
 		return fm4(
 				l.arr[0][0] + r.arr[0][0], l.arr[1][0] + r.arr[1][0], l.arr[2][0] + r.arr[2][0], l.arr[3][0] + r.arr[3][0],
 				l.arr[0][1] + r.arr[0][1], l.arr[1][1] + r.arr[1][1], l.arr[2][1] + r.arr[2][1], l.arr[3][1] + r.arr[3][1],
@@ -168,7 +200,24 @@ namespace vector {
 				l.arr[0][3] + r.arr[0][3], l.arr[1][3] + r.arr[1][3], l.arr[2][3] + r.arr[2][3], l.arr[3][3] + r.arr[3][3]);
 	}
 	
-	fm4 operator- (fm4 l, fm4 r) {
+	fm4 operator+ (fm4 const& l, f32 r) {
+		return fm4(
+				l.arr[0][0] + r, l.arr[1][0] + r, l.arr[2][0] + r, l.arr[3][0] + r,
+				l.arr[0][1] + r, l.arr[1][1] + r, l.arr[2][1] + r, l.arr[3][1] + r,
+				l.arr[0][2] + r, l.arr[1][2] + r, l.arr[2][2] + r, l.arr[3][2] + r,
+				l.arr[0][3] + r, l.arr[1][3] + r, l.arr[2][3] + r, l.arr[3][3] + r);
+	}
+	
+	fm4 operator+ (f32 l, fm4 const& r) {
+		return fm4(
+				l + r.arr[0][0], l + r.arr[1][0], l + r.arr[2][0], l + r.arr[3][0],
+				l + r.arr[0][1], l + r.arr[1][1], l + r.arr[2][1], l + r.arr[3][1],
+				l + r.arr[0][2], l + r.arr[1][2], l + r.arr[2][2], l + r.arr[3][2],
+				l + r.arr[0][3], l + r.arr[1][3], l + r.arr[2][3], l + r.arr[3][3]);
+	}
+	
+	
+	fm4 operator- (fm4 const& l, fm4 const& r) {
 		return fm4(
 				l.arr[0][0] - r.arr[0][0], l.arr[1][0] - r.arr[1][0], l.arr[2][0] - r.arr[2][0], l.arr[3][0] - r.arr[3][0],
 				l.arr[0][1] - r.arr[0][1], l.arr[1][1] - r.arr[1][1], l.arr[2][1] - r.arr[2][1], l.arr[3][1] - r.arr[3][1],
@@ -176,7 +225,24 @@ namespace vector {
 				l.arr[0][3] - r.arr[0][3], l.arr[1][3] - r.arr[1][3], l.arr[2][3] - r.arr[2][3], l.arr[3][3] - r.arr[3][3]);
 	}
 	
-	fm4 operator* (fm4 l, fm4 r) {
+	fm4 operator- (fm4 const& l, f32 r) {
+		return fm4(
+				l.arr[0][0] - r, l.arr[1][0] - r, l.arr[2][0] - r, l.arr[3][0] - r,
+				l.arr[0][1] - r, l.arr[1][1] - r, l.arr[2][1] - r, l.arr[3][1] - r,
+				l.arr[0][2] - r, l.arr[1][2] - r, l.arr[2][2] - r, l.arr[3][2] - r,
+				l.arr[0][3] - r, l.arr[1][3] - r, l.arr[2][3] - r, l.arr[3][3] - r);
+	}
+	
+	fm4 operator- (f32 l, fm4 const& r) {
+		return fm4(
+				l - r.arr[0][0], l - r.arr[1][0], l - r.arr[2][0], l - r.arr[3][0],
+				l - r.arr[0][1], l - r.arr[1][1], l - r.arr[2][1], l - r.arr[3][1],
+				l - r.arr[0][2], l - r.arr[1][2], l - r.arr[2][2], l - r.arr[3][2],
+				l - r.arr[0][3], l - r.arr[1][3], l - r.arr[2][3], l - r.arr[3][3]);
+	}
+	
+	
+	fm4 mul_elementwise (fm4 const& l, fm4 const& r) {
 		return fm4(
 				l.arr[0][0] * r.arr[0][0], l.arr[1][0] * r.arr[1][0], l.arr[2][0] * r.arr[2][0], l.arr[3][0] * r.arr[3][0],
 				l.arr[0][1] * r.arr[0][1], l.arr[1][1] * r.arr[1][1], l.arr[2][1] * r.arr[2][1], l.arr[3][1] * r.arr[3][1],
@@ -184,12 +250,75 @@ namespace vector {
 				l.arr[0][3] * r.arr[0][3], l.arr[1][3] * r.arr[1][3], l.arr[2][3] * r.arr[2][3], l.arr[3][3] * r.arr[3][3]);
 	}
 	
-	fm4 operator/ (fm4 l, fm4 r) {
+	fm4 operator* (fm4 const& l, f32 r) {
+		return fm4(
+				l.arr[0][0] * r, l.arr[1][0] * r, l.arr[2][0] * r, l.arr[3][0] * r,
+				l.arr[0][1] * r, l.arr[1][1] * r, l.arr[2][1] * r, l.arr[3][1] * r,
+				l.arr[0][2] * r, l.arr[1][2] * r, l.arr[2][2] * r, l.arr[3][2] * r,
+				l.arr[0][3] * r, l.arr[1][3] * r, l.arr[2][3] * r, l.arr[3][3] * r);
+	}
+	
+	fm4 operator* (f32 l, fm4 const& r) {
+		return fm4(
+				l * r.arr[0][0], l * r.arr[1][0], l * r.arr[2][0], l * r.arr[3][0],
+				l * r.arr[0][1], l * r.arr[1][1], l * r.arr[2][1], l * r.arr[3][1],
+				l * r.arr[0][2], l * r.arr[1][2], l * r.arr[2][2], l * r.arr[3][2],
+				l * r.arr[0][3], l * r.arr[1][3], l * r.arr[2][3], l * r.arr[3][3]);
+	}
+	
+	
+	fm4 div_elementwise (fm4 const& l, fm4 const& r) {
 		return fm4(
 				l.arr[0][0] / r.arr[0][0], l.arr[1][0] / r.arr[1][0], l.arr[2][0] / r.arr[2][0], l.arr[3][0] / r.arr[3][0],
 				l.arr[0][1] / r.arr[0][1], l.arr[1][1] / r.arr[1][1], l.arr[2][1] / r.arr[2][1], l.arr[3][1] / r.arr[3][1],
 				l.arr[0][2] / r.arr[0][2], l.arr[1][2] / r.arr[1][2], l.arr[2][2] / r.arr[2][2], l.arr[3][2] / r.arr[3][2],
 				l.arr[0][3] / r.arr[0][3], l.arr[1][3] / r.arr[1][3], l.arr[2][3] / r.arr[2][3], l.arr[3][3] / r.arr[3][3]);
+	}
+	
+	fm4 operator/ (fm4 const& l, f32 r) {
+		return fm4(
+				l.arr[0][0] / r, l.arr[1][0] / r, l.arr[2][0] / r, l.arr[3][0] / r,
+				l.arr[0][1] / r, l.arr[1][1] / r, l.arr[2][1] / r, l.arr[3][1] / r,
+				l.arr[0][2] / r, l.arr[1][2] / r, l.arr[2][2] / r, l.arr[3][2] / r,
+				l.arr[0][3] / r, l.arr[1][3] / r, l.arr[2][3] / r, l.arr[3][3] / r);
+	}
+	
+	fm4 operator/ (f32 l, fm4 const& r) {
+		return fm4(
+				l / r.arr[0][0], l / r.arr[1][0], l / r.arr[2][0], l / r.arr[3][0],
+				l / r.arr[0][1], l / r.arr[1][1], l / r.arr[2][1], l / r.arr[3][1],
+				l / r.arr[0][2], l / r.arr[1][2], l / r.arr[2][2], l / r.arr[3][2],
+				l / r.arr[0][3], l / r.arr[1][3], l / r.arr[2][3], l / r.arr[3][3]);
+	}
+	
+	// Matrix multiplication
+	
+	
+	fm4 operator* (fm4 const& l, fm4 const& r) {
+		fm4 ret;
+		ret.arr[0] = l * r.arr[0];
+		ret.arr[1] = l * r.arr[1];
+		ret.arr[2] = l * r.arr[2];
+		ret.arr[3] = l * r.arr[3];
+		return ret;
+	}
+	
+	fv4 operator* (fm4 const& l, fv4 r) {
+		fv4 ret;
+		ret.x = l.arr[0].x * r.x + l.arr[1].x * r.y + l.arr[2].x * r.z + l.arr[3].x * r.w;
+		ret.y = l.arr[0].y * r.x + l.arr[1].y * r.y + l.arr[2].y * r.z + l.arr[3].y * r.w;
+		ret.z = l.arr[0].z * r.x + l.arr[1].z * r.y + l.arr[2].z * r.z + l.arr[3].z * r.w;
+		ret.w = l.arr[0].w * r.x + l.arr[1].w * r.y + l.arr[2].w * r.z + l.arr[3].w * r.w;
+		return ret;
+	}
+	
+	fv4 operator* (fv4 l, fm4 const& r) {
+		fv4 ret;
+		ret.x = l.x * r.arr[0].x + l.y * r.arr[0].y + l.z * r.arr[0].z + l.w * r.arr[0].w;
+		ret.y = l.x * r.arr[1].x + l.y * r.arr[1].y + l.z * r.arr[1].z + l.w * r.arr[1].w;
+		ret.z = l.x * r.arr[2].x + l.y * r.arr[2].y + l.z * r.arr[2].z + l.w * r.arr[2].w;
+		ret.w = l.x * r.arr[3].x + l.y * r.arr[3].y + l.z * r.arr[3].z + l.w * r.arr[3].w;
+		return ret;
 	}
 } // namespace vector
 

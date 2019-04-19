@@ -22,7 +22,7 @@ namespace vector {
 		f64		arr[4];
 		
 		f64& operator[] (int i);
-		f64 operator[] (int i) const;
+		f64 const& operator[] (int i) const;
 		
 		dv4 ();
 		// sets all components to one value

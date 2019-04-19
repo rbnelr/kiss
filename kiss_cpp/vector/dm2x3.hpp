@@ -3,11 +3,8 @@
 
 #include "kissmath.hpp"
 
-
-#include <string>
-
-#include "dv3.hpp"
 #include "dv2.hpp"
+#include "dv3.hpp"
 
 namespace vector {
 	
@@ -24,9 +21,9 @@ namespace vector {
 		//// Accessors
 		
 		// get cell with r,c indecies (r=row, c=column)
-		f64 get (int r, int c) const;
+		f64 const& get (int r, int c) const;
 		// get matrix column
-		dv2 get_column (int indx) const;
+		dv2 const& get_column (int indx) const;
 		// get matrix row
 		dv3 get_row (int indx) const;
 		
@@ -34,9 +31,9 @@ namespace vector {
 		
 		dm2x3 ();
 		// supply one value for all cells
-		dm2x3 (f64 all);
+		explicit dm2x3 (f64 all);
 		// supply all cells, in row major order for readability -> c<r><c> (r=row, c=column)
-		dm2x3 (
+		explicit dm2x3 (
 				f64 c00, f64 c01, f64 c02,
 				f64 c10, f64 c11, f64 c12);
 		
@@ -73,13 +70,42 @@ namespace vector {
 		
 		// Elementwise operators
 		
-		dm2x3 operator+ (dm2x3 m);
-		dm2x3 operator- (dm2x3 m);
+		dm2x3& operator+= (f64 r);
+		dm2x3& operator-= (f64 r);
+		dm2x3& operator*= (f64 r);
+		dm2x3& operator/= (f64 r);
+		
+		// Matrix multiplication
+		
+		dm2x3& operator*= (dm2x3 const& r);
 	};
 	
-	dm2x3 operator+ (dm2x3 l, dm2x3 r);
-	dm2x3 operator- (dm2x3 l, dm2x3 r);
-	dm2x3 operator* (dm2x3 l, dm2x3 r);
-	dm2x3 operator/ (dm2x3 l, dm2x3 r);
+	// Elementwise operators
+	
+	dm2x3 operator+ (dm2x3 const& m);
+	dm2x3 operator- (dm2x3 const& m);
+	
+	dm2x3 operator+ (dm2x3 const& l, dm2x3 const& r);
+	dm2x3 operator+ (dm2x3 const& l, f64 r);
+	dm2x3 operator+ (f64 l, dm2x3 const& r);
+	
+	dm2x3 operator- (dm2x3 const& l, dm2x3 const& r);
+	dm2x3 operator- (dm2x3 const& l, f64 r);
+	dm2x3 operator- (f64 l, dm2x3 const& r);
+	
+	dm2x3 mul_elementwise (dm2x3 const& l, dm2x3 const& r);
+	dm2x3 operator* (dm2x3 const& l, f64 r);
+	dm2x3 operator* (f64 l, dm2x3 const& r);
+	
+	dm2x3 div_elementwise (dm2x3 const& l, dm2x3 const& r);
+	dm2x3 operator/ (dm2x3 const& l, f64 r);
+	dm2x3 operator/ (f64 l, dm2x3 const& r);
+	
+	// Matrix multiplication
+	
+	dm2x3 operator* (dm2x3 const& l, dm3 const& r);
+	// dm2x3 * dm3x4 -> 2x4 ; matrix not implemented
+	dv2 operator* (dm2x3 const& l, dv3 r);
+	dv3 operator* (dv2 l, dm2x3 const& r);
 } // namespace vector
 

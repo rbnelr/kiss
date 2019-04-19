@@ -16,7 +16,7 @@ namespace vector {
 		return arr[i];
 	}
 	
-	s64 s64v4::operator[] (int i) const {
+	s64 const& s64v4::operator[] (int i) const {
 		return arr[i];
 	}
 	

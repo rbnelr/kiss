@@ -3,9 +3,6 @@
 
 #include "kissmath.hpp"
 
-
-#include <string>
-
 #include "fv2.hpp"
 
 namespace vector {
@@ -23,9 +20,9 @@ namespace vector {
 		//// Accessors
 		
 		// get cell with r,c indecies (r=row, c=column)
-		f32 get (int r, int c) const;
+		f32 const& get (int r, int c) const;
 		// get matrix column
-		fv2 get_column (int indx) const;
+		fv2 const& get_column (int indx) const;
 		// get matrix row
 		fv2 get_row (int indx) const;
 		
@@ -33,9 +30,9 @@ namespace vector {
 		
 		fm2 ();
 		// supply one value for all cells
-		fm2 (f32 all);
+		explicit fm2 (f32 all);
 		// supply all cells, in row major order for readability -> c<r><c> (r=row, c=column)
-		fm2 (
+		explicit fm2 (
 				f32 c00, f32 c01,
 				f32 c10, f32 c11);
 		
@@ -71,13 +68,42 @@ namespace vector {
 		
 		// Elementwise operators
 		
-		fm2 operator+ (fm2 m);
-		fm2 operator- (fm2 m);
+		fm2& operator+= (f32 r);
+		fm2& operator-= (f32 r);
+		fm2& operator*= (f32 r);
+		fm2& operator/= (f32 r);
+		
+		// Matrix multiplication
+		
+		fm2& operator*= (fm2 const& r);
 	};
 	
-	fm2 operator+ (fm2 l, fm2 r);
-	fm2 operator- (fm2 l, fm2 r);
-	fm2 operator* (fm2 l, fm2 r);
-	fm2 operator/ (fm2 l, fm2 r);
+	// Elementwise operators
+	
+	fm2 operator+ (fm2 const& m);
+	fm2 operator- (fm2 const& m);
+	
+	fm2 operator+ (fm2 const& l, fm2 const& r);
+	fm2 operator+ (fm2 const& l, f32 r);
+	fm2 operator+ (f32 l, fm2 const& r);
+	
+	fm2 operator- (fm2 const& l, fm2 const& r);
+	fm2 operator- (fm2 const& l, f32 r);
+	fm2 operator- (f32 l, fm2 const& r);
+	
+	fm2 mul_elementwise (fm2 const& l, fm2 const& r);
+	fm2 operator* (fm2 const& l, f32 r);
+	fm2 operator* (f32 l, fm2 const& r);
+	
+	fm2 div_elementwise (fm2 const& l, fm2 const& r);
+	fm2 operator/ (fm2 const& l, f32 r);
+	fm2 operator/ (f32 l, fm2 const& r);
+	
+	// Matrix multiplication
+	
+	fm2 operator* (fm2 const& l, fm2 const& r);
+	fm2x3 operator* (fm2 const& l, fm2x3 const& r);
+	fv2 operator* (fm2 const& l, fv2 r);
+	fv2 operator* (fv2 l, fm2 const& r);
 } // namespace vector
 

@@ -16,7 +16,7 @@ namespace vector {
 		return arr[i];
 	}
 	
-	s32 iv4::operator[] (int i) const {
+	s32 const& iv4::operator[] (int i) const {
 		return arr[i];
 	}
 	

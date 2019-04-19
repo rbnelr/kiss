@@ -3,11 +3,8 @@
 
 #include "kissmath.hpp"
 
-
-#include <string>
-
-#include "fv3.hpp"
 #include "fv4.hpp"
+#include "fv3.hpp"
 
 namespace vector {
 	
@@ -24,9 +21,9 @@ namespace vector {
 		//// Accessors
 		
 		// get cell with r,c indecies (r=row, c=column)
-		f32 get (int r, int c) const;
+		f32 const& get (int r, int c) const;
 		// get matrix column
-		fv3 get_column (int indx) const;
+		fv3 const& get_column (int indx) const;
 		// get matrix row
 		fv4 get_row (int indx) const;
 		
@@ -34,9 +31,9 @@ namespace vector {
 		
 		fm3x4 ();
 		// supply one value for all cells
-		fm3x4 (f32 all);
+		explicit fm3x4 (f32 all);
 		// supply all cells, in row major order for readability -> c<r><c> (r=row, c=column)
-		fm3x4 (
+		explicit fm3x4 (
 				f32 c00, f32 c01, f32 c02, f32 c03,
 				f32 c10, f32 c11, f32 c12, f32 c13,
 				f32 c20, f32 c21, f32 c22, f32 c23);
@@ -76,13 +73,41 @@ namespace vector {
 		
 		// Elementwise operators
 		
-		fm3x4 operator+ (fm3x4 m);
-		fm3x4 operator- (fm3x4 m);
+		fm3x4& operator+= (f32 r);
+		fm3x4& operator-= (f32 r);
+		fm3x4& operator*= (f32 r);
+		fm3x4& operator/= (f32 r);
+		
+		// Matrix multiplication
+		
+		fm3x4& operator*= (fm3x4 const& r);
 	};
 	
-	fm3x4 operator+ (fm3x4 l, fm3x4 r);
-	fm3x4 operator- (fm3x4 l, fm3x4 r);
-	fm3x4 operator* (fm3x4 l, fm3x4 r);
-	fm3x4 operator/ (fm3x4 l, fm3x4 r);
+	// Elementwise operators
+	
+	fm3x4 operator+ (fm3x4 const& m);
+	fm3x4 operator- (fm3x4 const& m);
+	
+	fm3x4 operator+ (fm3x4 const& l, fm3x4 const& r);
+	fm3x4 operator+ (fm3x4 const& l, f32 r);
+	fm3x4 operator+ (f32 l, fm3x4 const& r);
+	
+	fm3x4 operator- (fm3x4 const& l, fm3x4 const& r);
+	fm3x4 operator- (fm3x4 const& l, f32 r);
+	fm3x4 operator- (f32 l, fm3x4 const& r);
+	
+	fm3x4 mul_elementwise (fm3x4 const& l, fm3x4 const& r);
+	fm3x4 operator* (fm3x4 const& l, f32 r);
+	fm3x4 operator* (f32 l, fm3x4 const& r);
+	
+	fm3x4 div_elementwise (fm3x4 const& l, fm3x4 const& r);
+	fm3x4 operator/ (fm3x4 const& l, f32 r);
+	fm3x4 operator/ (f32 l, fm3x4 const& r);
+	
+	// Matrix multiplication
+	
+	fm3x4 operator* (fm3x4 const& l, fm4 const& r);
+	fv3 operator* (fm3x4 const& l, fv4 r);
+	fv4 operator* (fv3 l, fm3x4 const& r);
 } // namespace vector
 

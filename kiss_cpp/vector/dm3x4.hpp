@@ -3,9 +3,6 @@
 
 #include "kissmath.hpp"
 
-
-#include <string>
-
 #include "dv4.hpp"
 #include "dv3.hpp"
 
@@ -24,9 +21,9 @@ namespace vector {
 		//// Accessors
 		
 		// get cell with r,c indecies (r=row, c=column)
-		f64 get (int r, int c) const;
+		f64 const& get (int r, int c) const;
 		// get matrix column
-		dv3 get_column (int indx) const;
+		dv3 const& get_column (int indx) const;
 		// get matrix row
 		dv4 get_row (int indx) const;
 		
@@ -34,9 +31,9 @@ namespace vector {
 		
 		dm3x4 ();
 		// supply one value for all cells
-		dm3x4 (f64 all);
+		explicit dm3x4 (f64 all);
 		// supply all cells, in row major order for readability -> c<r><c> (r=row, c=column)
-		dm3x4 (
+		explicit dm3x4 (
 				f64 c00, f64 c01, f64 c02, f64 c03,
 				f64 c10, f64 c11, f64 c12, f64 c13,
 				f64 c20, f64 c21, f64 c22, f64 c23);
@@ -76,13 +73,41 @@ namespace vector {
 		
 		// Elementwise operators
 		
-		dm3x4 operator+ (dm3x4 m);
-		dm3x4 operator- (dm3x4 m);
+		dm3x4& operator+= (f64 r);
+		dm3x4& operator-= (f64 r);
+		dm3x4& operator*= (f64 r);
+		dm3x4& operator/= (f64 r);
+		
+		// Matrix multiplication
+		
+		dm3x4& operator*= (dm3x4 const& r);
 	};
 	
-	dm3x4 operator+ (dm3x4 l, dm3x4 r);
-	dm3x4 operator- (dm3x4 l, dm3x4 r);
-	dm3x4 operator* (dm3x4 l, dm3x4 r);
-	dm3x4 operator/ (dm3x4 l, dm3x4 r);
+	// Elementwise operators
+	
+	dm3x4 operator+ (dm3x4 const& m);
+	dm3x4 operator- (dm3x4 const& m);
+	
+	dm3x4 operator+ (dm3x4 const& l, dm3x4 const& r);
+	dm3x4 operator+ (dm3x4 const& l, f64 r);
+	dm3x4 operator+ (f64 l, dm3x4 const& r);
+	
+	dm3x4 operator- (dm3x4 const& l, dm3x4 const& r);
+	dm3x4 operator- (dm3x4 const& l, f64 r);
+	dm3x4 operator- (f64 l, dm3x4 const& r);
+	
+	dm3x4 mul_elementwise (dm3x4 const& l, dm3x4 const& r);
+	dm3x4 operator* (dm3x4 const& l, f64 r);
+	dm3x4 operator* (f64 l, dm3x4 const& r);
+	
+	dm3x4 div_elementwise (dm3x4 const& l, dm3x4 const& r);
+	dm3x4 operator/ (dm3x4 const& l, f64 r);
+	dm3x4 operator/ (f64 l, dm3x4 const& r);
+	
+	// Matrix multiplication
+	
+	dm3x4 operator* (dm3x4 const& l, dm4 const& r);
+	dv3 operator* (dm3x4 const& l, dv4 r);
+	dv4 operator* (dv3 l, dm3x4 const& r);
 } // namespace vector
 
