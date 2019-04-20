@@ -21,15 +21,30 @@ namespace vector {
 		};
 		f64		arr[3];
 		
-		f64& operator[] (int i);
-		f64 const& operator[] (int i) const;
 		
-		dv3 ();
+		inline FORCEINLINE f64& operator[] (int i) {
+			return arr[i];
+		}
+		
+		inline FORCEINLINE f64 const& operator[] (int i) const {
+			return arr[i];
+		}
+		
+		
+		inline FORCEINLINE dv3 () {
+			
+		}
+		
 		// sets all components to one value
 		// implicit constructor -> v3(x,y,z) * 5 will be turned into v3(x,y,z) * v3(5) by to compiler to be able to execute operator*(v3, v3), which is desirable, also v3 a = 0; works
-		dv3 (f64 all);
+		inline FORCEINLINE dv3 (f64 all): x{all}, y{all}, z{all} {
+			
+		}
+		
 		// supply all components
-		dv3 (f64 x, f64 y, f64 z);
+		inline FORCEINLINE dv3 (f64 x, f64 y, f64 z): x{x}, y{y}, z{z} {
+			
+		}
 		// extend vector
 		dv3 (dv2 xy, f64 z);
 		// truncate vector
@@ -47,19 +62,61 @@ namespace vector {
 		explicit operator s64v3 () const;
 		explicit operator u8v3 () const;
 		
-		dv3 operator+= (dv3 r);
-		dv3 operator-= (dv3 r);
-		dv3 operator*= (dv3 r);
-		dv3 operator/= (dv3 r);
+		
+		inline FORCEINLINE dv3 operator+= (dv3 r) {
+			x += r.x;
+			y += r.y;
+			z += r.z;
+			return *this;
+		}
+		
+		inline FORCEINLINE dv3 operator-= (dv3 r) {
+			x -= r.x;
+			y -= r.y;
+			z -= r.z;
+			return *this;
+		}
+		
+		inline FORCEINLINE dv3 operator*= (dv3 r) {
+			x *= r.x;
+			y *= r.y;
+			z *= r.z;
+			return *this;
+		}
+		
+		inline FORCEINLINE dv3 operator/= (dv3 r) {
+			x /= r.x;
+			y /= r.y;
+			z /= r.z;
+			return *this;
+		}
 	};
 	
 	//// arthmethic ops
-	dv3 operator+ (dv3 v);
-	dv3 operator- (dv3 v);
-	dv3 operator+ (dv3 l, dv3 r);
-	dv3 operator- (dv3 l, dv3 r);
-	dv3 operator* (dv3 l, dv3 r);
-	dv3 operator/ (dv3 l, dv3 r);
+	
+	inline FORCEINLINE dv3 operator+ (dv3 v) {
+		return dv3(+v.x, +v.y, +v.z);
+	}
+	
+	inline FORCEINLINE dv3 operator- (dv3 v) {
+		return dv3(-v.x, -v.y, -v.z);
+	}
+	
+	inline FORCEINLINE dv3 operator+ (dv3 l, dv3 r) {
+		return dv3(l.x + r.x, l.y + r.y, l.z + r.z);
+	}
+	
+	inline FORCEINLINE dv3 operator- (dv3 l, dv3 r) {
+		return dv3(l.x - r.x, l.y - r.y, l.z - r.z);
+	}
+	
+	inline FORCEINLINE dv3 operator* (dv3 l, dv3 r) {
+		return dv3(l.x * r.x, l.y * r.y, l.z * r.z);
+	}
+	
+	inline FORCEINLINE dv3 operator/ (dv3 l, dv3 r) {
+		return dv3(l.x / r.x, l.y / r.y, l.z / r.z);
+	}
 	
 	//// comparison ops
 	bv3 operator< (dv3 l, dv3 r);
@@ -74,24 +131,51 @@ namespace vector {
 	dv3 select (bv3 c, dv3 l, dv3 r);
 	
 	//// misc ops
-	dv3 abs (dv3 v);
-	dv3 min (dv3 l, dv3 r);
-	dv3 max (dv3 l, dv3 r);
+	
+	inline FORCEINLINE dv3 abs (dv3 v) {
+		return dv3(abs(v.x), abs(v.y), abs(v.z));
+	}
+	
+	inline FORCEINLINE dv3 min (dv3 l, dv3 r) {
+		return dv3(min(l.x,r.x), min(l.y,r.y), min(l.z,r.z));
+	}
+	
+	inline FORCEINLINE dv3 max (dv3 l, dv3 r) {
+		return dv3(max(l.x,r.x), max(l.y,r.y), max(l.z,r.z));
+	}
 	dv3 clamp (dv3 x, dv3 a=dv3(0), dv3 b=dv3(1));
 	// get min component of vector, optionally get component index via min_index
 	f64 min_component (dv3 v, int* min_index=nullptr);
 	// get max component of vector, optionally get component index via max_index
 	f64 max_component (dv3 v, int* max_index=nullptr);
 	
-	dv3 floor (dv3 v);
-	dv3 ceil (dv3 v);
-	dv3 round (dv3 v);
+	
+	inline FORCEINLINE dv3 floor (dv3 v) {
+		return dv3(floor(v.x), floor(v.y), floor(v.z));
+	}
+	
+	inline FORCEINLINE dv3 ceil (dv3 v) {
+		return dv3(ceil(v.x), ceil(v.y), ceil(v.z));
+	}
+	
+	inline FORCEINLINE dv3 round (dv3 v) {
+		return dv3(round(v.x), round(v.y), round(v.z));
+	}
 	s64v3 floori (dv3 v);
 	s64v3 ceili (dv3 v);
 	s64v3 roundi (dv3 v);
-	dv3 pow (dv3 v, dv3 e);
-	dv3 wrap (dv3 v, dv3 range);
-	dv3 wrap (dv3 v, dv3 a, dv3 b);
+	
+	inline FORCEINLINE dv3 pow (dv3 v, dv3 e) {
+		return dv3(pow(v.x,e.x), pow(v.y,e.y), pow(v.z,e.z));
+	}
+	
+	inline FORCEINLINE dv3 wrap (dv3 v, dv3 range) {
+		return dv3(wrap(v.x,range.x), wrap(v.y,range.y), wrap(v.z,range.z));
+	}
+	
+	inline FORCEINLINE dv3 wrap (dv3 v, dv3 a, dv3 b) {
+		return dv3(wrap(v.x,a.x,b.x), wrap(v.y,a.y,b.y), wrap(v.z,a.z,b.z));
+	}
 	
 	// linear interpolation t=0 -> a ; t=1 -> b ; t=0.5 -> (a+b)/2
 	dv3 lerp (dv3 a, dv3 b, dv3 t);

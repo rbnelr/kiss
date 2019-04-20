@@ -15,7 +15,7 @@ namespace vector {
 		f32 modded = std::fmod(x, range);
 		if (range > 0) {
 			if (modded < 0) modded += range;
-		} else {
+			} else {
 			if (modded > 0) modded += range;
 		}
 		return modded;
@@ -56,11 +56,11 @@ namespace vector {
 	
 	
 	f32 min (f32 l, f32 r) {
-		return std::fmin(l,r);
+		return l <= r ? l : r;
 	}
 	
 	f32 max (f32 l, f32 r) {
-		return std::fmax(l,r);
+		return l >= r ? l : r;
 	}
 	
 	f32 clamp (f32 x, f32 a, f32 b) {
@@ -137,7 +137,7 @@ namespace vector {
 		f64 modded = std::fmod(x, range);
 		if (range > 0) {
 			if (modded < 0) modded += range;
-		} else {
+			} else {
 			if (modded > 0) modded += range;
 		}
 		return modded;
@@ -178,11 +178,11 @@ namespace vector {
 	
 	
 	f64 min (f64 l, f64 r) {
-		return std::fmin(l,r);
+		return l <= r ? l : r;
 	}
 	
 	f64 max (f64 l, f64 r) {
-		return std::fmax(l,r);
+		return l >= r ? l : r;
 	}
 	
 	f64 clamp (f64 x, f64 a, f64 b) {
@@ -259,7 +259,7 @@ namespace vector {
 		s32 modded = x % range;
 		if (range > 0) {
 			if (modded < 0) modded += range;
-		} else {
+			} else {
 			if (modded > 0) modded += range;
 		}
 		return modded;
@@ -340,7 +340,7 @@ namespace vector {
 		s64 modded = x % range;
 		if (range > 0) {
 			if (modded < 0) modded += range;
-		} else {
+			} else {
 			if (modded > 0) modded += range;
 		}
 		return modded;
@@ -421,7 +421,7 @@ namespace vector {
 		s8 modded = x % range;
 		if (range > 0) {
 			if (modded < 0) modded += range;
-		} else {
+			} else {
 			if (modded > 0) modded += range;
 		}
 		return modded;
@@ -502,7 +502,7 @@ namespace vector {
 		u32 modded = x % range;
 		if (range > 0) {
 			if (modded < 0) modded += range;
-		} else {
+			} else {
 			if (modded > 0) modded += range;
 		}
 		return modded;
@@ -557,7 +557,7 @@ namespace vector {
 		u64 modded = x % range;
 		if (range > 0) {
 			if (modded < 0) modded += range;
-		} else {
+			} else {
 			if (modded > 0) modded += range;
 		}
 		return modded;
@@ -612,7 +612,7 @@ namespace vector {
 		u8 modded = x % range;
 		if (range > 0) {
 			if (modded < 0) modded += range;
-		} else {
+			} else {
 			if (modded > 0) modded += range;
 		}
 		return modded;

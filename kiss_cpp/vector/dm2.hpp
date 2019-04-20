@@ -19,39 +19,59 @@ namespace vector {
 		
 		//// Accessors
 		
+		
 		// get cell with r,c indecies (r=row, c=column)
-		f64 const& get (int r, int c) const;
+		inline FORCEINLINE f64 const& get (int r, int c) const {
+			return arr[c][r];
+		}
+		
 		// get matrix column
-		dv2 const& get_column (int indx) const;
+		inline FORCEINLINE dv2 const& get_column (int indx) const {
+			return arr[indx];
+		}
 		// get matrix row
 		dv2 get_row (int indx) const;
 		
 		//// Constructors
 		
-		dm2 ();
+		
+		inline FORCEINLINE dm2 () {
+			
+		}
+		
 		// supply one value for all cells
-		explicit dm2 (f64 all);
+		inline FORCEINLINE explicit dm2 (f64 all): 
+		arr{dv2(all, all),
+			dv2(all, all)} {
+			
+		}
+		
 		// supply all cells, in row major order for readability -> c<r><c> (r=row, c=column)
-		explicit dm2 (
-				f64 c00, f64 c01,
-				f64 c10, f64 c11);
+		inline FORCEINLINE explicit dm2 (f64 c00, f64 c01,
+										 f64 c10, f64 c11): 
+		arr{dv2(c00, c10),
+			dv2(c01, c11)} {
+			
+		}
 		
 		// static rows() and columns() methods are preferred over constructors, to avoid confusion if column or row vectors are supplied to the constructor
 		// supply all row vectors
 		static dm2 rows (dv2 row0, dv2 row1);
 		// supply all cells in row major order
-		static dm2 rows (
-				f64 c00, f64 c01,
-				f64 c10, f64 c11);
+		static dm2 rows (f64 c00, f64 c01,
+						 f64 c10, f64 c11);
 		// supply all column vectors
 		static dm2 columns (dv2 col0, dv2 col1);
 		// supply all cells in column major order
-		static dm2 columns (
-				f64 c00, f64 c10,
-				f64 c01, f64 c11);
+		static dm2 columns (f64 c00, f64 c10,
+							f64 c01, f64 c11);
+		
 		
 		// identity matrix
-		static dm2 identity ();
+		static inline FORCEINLINE dm2 identity () {
+			return dm2(1,0,
+					   0,1);
+		}
 		
 		// Casting operators
 		
@@ -105,9 +125,9 @@ namespace vector {
 	dm2x3 operator* (dm2 const& l, dm2x3 const& r);
 	dv2 operator* (dm2 const& l, dv2 r);
 	dv2 operator* (dv2 l, dm2 const& r);
-	dm2 transpose (dm2 m);
+	dm2 transpose (dm2 const& m);
 	
-	f64 det (dm2 mat);
-	dm2 inverse (dm2 mat);
+	f64 det (dm2 const& mat);
+	dm2 inverse (dm2 const& mat);
 } // namespace vector
 

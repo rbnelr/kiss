@@ -21,15 +21,30 @@ namespace vector {
 		};
 		f32		arr[2];
 		
-		f32& operator[] (int i);
-		f32 const& operator[] (int i) const;
 		
-		fv2 ();
+		inline FORCEINLINE f32& operator[] (int i) {
+			return arr[i];
+		}
+		
+		inline FORCEINLINE f32 const& operator[] (int i) const {
+			return arr[i];
+		}
+		
+		
+		inline FORCEINLINE fv2 () {
+			
+		}
+		
 		// sets all components to one value
 		// implicit constructor -> v3(x,y,z) * 5 will be turned into v3(x,y,z) * v3(5) by to compiler to be able to execute operator*(v3, v3), which is desirable, also v3 a = 0; works
-		fv2 (f32 all);
+		inline FORCEINLINE fv2 (f32 all): x{all}, y{all} {
+			
+		}
+		
 		// supply all components
-		fv2 (f32 x, f32 y);
+		inline FORCEINLINE fv2 (f32 x, f32 y): x{x}, y{y} {
+			
+		}
 		// truncate vector
 		fv2 (fv3 v);
 		// truncate vector
@@ -46,19 +61,57 @@ namespace vector {
 		explicit operator s64v2 () const;
 		explicit operator u8v2 () const;
 		
-		fv2 operator+= (fv2 r);
-		fv2 operator-= (fv2 r);
-		fv2 operator*= (fv2 r);
-		fv2 operator/= (fv2 r);
+		
+		inline FORCEINLINE fv2 operator+= (fv2 r) {
+			x += r.x;
+			y += r.y;
+			return *this;
+		}
+		
+		inline FORCEINLINE fv2 operator-= (fv2 r) {
+			x -= r.x;
+			y -= r.y;
+			return *this;
+		}
+		
+		inline FORCEINLINE fv2 operator*= (fv2 r) {
+			x *= r.x;
+			y *= r.y;
+			return *this;
+		}
+		
+		inline FORCEINLINE fv2 operator/= (fv2 r) {
+			x /= r.x;
+			y /= r.y;
+			return *this;
+		}
 	};
 	
 	//// arthmethic ops
-	fv2 operator+ (fv2 v);
-	fv2 operator- (fv2 v);
-	fv2 operator+ (fv2 l, fv2 r);
-	fv2 operator- (fv2 l, fv2 r);
-	fv2 operator* (fv2 l, fv2 r);
-	fv2 operator/ (fv2 l, fv2 r);
+	
+	inline FORCEINLINE fv2 operator+ (fv2 v) {
+		return fv2(+v.x, +v.y);
+	}
+	
+	inline FORCEINLINE fv2 operator- (fv2 v) {
+		return fv2(-v.x, -v.y);
+	}
+	
+	inline FORCEINLINE fv2 operator+ (fv2 l, fv2 r) {
+		return fv2(l.x + r.x, l.y + r.y);
+	}
+	
+	inline FORCEINLINE fv2 operator- (fv2 l, fv2 r) {
+		return fv2(l.x - r.x, l.y - r.y);
+	}
+	
+	inline FORCEINLINE fv2 operator* (fv2 l, fv2 r) {
+		return fv2(l.x * r.x, l.y * r.y);
+	}
+	
+	inline FORCEINLINE fv2 operator/ (fv2 l, fv2 r) {
+		return fv2(l.x / r.x, l.y / r.y);
+	}
 	
 	//// comparison ops
 	bv2 operator< (fv2 l, fv2 r);
@@ -73,24 +126,51 @@ namespace vector {
 	fv2 select (bv2 c, fv2 l, fv2 r);
 	
 	//// misc ops
-	fv2 abs (fv2 v);
-	fv2 min (fv2 l, fv2 r);
-	fv2 max (fv2 l, fv2 r);
+	
+	inline FORCEINLINE fv2 abs (fv2 v) {
+		return fv2(abs(v.x), abs(v.y));
+	}
+	
+	inline FORCEINLINE fv2 min (fv2 l, fv2 r) {
+		return fv2(min(l.x,r.x), min(l.y,r.y));
+	}
+	
+	inline FORCEINLINE fv2 max (fv2 l, fv2 r) {
+		return fv2(max(l.x,r.x), max(l.y,r.y));
+	}
 	fv2 clamp (fv2 x, fv2 a=fv2(0), fv2 b=fv2(1));
 	// get min component of vector, optionally get component index via min_index
 	f32 min_component (fv2 v, int* min_index=nullptr);
 	// get max component of vector, optionally get component index via max_index
 	f32 max_component (fv2 v, int* max_index=nullptr);
 	
-	fv2 floor (fv2 v);
-	fv2 ceil (fv2 v);
-	fv2 round (fv2 v);
+	
+	inline FORCEINLINE fv2 floor (fv2 v) {
+		return fv2(floor(v.x), floor(v.y));
+	}
+	
+	inline FORCEINLINE fv2 ceil (fv2 v) {
+		return fv2(ceil(v.x), ceil(v.y));
+	}
+	
+	inline FORCEINLINE fv2 round (fv2 v) {
+		return fv2(round(v.x), round(v.y));
+	}
 	iv2 floori (fv2 v);
 	iv2 ceili (fv2 v);
 	iv2 roundi (fv2 v);
-	fv2 pow (fv2 v, fv2 e);
-	fv2 wrap (fv2 v, fv2 range);
-	fv2 wrap (fv2 v, fv2 a, fv2 b);
+	
+	inline FORCEINLINE fv2 pow (fv2 v, fv2 e) {
+		return fv2(pow(v.x,e.x), pow(v.y,e.y));
+	}
+	
+	inline FORCEINLINE fv2 wrap (fv2 v, fv2 range) {
+		return fv2(wrap(v.x,range.x), wrap(v.y,range.y));
+	}
+	
+	inline FORCEINLINE fv2 wrap (fv2 v, fv2 a, fv2 b) {
+		return fv2(wrap(v.x,a.x,b.x), wrap(v.y,a.y,b.y));
+	}
 	
 	// linear interpolation t=0 -> a ; t=1 -> b ; t=0.5 -> (a+b)/2
 	fv2 lerp (fv2 a, fv2 b, fv2 t);

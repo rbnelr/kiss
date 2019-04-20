@@ -12,16 +12,6 @@ namespace vector {
 	//// Accessors
 	
 	
-	// get cell with r,c indecies (r=row, c=column)
-	f64 const& dm2::get (int r, int c) const {
-		return arr[c][r];
-	}
-	
-	// get matrix column
-	dv2 const& dm2::get_column (int indx) const {
-		return arr[indx];
-	}
-	
 	// get matrix row
 	dv2 dm2::get_row (int indx) const {
 		return dv2(arr[0][indx], arr[1][indx]);
@@ -30,110 +20,70 @@ namespace vector {
 	//// Constructors
 	
 	
-	dm2::dm2 () {
-		
-	}
-	
-	// supply one value for all cells
-	dm2::dm2 (f64 all): 
-	arr{
-		dv2(all, all),
-		dv2(all, all)} {
-		
-	}
-	
-	// supply all cells, in row major order for readability -> c<r><c> (r=row, c=column)
-	dm2::dm2 (
-			f64 c00, f64 c01,
-			f64 c10, f64 c11): 
-	arr{
-		dv2(c00, c10),
-		dv2(c01, c11)} {
-		
-	}
-	
 	// static rows() and columns() methods are preferred over constructors, to avoid confusion if column or row vectors are supplied to the constructor
 	
 	// supply all row vectors
 	dm2 dm2::rows (dv2 row0, dv2 row1) {
-		return dm2(
-				row0[0], row0[1],
-				row1[0], row1[1]);
+		return dm2(row0[0], row0[1],
+				   row1[0], row1[1]);
 	}
 	
 	// supply all cells in row major order
-	dm2 dm2::rows (
-			f64 c00, f64 c01,
-			f64 c10, f64 c11) {
-		return dm2(
-				c00, c01,
-				c10, c11);
+	dm2 dm2::rows (f64 c00, f64 c01,
+				   f64 c10, f64 c11) {
+		return dm2(c00, c01,
+				   c10, c11);
 	}
 	
 	// supply all column vectors
 	dm2 dm2::columns (dv2 col0, dv2 col1) {
-		return dm2(
-				col0[0], col1[0],
-				col0[1], col1[1]);
+		return dm2(col0[0], col1[0],
+				   col0[1], col1[1]);
 	}
 	
 	// supply all cells in column major order
-	dm2 dm2::columns (
-			f64 c00, f64 c10,
-			f64 c01, f64 c11) {
-		return dm2(
-				c00, c01,
-				c10, c11);
+	dm2 dm2::columns (f64 c00, f64 c10,
+					  f64 c01, f64 c11) {
+		return dm2(c00, c01,
+				   c10, c11);
 	}
 	
-	
-	// identity matrix
-	dm2 dm2::identity () {
-		return dm2(
-				1,0,
-				0,1);
-	}
 	
 	// Casting operators
 	
 	
 	// extend/truncate matrix of other size
 	dm2::operator dm3 () const {
-		return dm3(
-				arr[0][0], arr[1][0],         0,
-				arr[0][1], arr[1][1],         0,
-				        0,         0,         1);
+		return dm3(arr[0][0], arr[1][0],         0,
+				   arr[0][1], arr[1][1],         0,
+				           0,         0,         1);
 	}
 	
 	// extend/truncate matrix of other size
 	dm2::operator dm4 () const {
-		return dm4(
-				arr[0][0], arr[1][0],         0,         0,
-				arr[0][1], arr[1][1],         0,         0,
-				        0,         0,         1,         0,
-				        0,         0,         0,         1);
+		return dm4(arr[0][0], arr[1][0],         0,         0,
+				   arr[0][1], arr[1][1],         0,         0,
+				           0,         0,         1,         0,
+				           0,         0,         0,         1);
 	}
 	
 	// extend/truncate matrix of other size
 	dm2::operator dm2x3 () const {
-		return dm2x3(
-				arr[0][0], arr[1][0],         0,
-				arr[0][1], arr[1][1],         0);
+		return dm2x3(arr[0][0], arr[1][0],         0,
+					 arr[0][1], arr[1][1],         0);
 	}
 	
 	// extend/truncate matrix of other size
 	dm2::operator dm3x4 () const {
-		return dm3x4(
-				arr[0][0], arr[1][0],         0,         0,
-				arr[0][1], arr[1][1],         0,         0,
-				        0,         0,         1,         0);
+		return dm3x4(arr[0][0], arr[1][0],         0,         0,
+					 arr[0][1], arr[1][1],         0,         0,
+					         0,         0,         1,         0);
 	}
 	
 	// typecast
 	dm2::operator fm2 () const {
-		return fm2(
-				(f32)arr[0][0], (f32)arr[0][1],
-				(f32)arr[1][0], (f32)arr[1][1]);
+		return fm2((f32)arr[0][0], (f32)arr[0][1],
+				   (f32)arr[1][0], (f32)arr[1][1]);
 	}
 	
 	// Elementwise operators
@@ -171,91 +121,77 @@ namespace vector {
 	
 	
 	dm2 operator+ (dm2 const& m) {
-		return dm2(
-				+m.arr[0][0], +m.arr[1][0],
-				+m.arr[0][1], +m.arr[1][1]);
+		return dm2(+m.arr[0][0], +m.arr[1][0],
+				   +m.arr[0][1], +m.arr[1][1]);
 	}
 	
 	dm2 operator- (dm2 const& m) {
-		return dm2(
-				-m.arr[0][0], -m.arr[1][0],
-				-m.arr[0][1], -m.arr[1][1]);
+		return dm2(-m.arr[0][0], -m.arr[1][0],
+				   -m.arr[0][1], -m.arr[1][1]);
 	}
 	
 	
 	dm2 operator+ (dm2 const& l, dm2 const& r) {
-		return dm2(
-				l.arr[0][0] + r.arr[0][0], l.arr[1][0] + r.arr[1][0],
-				l.arr[0][1] + r.arr[0][1], l.arr[1][1] + r.arr[1][1]);
+		return dm2(l.arr[0][0] + r.arr[0][0], l.arr[1][0] + r.arr[1][0],
+				   l.arr[0][1] + r.arr[0][1], l.arr[1][1] + r.arr[1][1]);
 	}
 	
 	dm2 operator+ (dm2 const& l, f64 r) {
-		return dm2(
-				l.arr[0][0] + r, l.arr[1][0] + r,
-				l.arr[0][1] + r, l.arr[1][1] + r);
+		return dm2(l.arr[0][0] + r, l.arr[1][0] + r,
+				   l.arr[0][1] + r, l.arr[1][1] + r);
 	}
 	
 	dm2 operator+ (f64 l, dm2 const& r) {
-		return dm2(
-				l + r.arr[0][0], l + r.arr[1][0],
-				l + r.arr[0][1], l + r.arr[1][1]);
+		return dm2(l + r.arr[0][0], l + r.arr[1][0],
+				   l + r.arr[0][1], l + r.arr[1][1]);
 	}
 	
 	
 	dm2 operator- (dm2 const& l, dm2 const& r) {
-		return dm2(
-				l.arr[0][0] - r.arr[0][0], l.arr[1][0] - r.arr[1][0],
-				l.arr[0][1] - r.arr[0][1], l.arr[1][1] - r.arr[1][1]);
+		return dm2(l.arr[0][0] - r.arr[0][0], l.arr[1][0] - r.arr[1][0],
+				   l.arr[0][1] - r.arr[0][1], l.arr[1][1] - r.arr[1][1]);
 	}
 	
 	dm2 operator- (dm2 const& l, f64 r) {
-		return dm2(
-				l.arr[0][0] - r, l.arr[1][0] - r,
-				l.arr[0][1] - r, l.arr[1][1] - r);
+		return dm2(l.arr[0][0] - r, l.arr[1][0] - r,
+				   l.arr[0][1] - r, l.arr[1][1] - r);
 	}
 	
 	dm2 operator- (f64 l, dm2 const& r) {
-		return dm2(
-				l - r.arr[0][0], l - r.arr[1][0],
-				l - r.arr[0][1], l - r.arr[1][1]);
+		return dm2(l - r.arr[0][0], l - r.arr[1][0],
+				   l - r.arr[0][1], l - r.arr[1][1]);
 	}
 	
 	
 	dm2 mul_elementwise (dm2 const& l, dm2 const& r) {
-		return dm2(
-				l.arr[0][0] * r.arr[0][0], l.arr[1][0] * r.arr[1][0],
-				l.arr[0][1] * r.arr[0][1], l.arr[1][1] * r.arr[1][1]);
+		return dm2(l.arr[0][0] * r.arr[0][0], l.arr[1][0] * r.arr[1][0],
+				   l.arr[0][1] * r.arr[0][1], l.arr[1][1] * r.arr[1][1]);
 	}
 	
 	dm2 operator* (dm2 const& l, f64 r) {
-		return dm2(
-				l.arr[0][0] * r, l.arr[1][0] * r,
-				l.arr[0][1] * r, l.arr[1][1] * r);
+		return dm2(l.arr[0][0] * r, l.arr[1][0] * r,
+				   l.arr[0][1] * r, l.arr[1][1] * r);
 	}
 	
 	dm2 operator* (f64 l, dm2 const& r) {
-		return dm2(
-				l * r.arr[0][0], l * r.arr[1][0],
-				l * r.arr[0][1], l * r.arr[1][1]);
+		return dm2(l * r.arr[0][0], l * r.arr[1][0],
+				   l * r.arr[0][1], l * r.arr[1][1]);
 	}
 	
 	
 	dm2 div_elementwise (dm2 const& l, dm2 const& r) {
-		return dm2(
-				l.arr[0][0] / r.arr[0][0], l.arr[1][0] / r.arr[1][0],
-				l.arr[0][1] / r.arr[0][1], l.arr[1][1] / r.arr[1][1]);
+		return dm2(l.arr[0][0] / r.arr[0][0], l.arr[1][0] / r.arr[1][0],
+				   l.arr[0][1] / r.arr[0][1], l.arr[1][1] / r.arr[1][1]);
 	}
 	
 	dm2 operator/ (dm2 const& l, f64 r) {
-		return dm2(
-				l.arr[0][0] / r, l.arr[1][0] / r,
-				l.arr[0][1] / r, l.arr[1][1] / r);
+		return dm2(l.arr[0][0] / r, l.arr[1][0] / r,
+				   l.arr[0][1] / r, l.arr[1][1] / r);
 	}
 	
 	dm2 operator/ (f64 l, dm2 const& r) {
-		return dm2(
-				l / r.arr[0][0], l / r.arr[1][0],
-				l / r.arr[0][1], l / r.arr[1][1]);
+		return dm2(l / r.arr[0][0], l / r.arr[1][0],
+				   l / r.arr[0][1], l / r.arr[1][1]);
 	}
 	
 	// Matrix ops
@@ -290,7 +226,7 @@ namespace vector {
 		return ret;
 	}
 	
-	dm2 transpose (dm2 m) {
+	dm2 transpose (dm2 const& m) {
 		return dm2::rows(m.arr[0], m.arr[1]);
 	}
 	
@@ -300,23 +236,22 @@ namespace vector {
 	f64 c = mat.arr[1][0]; \
 	f64 d = mat.arr[1][1];
 	
-	f64 det (dm2 mat) {
+	f64 det (dm2 const& mat) {
 		// optimized from:  // 2 muls, 1 adds, 0 divs = 3 ops
 		// to:              // 2 muls, 1 adds, 0 divs = 3 ops
 		LETTERIFY
 		
-		return a * d - b * c;
+		return a*d - b*c;
 	}
 	
-	dm2 inverse (dm2 mat) {
+	dm2 inverse (dm2 const& mat) {
 		// optimized from:  // 6 muls, 2 adds, 1 divs = 9 ops
 		// to:              // 6 muls, 2 adds, 1 divs = 9 ops
 		LETTERIFY
 		
 		f64 det;
 		{ // clac determinate
-			
-			det = a * d - b * c;
+			det = a*d - b*c;
 		}
 		f64 inv_det = f64(1) / det;
 		f64 ninv_det = -inv_det;

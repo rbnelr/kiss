@@ -21,15 +21,30 @@ namespace vector {
 		};
 		bool		arr[4];
 		
-		bool& operator[] (int i);
-		bool const& operator[] (int i) const;
 		
-		bv4 ();
+		inline FORCEINLINE bool& operator[] (int i) {
+			return arr[i];
+		}
+		
+		inline FORCEINLINE bool const& operator[] (int i) const {
+			return arr[i];
+		}
+		
+		
+		inline FORCEINLINE bv4 () {
+			
+		}
+		
 		// sets all components to one value
 		// implicit constructor -> v3(x,y,z) * 5 will be turned into v3(x,y,z) * v3(5) by to compiler to be able to execute operator*(v3, v3), which is desirable, also v3 a = 0; works
-		bv4 (bool all);
+		inline FORCEINLINE bv4 (bool all): x{all}, y{all}, z{all}, w{all} {
+			
+		}
+		
 		// supply all components
-		bv4 (bool x, bool y, bool z, bool w);
+		inline FORCEINLINE bv4 (bool x, bool y, bool z, bool w): x{x}, y{y}, z{z}, w{w} {
+			
+		}
 		// extend vector
 		bv4 (bv2 xy, bool z, bool w);
 		// extend vector
@@ -51,9 +66,18 @@ namespace vector {
 	bool any (bv4 v);
 	
 	//// arthmethic ops
-	bv4 operator! (bv4 v);
-	bv4 operator&& (bv4 l, bv4 r);
-	bv4 operator|| (bv4 l, bv4 r);
+	
+	inline FORCEINLINE bv4 operator! (bv4 v) {
+		return bv4(!v.x, !v.y, !v.z, !v.w);
+	}
+	
+	inline FORCEINLINE bv4 operator&& (bv4 l, bv4 r) {
+		return bv4(l.x && r.x, l.y && r.y, l.z && r.z, l.w && r.w);
+	}
+	
+	inline FORCEINLINE bv4 operator|| (bv4 l, bv4 r) {
+		return bv4(l.x || r.x, l.y || r.y, l.z || r.z, l.w || r.w);
+	}
 	
 	//// comparison ops
 	bv4 operator== (bv4 l, bv4 r);

@@ -21,15 +21,30 @@ namespace vector {
 		};
 		bool		arr[2];
 		
-		bool& operator[] (int i);
-		bool const& operator[] (int i) const;
 		
-		bv2 ();
+		inline FORCEINLINE bool& operator[] (int i) {
+			return arr[i];
+		}
+		
+		inline FORCEINLINE bool const& operator[] (int i) const {
+			return arr[i];
+		}
+		
+		
+		inline FORCEINLINE bv2 () {
+			
+		}
+		
 		// sets all components to one value
 		// implicit constructor -> v3(x,y,z) * 5 will be turned into v3(x,y,z) * v3(5) by to compiler to be able to execute operator*(v3, v3), which is desirable, also v3 a = 0; works
-		bv2 (bool all);
+		inline FORCEINLINE bv2 (bool all): x{all}, y{all} {
+			
+		}
+		
 		// supply all components
-		bv2 (bool x, bool y);
+		inline FORCEINLINE bv2 (bool x, bool y): x{x}, y{y} {
+			
+		}
 		// truncate vector
 		bv2 (bv3 v);
 		// truncate vector
@@ -49,9 +64,18 @@ namespace vector {
 	bool any (bv2 v);
 	
 	//// arthmethic ops
-	bv2 operator! (bv2 v);
-	bv2 operator&& (bv2 l, bv2 r);
-	bv2 operator|| (bv2 l, bv2 r);
+	
+	inline FORCEINLINE bv2 operator! (bv2 v) {
+		return bv2(!v.x, !v.y);
+	}
+	
+	inline FORCEINLINE bv2 operator&& (bv2 l, bv2 r) {
+		return bv2(l.x && r.x, l.y && r.y);
+	}
+	
+	inline FORCEINLINE bv2 operator|| (bv2 l, bv2 r) {
+		return bv2(l.x || r.x, l.y || r.y);
+	}
 	
 	//// comparison ops
 	bv2 operator== (bv2 l, bv2 r);

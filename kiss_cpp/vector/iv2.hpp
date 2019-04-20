@@ -21,15 +21,30 @@ namespace vector {
 		};
 		s32		arr[2];
 		
-		s32& operator[] (int i);
-		s32 const& operator[] (int i) const;
 		
-		iv2 ();
+		inline FORCEINLINE s32& operator[] (int i) {
+			return arr[i];
+		}
+		
+		inline FORCEINLINE s32 const& operator[] (int i) const {
+			return arr[i];
+		}
+		
+		
+		inline FORCEINLINE iv2 () {
+			
+		}
+		
 		// sets all components to one value
 		// implicit constructor -> v3(x,y,z) * 5 will be turned into v3(x,y,z) * v3(5) by to compiler to be able to execute operator*(v3, v3), which is desirable, also v3 a = 0; works
-		iv2 (s32 all);
+		inline FORCEINLINE iv2 (s32 all): x{all}, y{all} {
+			
+		}
+		
 		// supply all components
-		iv2 (s32 x, s32 y);
+		inline FORCEINLINE iv2 (s32 x, s32 y): x{x}, y{y} {
+			
+		}
 		// truncate vector
 		iv2 (iv3 v);
 		// truncate vector
@@ -46,19 +61,57 @@ namespace vector {
 		explicit operator s64v2 () const;
 		explicit operator u8v2 () const;
 		
-		iv2 operator+= (iv2 r);
-		iv2 operator-= (iv2 r);
-		iv2 operator*= (iv2 r);
-		iv2 operator/= (iv2 r);
+		
+		inline FORCEINLINE iv2 operator+= (iv2 r) {
+			x += r.x;
+			y += r.y;
+			return *this;
+		}
+		
+		inline FORCEINLINE iv2 operator-= (iv2 r) {
+			x -= r.x;
+			y -= r.y;
+			return *this;
+		}
+		
+		inline FORCEINLINE iv2 operator*= (iv2 r) {
+			x *= r.x;
+			y *= r.y;
+			return *this;
+		}
+		
+		inline FORCEINLINE iv2 operator/= (iv2 r) {
+			x /= r.x;
+			y /= r.y;
+			return *this;
+		}
 	};
 	
 	//// arthmethic ops
-	iv2 operator+ (iv2 v);
-	iv2 operator- (iv2 v);
-	iv2 operator+ (iv2 l, iv2 r);
-	iv2 operator- (iv2 l, iv2 r);
-	iv2 operator* (iv2 l, iv2 r);
-	iv2 operator/ (iv2 l, iv2 r);
+	
+	inline FORCEINLINE iv2 operator+ (iv2 v) {
+		return iv2(+v.x, +v.y);
+	}
+	
+	inline FORCEINLINE iv2 operator- (iv2 v) {
+		return iv2(-v.x, -v.y);
+	}
+	
+	inline FORCEINLINE iv2 operator+ (iv2 l, iv2 r) {
+		return iv2(l.x + r.x, l.y + r.y);
+	}
+	
+	inline FORCEINLINE iv2 operator- (iv2 l, iv2 r) {
+		return iv2(l.x - r.x, l.y - r.y);
+	}
+	
+	inline FORCEINLINE iv2 operator* (iv2 l, iv2 r) {
+		return iv2(l.x * r.x, l.y * r.y);
+	}
+	
+	inline FORCEINLINE iv2 operator/ (iv2 l, iv2 r) {
+		return iv2(l.x / r.x, l.y / r.y);
+	}
 	
 	//// comparison ops
 	bv2 operator< (iv2 l, iv2 r);
@@ -73,17 +126,32 @@ namespace vector {
 	iv2 select (bv2 c, iv2 l, iv2 r);
 	
 	//// misc ops
-	iv2 abs (iv2 v);
-	iv2 min (iv2 l, iv2 r);
-	iv2 max (iv2 l, iv2 r);
+	
+	inline FORCEINLINE iv2 abs (iv2 v) {
+		return iv2(abs(v.x), abs(v.y));
+	}
+	
+	inline FORCEINLINE iv2 min (iv2 l, iv2 r) {
+		return iv2(min(l.x,r.x), min(l.y,r.y));
+	}
+	
+	inline FORCEINLINE iv2 max (iv2 l, iv2 r) {
+		return iv2(max(l.x,r.x), max(l.y,r.y));
+	}
 	iv2 clamp (iv2 x, iv2 a=iv2(0), iv2 b=iv2(1));
 	// get min component of vector, optionally get component index via min_index
 	s32 min_component (iv2 v, int* min_index=nullptr);
 	// get max component of vector, optionally get component index via max_index
 	s32 max_component (iv2 v, int* max_index=nullptr);
 	
-	iv2 wrap (iv2 v, iv2 range);
-	iv2 wrap (iv2 v, iv2 a, iv2 b);
+	
+	inline FORCEINLINE iv2 wrap (iv2 v, iv2 range) {
+		return iv2(wrap(v.x,range.x), wrap(v.y,range.y));
+	}
+	
+	inline FORCEINLINE iv2 wrap (iv2 v, iv2 a, iv2 b) {
+		return iv2(wrap(v.x,a.x,b.x), wrap(v.y,a.y,b.y));
+	}
 	
 	fv2 to_rad (iv2 deg);
 	// degress "literal", converts degrees to radiants

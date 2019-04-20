@@ -19,42 +19,65 @@ namespace vector {
 		
 		//// Accessors
 		
+		
 		// get cell with r,c indecies (r=row, c=column)
-		f32 const& get (int r, int c) const;
+		inline FORCEINLINE f32 const& get (int r, int c) const {
+			return arr[c][r];
+		}
+		
 		// get matrix column
-		fv3 const& get_column (int indx) const;
+		inline FORCEINLINE fv3 const& get_column (int indx) const {
+			return arr[indx];
+		}
 		// get matrix row
 		fv3 get_row (int indx) const;
 		
 		//// Constructors
 		
-		fm3 ();
+		
+		inline FORCEINLINE fm3 () {
+			
+		}
+		
 		// supply one value for all cells
-		explicit fm3 (f32 all);
+		inline FORCEINLINE explicit fm3 (f32 all): 
+		arr{fv3(all, all, all),
+			fv3(all, all, all),
+			fv3(all, all, all)} {
+			
+		}
+		
 		// supply all cells, in row major order for readability -> c<r><c> (r=row, c=column)
-		explicit fm3 (
-				f32 c00, f32 c01, f32 c02,
-				f32 c10, f32 c11, f32 c12,
-				f32 c20, f32 c21, f32 c22);
+		inline FORCEINLINE explicit fm3 (f32 c00, f32 c01, f32 c02,
+										 f32 c10, f32 c11, f32 c12,
+										 f32 c20, f32 c21, f32 c22): 
+		arr{fv3(c00, c10, c20),
+			fv3(c01, c11, c21),
+			fv3(c02, c12, c22)} {
+			
+		}
 		
 		// static rows() and columns() methods are preferred over constructors, to avoid confusion if column or row vectors are supplied to the constructor
 		// supply all row vectors
 		static fm3 rows (fv3 row0, fv3 row1, fv3 row2);
 		// supply all cells in row major order
-		static fm3 rows (
-				f32 c00, f32 c01, f32 c02,
-				f32 c10, f32 c11, f32 c12,
-				f32 c20, f32 c21, f32 c22);
+		static fm3 rows (f32 c00, f32 c01, f32 c02,
+						 f32 c10, f32 c11, f32 c12,
+						 f32 c20, f32 c21, f32 c22);
 		// supply all column vectors
 		static fm3 columns (fv3 col0, fv3 col1, fv3 col2);
 		// supply all cells in column major order
-		static fm3 columns (
-				f32 c00, f32 c10, f32 c20,
-				f32 c01, f32 c11, f32 c21,
-				f32 c02, f32 c12, f32 c22);
+		static fm3 columns (f32 c00, f32 c10, f32 c20,
+							f32 c01, f32 c11, f32 c21,
+							f32 c02, f32 c12, f32 c22);
+		
 		
 		// identity matrix
-		static fm3 identity ();
+		static inline FORCEINLINE fm3 identity () {
+			return fm3(1,0,0,
+					   0,1,0,
+					   0,0,1);
+		}
 		
 		// Casting operators
 		
@@ -108,9 +131,9 @@ namespace vector {
 	fm3x4 operator* (fm3 const& l, fm3x4 const& r);
 	fv3 operator* (fm3 const& l, fv3 r);
 	fv3 operator* (fv3 l, fm3 const& r);
-	fm3 transpose (fm3 m);
+	fm3 transpose (fm3 const& m);
 	
-	f32 det (fm3 mat);
-	fm3 inverse (fm3 mat);
+	f32 det (fm3 const& mat);
+	fm3 inverse (fm3 const& mat);
 } // namespace vector
 

@@ -21,15 +21,30 @@ namespace vector {
 		};
 		u8		arr[3];
 		
-		u8& operator[] (int i);
-		u8 const& operator[] (int i) const;
 		
-		u8v3 ();
+		inline FORCEINLINE u8& operator[] (int i) {
+			return arr[i];
+		}
+		
+		inline FORCEINLINE u8 const& operator[] (int i) const {
+			return arr[i];
+		}
+		
+		
+		inline FORCEINLINE u8v3 () {
+			
+		}
+		
 		// sets all components to one value
 		// implicit constructor -> v3(x,y,z) * 5 will be turned into v3(x,y,z) * v3(5) by to compiler to be able to execute operator*(v3, v3), which is desirable, also v3 a = 0; works
-		u8v3 (u8 all);
+		inline FORCEINLINE u8v3 (u8 all): x{all}, y{all}, z{all} {
+			
+		}
+		
 		// supply all components
-		u8v3 (u8 x, u8 y, u8 z);
+		inline FORCEINLINE u8v3 (u8 x, u8 y, u8 z): x{x}, y{y}, z{z} {
+			
+		}
 		// extend vector
 		u8v3 (u8v2 xy, u8 z);
 		// truncate vector
@@ -47,19 +62,61 @@ namespace vector {
 		explicit operator iv3 () const;
 		explicit operator s64v3 () const;
 		
-		u8v3 operator+= (u8v3 r);
-		u8v3 operator-= (u8v3 r);
-		u8v3 operator*= (u8v3 r);
-		u8v3 operator/= (u8v3 r);
+		
+		inline FORCEINLINE u8v3 operator+= (u8v3 r) {
+			x += r.x;
+			y += r.y;
+			z += r.z;
+			return *this;
+		}
+		
+		inline FORCEINLINE u8v3 operator-= (u8v3 r) {
+			x -= r.x;
+			y -= r.y;
+			z -= r.z;
+			return *this;
+		}
+		
+		inline FORCEINLINE u8v3 operator*= (u8v3 r) {
+			x *= r.x;
+			y *= r.y;
+			z *= r.z;
+			return *this;
+		}
+		
+		inline FORCEINLINE u8v3 operator/= (u8v3 r) {
+			x /= r.x;
+			y /= r.y;
+			z /= r.z;
+			return *this;
+		}
 	};
 	
 	//// arthmethic ops
-	u8v3 operator+ (u8v3 v);
-	u8v3 operator- (u8v3 v);
-	u8v3 operator+ (u8v3 l, u8v3 r);
-	u8v3 operator- (u8v3 l, u8v3 r);
-	u8v3 operator* (u8v3 l, u8v3 r);
-	u8v3 operator/ (u8v3 l, u8v3 r);
+	
+	inline FORCEINLINE u8v3 operator+ (u8v3 v) {
+		return u8v3(+v.x, +v.y, +v.z);
+	}
+	
+	inline FORCEINLINE u8v3 operator- (u8v3 v) {
+		return u8v3(-v.x, -v.y, -v.z);
+	}
+	
+	inline FORCEINLINE u8v3 operator+ (u8v3 l, u8v3 r) {
+		return u8v3(l.x + r.x, l.y + r.y, l.z + r.z);
+	}
+	
+	inline FORCEINLINE u8v3 operator- (u8v3 l, u8v3 r) {
+		return u8v3(l.x - r.x, l.y - r.y, l.z - r.z);
+	}
+	
+	inline FORCEINLINE u8v3 operator* (u8v3 l, u8v3 r) {
+		return u8v3(l.x * r.x, l.y * r.y, l.z * r.z);
+	}
+	
+	inline FORCEINLINE u8v3 operator/ (u8v3 l, u8v3 r) {
+		return u8v3(l.x / r.x, l.y / r.y, l.z / r.z);
+	}
 	
 	//// comparison ops
 	bv3 operator< (u8v3 l, u8v3 r);
@@ -74,17 +131,32 @@ namespace vector {
 	u8v3 select (bv3 c, u8v3 l, u8v3 r);
 	
 	//// misc ops
-	u8v3 abs (u8v3 v);
-	u8v3 min (u8v3 l, u8v3 r);
-	u8v3 max (u8v3 l, u8v3 r);
+	
+	inline FORCEINLINE u8v3 abs (u8v3 v) {
+		return u8v3(abs(v.x), abs(v.y), abs(v.z));
+	}
+	
+	inline FORCEINLINE u8v3 min (u8v3 l, u8v3 r) {
+		return u8v3(min(l.x,r.x), min(l.y,r.y), min(l.z,r.z));
+	}
+	
+	inline FORCEINLINE u8v3 max (u8v3 l, u8v3 r) {
+		return u8v3(max(l.x,r.x), max(l.y,r.y), max(l.z,r.z));
+	}
 	u8v3 clamp (u8v3 x, u8v3 a=u8v3(0), u8v3 b=u8v3(1));
 	// get min component of vector, optionally get component index via min_index
 	u8 min_component (u8v3 v, int* min_index=nullptr);
 	// get max component of vector, optionally get component index via max_index
 	u8 max_component (u8v3 v, int* max_index=nullptr);
 	
-	u8v3 wrap (u8v3 v, u8v3 range);
-	u8v3 wrap (u8v3 v, u8v3 a, u8v3 b);
+	
+	inline FORCEINLINE u8v3 wrap (u8v3 v, u8v3 range) {
+		return u8v3(wrap(v.x,range.x), wrap(v.y,range.y), wrap(v.z,range.z));
+	}
+	
+	inline FORCEINLINE u8v3 wrap (u8v3 v, u8v3 a, u8v3 b) {
+		return u8v3(wrap(v.x,a.x,b.x), wrap(v.y,a.y,b.y), wrap(v.z,a.z,b.z));
+	}
 	
 	fv3 to_rad (u8v3 deg);
 	// degress "literal", converts degrees to radiants

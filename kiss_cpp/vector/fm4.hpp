@@ -19,45 +19,71 @@ namespace vector {
 		
 		//// Accessors
 		
+		
 		// get cell with r,c indecies (r=row, c=column)
-		f32 const& get (int r, int c) const;
+		inline FORCEINLINE f32 const& get (int r, int c) const {
+			return arr[c][r];
+		}
+		
 		// get matrix column
-		fv4 const& get_column (int indx) const;
+		inline FORCEINLINE fv4 const& get_column (int indx) const {
+			return arr[indx];
+		}
 		// get matrix row
 		fv4 get_row (int indx) const;
 		
 		//// Constructors
 		
-		fm4 ();
+		
+		inline FORCEINLINE fm4 () {
+			
+		}
+		
 		// supply one value for all cells
-		explicit fm4 (f32 all);
+		inline FORCEINLINE explicit fm4 (f32 all): 
+		arr{fv4(all, all, all, all),
+			fv4(all, all, all, all),
+			fv4(all, all, all, all),
+			fv4(all, all, all, all)} {
+			
+		}
+		
 		// supply all cells, in row major order for readability -> c<r><c> (r=row, c=column)
-		explicit fm4 (
-				f32 c00, f32 c01, f32 c02, f32 c03,
-				f32 c10, f32 c11, f32 c12, f32 c13,
-				f32 c20, f32 c21, f32 c22, f32 c23,
-				f32 c30, f32 c31, f32 c32, f32 c33);
+		inline FORCEINLINE explicit fm4 (f32 c00, f32 c01, f32 c02, f32 c03,
+										 f32 c10, f32 c11, f32 c12, f32 c13,
+										 f32 c20, f32 c21, f32 c22, f32 c23,
+										 f32 c30, f32 c31, f32 c32, f32 c33): 
+		arr{fv4(c00, c10, c20, c30),
+			fv4(c01, c11, c21, c31),
+			fv4(c02, c12, c22, c32),
+			fv4(c03, c13, c23, c33)} {
+			
+		}
 		
 		// static rows() and columns() methods are preferred over constructors, to avoid confusion if column or row vectors are supplied to the constructor
 		// supply all row vectors
 		static fm4 rows (fv4 row0, fv4 row1, fv4 row2, fv4 row3);
 		// supply all cells in row major order
-		static fm4 rows (
-				f32 c00, f32 c01, f32 c02, f32 c03,
-				f32 c10, f32 c11, f32 c12, f32 c13,
-				f32 c20, f32 c21, f32 c22, f32 c23,
-				f32 c30, f32 c31, f32 c32, f32 c33);
+		static fm4 rows (f32 c00, f32 c01, f32 c02, f32 c03,
+						 f32 c10, f32 c11, f32 c12, f32 c13,
+						 f32 c20, f32 c21, f32 c22, f32 c23,
+						 f32 c30, f32 c31, f32 c32, f32 c33);
 		// supply all column vectors
 		static fm4 columns (fv4 col0, fv4 col1, fv4 col2, fv4 col3);
 		// supply all cells in column major order
-		static fm4 columns (
-				f32 c00, f32 c10, f32 c20, f32 c30,
-				f32 c01, f32 c11, f32 c21, f32 c31,
-				f32 c02, f32 c12, f32 c22, f32 c32,
-				f32 c03, f32 c13, f32 c23, f32 c33);
+		static fm4 columns (f32 c00, f32 c10, f32 c20, f32 c30,
+							f32 c01, f32 c11, f32 c21, f32 c31,
+							f32 c02, f32 c12, f32 c22, f32 c32,
+							f32 c03, f32 c13, f32 c23, f32 c33);
+		
 		
 		// identity matrix
-		static fm4 identity ();
+		static inline FORCEINLINE fm4 identity () {
+			return fm4(1,0,0,0,
+					   0,1,0,0,
+					   0,0,1,0,
+					   0,0,0,1);
+		}
 		
 		// Casting operators
 		
@@ -110,9 +136,9 @@ namespace vector {
 	fm4 operator* (fm4 const& l, fm4 const& r);
 	fv4 operator* (fm4 const& l, fv4 r);
 	fv4 operator* (fv4 l, fm4 const& r);
-	fm4 transpose (fm4 m);
+	fm4 transpose (fm4 const& m);
 	
-	f32 det (fm4 mat);
-	fm4 inverse (fm4 mat);
+	f32 det (fm4 const& mat);
+	fm4 inverse (fm4 const& mat);
 } // namespace vector
 

@@ -20,43 +20,68 @@ namespace vector {
 		
 		//// Accessors
 		
+		
 		// get cell with r,c indecies (r=row, c=column)
-		f64 const& get (int r, int c) const;
+		inline FORCEINLINE f64 const& get (int r, int c) const {
+			return arr[c][r];
+		}
+		
 		// get matrix column
-		dv3 const& get_column (int indx) const;
+		inline FORCEINLINE dv3 const& get_column (int indx) const {
+			return arr[indx];
+		}
 		// get matrix row
 		dv4 get_row (int indx) const;
 		
 		//// Constructors
 		
-		dm3x4 ();
+		
+		inline FORCEINLINE dm3x4 () {
+			
+		}
+		
 		// supply one value for all cells
-		explicit dm3x4 (f64 all);
+		inline FORCEINLINE explicit dm3x4 (f64 all): 
+		arr{dv3(all, all, all),
+			dv3(all, all, all),
+			dv3(all, all, all),
+			dv3(all, all, all)} {
+			
+		}
+		
 		// supply all cells, in row major order for readability -> c<r><c> (r=row, c=column)
-		explicit dm3x4 (
-				f64 c00, f64 c01, f64 c02, f64 c03,
-				f64 c10, f64 c11, f64 c12, f64 c13,
-				f64 c20, f64 c21, f64 c22, f64 c23);
+		inline FORCEINLINE explicit dm3x4 (f64 c00, f64 c01, f64 c02, f64 c03,
+										   f64 c10, f64 c11, f64 c12, f64 c13,
+										   f64 c20, f64 c21, f64 c22, f64 c23): 
+		arr{dv3(c00, c10, c20),
+			dv3(c01, c11, c21),
+			dv3(c02, c12, c22),
+			dv3(c03, c13, c23)} {
+			
+		}
 		
 		// static rows() and columns() methods are preferred over constructors, to avoid confusion if column or row vectors are supplied to the constructor
 		// supply all row vectors
 		static dm3x4 rows (dv4 row0, dv4 row1, dv4 row2);
 		// supply all cells in row major order
-		static dm3x4 rows (
-				f64 c00, f64 c01, f64 c02, f64 c03,
-				f64 c10, f64 c11, f64 c12, f64 c13,
-				f64 c20, f64 c21, f64 c22, f64 c23);
+		static dm3x4 rows (f64 c00, f64 c01, f64 c02, f64 c03,
+						   f64 c10, f64 c11, f64 c12, f64 c13,
+						   f64 c20, f64 c21, f64 c22, f64 c23);
 		// supply all column vectors
 		static dm3x4 columns (dv3 col0, dv3 col1, dv3 col2, dv3 col3);
 		// supply all cells in column major order
-		static dm3x4 columns (
-				f64 c00, f64 c10, f64 c20,
-				f64 c01, f64 c11, f64 c21,
-				f64 c02, f64 c12, f64 c22,
-				f64 c03, f64 c13, f64 c23);
+		static dm3x4 columns (f64 c00, f64 c10, f64 c20,
+							  f64 c01, f64 c11, f64 c21,
+							  f64 c02, f64 c12, f64 c22,
+							  f64 c03, f64 c13, f64 c23);
+		
 		
 		// identity matrix
-		static dm3x4 identity ();
+		static inline FORCEINLINE dm3x4 identity () {
+			return dm3x4(1,0,0,0,
+						 0,1,0,0,
+						 0,0,1,0);
+		}
 		
 		// Casting operators
 		

@@ -3,8 +3,8 @@
 
 #include "kissmath.hpp"
 
-#include "fv3.hpp"
 #include "fv4.hpp"
+#include "fv3.hpp"
 
 namespace vector {
 	
@@ -20,43 +20,68 @@ namespace vector {
 		
 		//// Accessors
 		
+		
 		// get cell with r,c indecies (r=row, c=column)
-		f32 const& get (int r, int c) const;
+		inline FORCEINLINE f32 const& get (int r, int c) const {
+			return arr[c][r];
+		}
+		
 		// get matrix column
-		fv3 const& get_column (int indx) const;
+		inline FORCEINLINE fv3 const& get_column (int indx) const {
+			return arr[indx];
+		}
 		// get matrix row
 		fv4 get_row (int indx) const;
 		
 		//// Constructors
 		
-		fm3x4 ();
+		
+		inline FORCEINLINE fm3x4 () {
+			
+		}
+		
 		// supply one value for all cells
-		explicit fm3x4 (f32 all);
+		inline FORCEINLINE explicit fm3x4 (f32 all): 
+		arr{fv3(all, all, all),
+			fv3(all, all, all),
+			fv3(all, all, all),
+			fv3(all, all, all)} {
+			
+		}
+		
 		// supply all cells, in row major order for readability -> c<r><c> (r=row, c=column)
-		explicit fm3x4 (
-				f32 c00, f32 c01, f32 c02, f32 c03,
-				f32 c10, f32 c11, f32 c12, f32 c13,
-				f32 c20, f32 c21, f32 c22, f32 c23);
+		inline FORCEINLINE explicit fm3x4 (f32 c00, f32 c01, f32 c02, f32 c03,
+										   f32 c10, f32 c11, f32 c12, f32 c13,
+										   f32 c20, f32 c21, f32 c22, f32 c23): 
+		arr{fv3(c00, c10, c20),
+			fv3(c01, c11, c21),
+			fv3(c02, c12, c22),
+			fv3(c03, c13, c23)} {
+			
+		}
 		
 		// static rows() and columns() methods are preferred over constructors, to avoid confusion if column or row vectors are supplied to the constructor
 		// supply all row vectors
 		static fm3x4 rows (fv4 row0, fv4 row1, fv4 row2);
 		// supply all cells in row major order
-		static fm3x4 rows (
-				f32 c00, f32 c01, f32 c02, f32 c03,
-				f32 c10, f32 c11, f32 c12, f32 c13,
-				f32 c20, f32 c21, f32 c22, f32 c23);
+		static fm3x4 rows (f32 c00, f32 c01, f32 c02, f32 c03,
+						   f32 c10, f32 c11, f32 c12, f32 c13,
+						   f32 c20, f32 c21, f32 c22, f32 c23);
 		// supply all column vectors
 		static fm3x4 columns (fv3 col0, fv3 col1, fv3 col2, fv3 col3);
 		// supply all cells in column major order
-		static fm3x4 columns (
-				f32 c00, f32 c10, f32 c20,
-				f32 c01, f32 c11, f32 c21,
-				f32 c02, f32 c12, f32 c22,
-				f32 c03, f32 c13, f32 c23);
+		static fm3x4 columns (f32 c00, f32 c10, f32 c20,
+							  f32 c01, f32 c11, f32 c21,
+							  f32 c02, f32 c12, f32 c22,
+							  f32 c03, f32 c13, f32 c23);
+		
 		
 		// identity matrix
-		static fm3x4 identity ();
+		static inline FORCEINLINE fm3x4 identity () {
+			return fm3x4(1,0,0,0,
+						 0,1,0,0,
+						 0,0,1,0);
+		}
 		
 		// Casting operators
 		

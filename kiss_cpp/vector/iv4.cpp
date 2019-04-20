@@ -12,29 +12,6 @@
 
 namespace vector {
 	
-	s32& iv4::operator[] (int i) {
-		return arr[i];
-	}
-	
-	s32 const& iv4::operator[] (int i) const {
-		return arr[i];
-	}
-	
-	
-	iv4::iv4 () {
-		
-	}
-	
-	// sets all components to one value
-	// implicit constructor -> v3(x,y,z) * 5 will be turned into v3(x,y,z) * v3(5) by to compiler to be able to execute operator*(v3, v3), which is desirable, also v3 a = 0; works
-	iv4::iv4 (s32 all): x{all}, y{all}, z{all}, w{all} {
-		
-	}
-	
-	// supply all components
-	iv4::iv4 (s32 x, s32 y, s32 z, s32 w): x{x}, y{y}, z{z}, w{w} {
-		
-	}
 	
 	// extend vector
 	iv4::iv4 (iv2 xy, s32 z, s32 w): x{xy.x}, y{xy.y}, z{z}, w{w} {
@@ -81,63 +58,7 @@ namespace vector {
 	}
 	
 	
-	iv4 iv4::operator+= (iv4 r) {
-		x += r.x;
-		y += r.y;
-		z += r.z;
-		w += r.w;
-		return *this;
-	}
-	
-	iv4 iv4::operator-= (iv4 r) {
-		x -= r.x;
-		y -= r.y;
-		z -= r.z;
-		w -= r.w;
-		return *this;
-	}
-	
-	iv4 iv4::operator*= (iv4 r) {
-		x *= r.x;
-		y *= r.y;
-		z *= r.z;
-		w *= r.w;
-		return *this;
-	}
-	
-	iv4 iv4::operator/= (iv4 r) {
-		x /= r.x;
-		y /= r.y;
-		z /= r.z;
-		w /= r.w;
-		return *this;
-	}
-	
 	//// arthmethic ops
-	
-	iv4 operator+ (iv4 v) {
-		return iv4(+v.x, +v.y, +v.z, +v.w);
-	}
-	
-	iv4 operator- (iv4 v) {
-		return iv4(-v.x, -v.y, -v.z, -v.w);
-	}
-	
-	iv4 operator+ (iv4 l, iv4 r) {
-		return iv4(l.x + r.x, l.y + r.y, l.z + r.z, l.w + r.w);
-	}
-	
-	iv4 operator- (iv4 l, iv4 r) {
-		return iv4(l.x - r.x, l.y - r.y, l.z - r.z, l.w - r.w);
-	}
-	
-	iv4 operator* (iv4 l, iv4 r) {
-		return iv4(l.x * r.x, l.y * r.y, l.z * r.z, l.w * r.w);
-	}
-	
-	iv4 operator/ (iv4 l, iv4 r) {
-		return iv4(l.x / r.x, l.y / r.y, l.z / r.z, l.w / r.w);
-	}
 	
 	//// comparison ops
 	
@@ -177,18 +98,6 @@ namespace vector {
 	
 	//// misc ops
 	
-	iv4 abs (iv4 v) {
-		return iv4(abs(v.x), abs(v.y), abs(v.z), abs(v.w));
-	}
-	
-	iv4 min (iv4 l, iv4 r) {
-		return iv4(min(l.x,r.x), min(l.y,r.y), min(l.z,r.z), min(l.w,r.w));
-	}
-	
-	iv4 max (iv4 l, iv4 r) {
-		return iv4(max(l.x,r.x), max(l.y,r.y), max(l.z,r.z), max(l.w,r.w));
-	}
-	
 	iv4 clamp (iv4 x, iv4 a, iv4 b) {
 		return min(max(x,a), b);
 	}
@@ -221,14 +130,6 @@ namespace vector {
 		return max_val;
 	}
 	
-	
-	iv4 wrap (iv4 v, iv4 range) {
-		return iv4(wrap(v.x,range.x), wrap(v.y,range.y), wrap(v.z,range.z), wrap(v.w,range.w));
-	}
-	
-	iv4 wrap (iv4 v, iv4 a, iv4 b) {
-		return iv4(wrap(v.x,a.x,b.x), wrap(v.y,a.y,b.y), wrap(v.z,a.z,b.z), wrap(v.w,a.w,b.w));
-	}
 	
 	
 	fv4 to_rad (iv4 deg) {

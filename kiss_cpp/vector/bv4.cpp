@@ -12,29 +12,6 @@
 
 namespace vector {
 	
-	bool& bv4::operator[] (int i) {
-		return arr[i];
-	}
-	
-	bool const& bv4::operator[] (int i) const {
-		return arr[i];
-	}
-	
-	
-	bv4::bv4 () {
-		
-	}
-	
-	// sets all components to one value
-	// implicit constructor -> v3(x,y,z) * 5 will be turned into v3(x,y,z) * v3(5) by to compiler to be able to execute operator*(v3, v3), which is desirable, also v3 a = 0; works
-	bv4::bv4 (bool all): x{all}, y{all}, z{all}, w{all} {
-		
-	}
-	
-	// supply all components
-	bv4::bv4 (bool x, bool y, bool z, bool w): x{x}, y{y}, z{z}, w{w} {
-		
-	}
 	
 	// extend vector
 	bv4::bv4 (bv2 xy, bool z, bool w): x{xy.x}, y{xy.y}, z{z}, w{w} {
@@ -73,18 +50,6 @@ namespace vector {
 	}
 	
 	//// arthmethic ops
-	
-	bv4 operator! (bv4 v) {
-		return bv4(!v.x, !v.y, !v.z, !v.w);
-	}
-	
-	bv4 operator&& (bv4 l, bv4 r) {
-		return bv4(l.x && r.x, l.y && r.y, l.z && r.z, l.w && r.w);
-	}
-	
-	bv4 operator|| (bv4 l, bv4 r) {
-		return bv4(l.x || r.x, l.y || r.y, l.z || r.z, l.w || r.w);
-	}
 	
 	//// comparison ops
 	

@@ -12,29 +12,6 @@
 
 namespace vector {
 	
-	bool& bv2::operator[] (int i) {
-		return arr[i];
-	}
-	
-	bool const& bv2::operator[] (int i) const {
-		return arr[i];
-	}
-	
-	
-	bv2::bv2 () {
-		
-	}
-	
-	// sets all components to one value
-	// implicit constructor -> v3(x,y,z) * 5 will be turned into v3(x,y,z) * v3(5) by to compiler to be able to execute operator*(v3, v3), which is desirable, also v3 a = 0; works
-	bv2::bv2 (bool all): x{all}, y{all} {
-		
-	}
-	
-	// supply all components
-	bv2::bv2 (bool x, bool y): x{x}, y{y} {
-		
-	}
 	
 	// truncate vector
 	bv2::bv2 (bv3 v): x{v.x}, y{v.y} {
@@ -65,18 +42,6 @@ namespace vector {
 	}
 	
 	//// arthmethic ops
-	
-	bv2 operator! (bv2 v) {
-		return bv2(!v.x, !v.y);
-	}
-	
-	bv2 operator&& (bv2 l, bv2 r) {
-		return bv2(l.x && r.x, l.y && r.y);
-	}
-	
-	bv2 operator|| (bv2 l, bv2 r) {
-		return bv2(l.x || r.x, l.y || r.y);
-	}
 	
 	//// comparison ops
 	

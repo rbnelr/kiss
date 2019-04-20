@@ -186,6 +186,10 @@ def kissmath(f):
 				#define F64_INF							(1e+300 * 1e+300)
 				#define F32_QNAN						std::numeric_limits<float>::quiet_NaN()
 				#define F64_QNAN						std::numeric_limits<double>::quiet_NaN()
+
+				#define NOINLINE						__declspec(noinline) // for testing/debugging purposes
+				#define FORCEINLINE						__forceinline
+
 			#elif __GNUC__ || __clan_
 				#define F32_INF							(__builtin_inff())
 				#define F64_INF							(__builtin_inf())
@@ -308,8 +312,10 @@ def scalar_math(T, f):
 			
 		f += '\n'
 
-	min_func = 'std::fmin(l,r)' if T in floats else f'l <= r ? l : r'
-	max_func = 'std::fmax(l,r)' if T in floats else f'l >= r ? l : r'
+	#min_func = 'std::fmin(l,r)' if T in floats else f'l <= r ? l : r'
+	#max_func = 'std::fmax(l,r)' if T in floats else f'l >= r ? l : r'
+	min_func = f'l <= r ? l : r'
+	max_func = f'l >= r ? l : r'
 		
 	f.function(f'{T}', 'min',		f'{T} l, {T} r',			f'return {min_func};')
 	f.function(f'{T}', 'max',		f'{T} l, {T} r',			f'return {max_func};')
@@ -372,20 +378,21 @@ def gen_vector(V, f):
 
 	def unary_op(op):
 		tmp = ', '.join(f'{op}v.{d}' for d in dims)
-		f.function(f'{V}', f'operator{op}', f'{V} v', f'return {V}({tmp});')
+		f.function(f'{V}', f'operator{op}', f'{V} v', f'return {V}({tmp});', forceinline=True)
 	def binary_op(op):
 		tmp = ', '.join(f'l.{d} {op} r.{d}' for d in dims)
-		f.function(f'{V}', f'operator{op}', f'{V} l, {V} r', f'return {V}({tmp});')
+		f.function(f'{V}', f'operator{op}', f'{V} l, {V} r', f'return {V}({tmp});', forceinline=True)
 	def comparison_op(op):
 		tmp = ', '.join(f'l.{d} {op} r.{d}' for d in dims)
 		f.function(f'{BV}', f'operator{op}', f'{V} l, {V} r', f'return {BV}({tmp});')
 	
 	def unary_func(func, arg='v', ret=None):
+		forceinline = ret == None
 		ret = ret or V
-		f.function(f'{ret}', func, f'{V} {arg}', f'return {ret}(%s);' % ', '.join(f'{func}({arg}.{d})' for d in dims))
+		f.function(f'{ret}', func, f'{V} {arg}', f'return {ret}(%s);' % ', '.join(f'{func}({arg}.{d})' for d in dims), forceinline=forceinline)
 	def nary_func(func, args):
 		f.function(f'{V}', func, ', '.join(f'{V} {a}' for a in args),
-			f'return {V}(%s);' % ', '.join(f'{func}(%s)' % ','.join(f'{a}.{d}' for a in args) for d in dims))
+			f'return {V}(%s);' % ', '.join(f'{func}(%s)' % ','.join(f'{a}.{d}' for a in args) for d in dims), forceinline=True)
 
 	def compound_binary_op(op):
 		if False: # compact
@@ -394,7 +401,7 @@ def gen_vector(V, f):
 		else:
 			body = ''.join(f'{d} {op}= r.{d};\n' for d in dims) + 'return *this;'
 
-		f.method(f'{V}', f'{V}', f'operator{op}=', f'{V} r', body)
+		f.method(f'{V}', f'{V}', f'operator{op}=', f'{V} r', body, forceinline=True)
 
 	def casting_op(to_type):
 		tt = to_type.scalar_type
@@ -429,15 +436,15 @@ def gen_vector(V, f):
 
 		'''
 		
-	f.method(V, f'{T}&', 'operator[]', 'int i', 'return arr[i];')
-	f.method(V, f'{T} const&', 'operator[]', 'int i', 'return arr[i];', const=True)
+	f.method(V, f'{T}&', 'operator[]', 'int i', 'return arr[i];', forceinline=True)
+	f.method(V, f'{T} const&', 'operator[]', 'int i', 'return arr[i];', const=True, forceinline=True)
 
 	f += '\n'
 	
-	f.constructor(f'{V}', args='')
-	f.constructor(f'{V}', args=f'{T} all',						init_list=', '.join(f'{d}{{all}}' for d in dims),
+	f.constructor(f'{V}', args='', forceinline=True)
+	f.constructor(f'{V}', args=f'{T} all',						init_list=', '.join(f'{d}{{all}}' for d in dims), forceinline=True,
 		comment='sets all components to one value\nimplicit constructor -> v3(x,y,z) * 5 will be turned into v3(x,y,z) * v3(5) by to compiler to be able to execute operator*(v3, v3), which is desirable, also v3 a = 0; works')
-	f.constructor(f'{V}', args=', '.join(f'{T} {d}' for d in dims), init_list=', '.join(f'{d}{{{d}}}' for d in dims),
+	f.constructor(f'{V}', args=', '.join(f'{T} {d}' for d in dims), init_list=', '.join(f'{d}{{{d}}}' for d in dims), forceinline=True,
 		comment='supply all components')
 	
 	for vsz in range(2,size):
@@ -632,11 +639,11 @@ def gen_matrix(M, f):
 
 	f.source += '\nnamespace vector {\n\n'
 
-	def row_major(cell_format):	return '\n'+ ',\n'.join(', '.join(cell_format.format(c=c,r=r) for c in range(size[1])) for r in range(size[0]))
-	def col_major(cell_format):	return '\n'+ ',\n'.join(', '.join(cell_format.format(c=c,r=r) for r in range(size[0])) for c in range(size[1]))
+	def row_major(cell_format):	return ',\n'.join(', '.join(cell_format.format(c=c,r=r) for c in range(size[1])) for r in range(size[0]))
+	def col_major(cell_format):	return ',\n'.join(', '.join(cell_format.format(c=c,r=r) for r in range(size[0])) for c in range(size[1]))
 	
-	def row_vec_cells(cell_format):	return '\n'+ ',\n'.join(f'{RV}(%s)' % ', '.join(cell_format.format(c=c,r=r) for c in range(size[1])) for r in range(size[0]))
-	def col_vec_cells(cell_format):	return '\n'+ ',\n'.join(f'{V}(%s)' % ', '.join(cell_format.format(c=c,r=r) for r in range(size[0])) for c in range(size[1]))
+	def row_vec_cells(cell_format):	return ',\n'.join(f'{RV}(%s)' % ', '.join(cell_format.format(c=c,r=r) for c in range(size[1])) for r in range(size[0]))
+	def col_vec_cells(cell_format):	return ',\n'.join(f'{V}(%s)' % ', '.join(cell_format.format(c=c,r=r) for r in range(size[0])) for c in range(size[1]))
 
 	def row_vecs(vec_format):	return ', '.join(vec_format.format(r=r) for r in range(size[0]))
 	def col_vecs(vec_format):	return ', '.join(vec_format.format(c=c) for c in range(size[1]))
@@ -652,19 +659,19 @@ def gen_matrix(M, f):
 		
 	f += '//// Accessors\n\n'
 	#src += method(f, f'{M}', f'{T}&', 'get', F'int r, int c', 'return arr[c][r];', comment='get cell with r,c indecies (r=row, c=column)')
-	f.method(f'{M}', f'{T} const&', 'get', F'int r, int c', 'return arr[c][r];', const=True, comment='get cell with r,c indecies (r=row, c=column)')
+	f.method(f'{M}', f'{T} const&', 'get', F'int r, int c', 'return arr[c][r];', const=True, comment='get cell with r,c indecies (r=row, c=column)', forceinline=True)
 
 	#f.method(f'{M}', f'{V}&', 'get_column', F'int indx', 'return arr[indx];', comment='get matrix column')
-	f.method(f'{M}', f'{V} const&', 'get_column', F'int indx', 'return arr[indx];', const=True, comment='get matrix column')
+	f.method(f'{M}', f'{V} const&', 'get_column', F'int indx', 'return arr[indx];', const=True, comment='get matrix column', forceinline=True)
 	
 	f.method(f'{M}', f'{RV}', 'get_row', F'int indx', f'return {RV}(%s);' % ', '.join(f'arr[{c}][indx]' for c in range(size[1])),
 		const=True, comment='get matrix row')
 	
 	f += '\n//// Constructors\n\n'
-	f.constructor(f'{M}', '')
+	f.constructor(f'{M}', '', forceinline=True)
 
-	f.constructor(f'{M}', args=f'{T} all',						explicit=True, init_list='\narr{%s}' % col_vec_cells('all'),		comment='supply one value for all cells')
-	f.constructor(f'{M}', args=row_major(str(T) +' c{r}{c}'),	explicit=True, init_list='\narr{%s}' % col_vec_cells('c{r}{c}'),	comment='supply all cells, in row major order for readability -> c<r><c> (r=row, c=column)')
+	f.constructor(f'{M}', args=f'{T} all',						explicit=True, init_list='\narr{%s}' % col_vec_cells('all'),		forceinline=True, comment='supply one value for all cells')
+	f.constructor(f'{M}', args=row_major(str(T) +' c{r}{c}'),	explicit=True, init_list='\narr{%s}' % col_vec_cells('c{r}{c}'),	forceinline=True, comment='supply all cells, in row major order for readability -> c<r><c> (r=row, c=column)')
 	
 	f += '\n// static rows() and columns() methods are preferred over constructors, to avoid confusion if column or row vectors are supplied to the constructor\n'
 	
@@ -679,9 +686,9 @@ def gen_matrix(M, f):
 		comment='supply all cells in column major order')
 
 	f += '\n'
-	f.static_method(f'{M}', f'{M}', 'identity', args='',
+	f.static_method(f'{M}', f'{M}', 'identity', args='', forceinline=True,
 		comment='identity matrix',
-		body=f'return {M}(\n%s);' % ',\n'.join(','.join('1' if x==y else '0' for x in range(size[1])) for y in range(size[0])))
+		body=f'return {M}(%s);' % ',\n'.join(','.join('1' if x==y else '0' for x in range(size[1])) for y in range(size[0])))
 	
 	f += '\n// Casting operators\n\n'
 	for m in other_size_mats:
@@ -693,12 +700,12 @@ def gen_matrix(M, f):
 
 		f.method(f'{M}', '', f'operator {m.name}', '', explicit=True, const=True,
 			comment='extend/truncate matrix of other size',
-			body=f'return {m.name}(\n%s);' % ',\n'.join(', '.join(cell(c,r) for c in range(m.size[1])) for r in range(m.size[0])))
+			body=f'return {m.name}(%s);' % ',\n'.join(', '.join(cell(c,r) for c in range(m.size[1])) for r in range(m.size[0])))
 
 	for m in other_type_mats:
 		f.method(f'{M}', '', f'operator {m.name}', '', explicit=True, const=True,
 			comment='typecast',
-			body=f'return {m.name}(\n%s);' % ',\n'.join(', '.join(f'({m.scalar_type})arr[{r}][{c}]' for c in range(m.size[1])) for r in range(m.size[0])))
+			body=f'return {m.name}(%s);' % ',\n'.join(', '.join(f'({m.scalar_type})arr[{r}][{c}]' for c in range(m.size[1])) for r in range(m.size[0])))
 	
 	f += '\n// Elementwise operators\n\n'
 
@@ -741,15 +748,15 @@ def gen_matrix(M, f):
 				return
 
 			ret = get_type(T, (size[0], m.size[1])).name
-			args = f'{M} const& l, {m} const& r'
+			args = f'{M} {mpass} l, {m} {mpass} r'
 			body = f'{ret} ret;\n%s\nreturn ret;' % '\n'.join(f'ret.arr[{c}] = l * r.arr[{c}];' for c in range(m.size[1]))
 		elif op == 'mv':
 			ret = f'{V}'
-			args = f'{M} const& l, {RV} r'
+			args = f'{M} {mpass} l, {RV} r'
 			body = f'{V} ret;\n%s\nreturn ret;' % '\n'.join(f'ret.{dims[r]} = %s;' % ' + '.join(f'l.arr[{c}].{dims[r]} * r.{dims[c]}' for c in range(size[1])) for r in range(size[0]))
 		elif op == 'vm':
 			ret = f'{RV}'
-			args = f'{V} l, {M} const& r'
+			args = f'{V} l, {M} {mpass} r'
 			body = f'{RV} ret;\n%s\nreturn ret;' % '\n'.join(f'ret.{dims[c]} = %s;' % ' + '.join(f'l.{dims[r]} * r.arr[{c}].{dims[r]}' for r in range(size[0])) for c in range(size[1]))
 		f.function(ret, 'operator*', args, body)
 	def matmul_shortform(op, r):
@@ -759,13 +766,13 @@ def gen_matrix(M, f):
 		if op == 'mm':
 			sqr = get_type(T, (size[1],size[1]))
 		
-			f.function(f'{M}', 'operator*', f'{M} const& l, {r} const& r', f'''
+			f.function(f'{M}', 'operator*', f'{M} {mpass} l, {r} {mpass} r', f'''
 				return l * ({sqr})r;
 			''', comment=f'{M} * {r} = {M}, shortform for {M} * ({sqr}){r} = {M}')
 		elif op == 'mv':
 			v = get_type(T, size[1])
 		
-			f.function(f'{r}', 'operator*', f'{M} const& l, {r} r', f'''
+			f.function(f'{r}', 'operator*', f'{M} {mpass} l, {r} r', f'''
 				return l * {v}(r, 1);
 			''', comment=f'{M} * {r} = {r}, shortform for {M} * {v}({r}, 1) = {r}')
 			
@@ -785,7 +792,7 @@ def gen_matrix(M, f):
 
 	if type_exist(T, (size[1], size[0])):
 		m = get_type(T, (size[1], size[0]))
-		f.function(m, 'transpose', f'{M} m', f'return {m}::rows(%s);' % ', '.join( f'm.arr[{c}]' for c in range(size[1]) ))
+		f.function(m, 'transpose', f'{M} {mpass} m', f'return {m}::rows(%s);' % ', '.join( f'm.arr[{c}]' for c in range(size[1]) ))
 
 	if size[0] == size[1]:
 		f += '\n'
@@ -794,8 +801,8 @@ def gen_matrix(M, f):
 
 		f.source += ms.define_letterify(T, size[0]) + '\n'
 
-		f.function(f'{T}', 'det', f'{M} mat', ms.gen_determinate_code(T, size[0]))
-		f.function(f'{M}', 'inverse', f'{M} mat', ms.gen_inverse_code(M, T, size[0]))
+		f.function(f'{T}', 'det', f'{M} {mpass} mat', ms.gen_determinate_code(T, size[0]))
+		f.function(f'{M}', 'inverse', f'{M} {mpass} mat', ms.gen_inverse_code(M, T, size[0]))
 		
 		f.source += '\n#undef LETTERIFY\n\n'
 

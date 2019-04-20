@@ -12,29 +12,6 @@
 
 namespace vector {
 	
-	f64& dv4::operator[] (int i) {
-		return arr[i];
-	}
-	
-	f64 const& dv4::operator[] (int i) const {
-		return arr[i];
-	}
-	
-	
-	dv4::dv4 () {
-		
-	}
-	
-	// sets all components to one value
-	// implicit constructor -> v3(x,y,z) * 5 will be turned into v3(x,y,z) * v3(5) by to compiler to be able to execute operator*(v3, v3), which is desirable, also v3 a = 0; works
-	dv4::dv4 (f64 all): x{all}, y{all}, z{all}, w{all} {
-		
-	}
-	
-	// supply all components
-	dv4::dv4 (f64 x, f64 y, f64 z, f64 w): x{x}, y{y}, z{z}, w{w} {
-		
-	}
 	
 	// extend vector
 	dv4::dv4 (dv2 xy, f64 z, f64 w): x{xy.x}, y{xy.y}, z{z}, w{w} {
@@ -81,63 +58,7 @@ namespace vector {
 	}
 	
 	
-	dv4 dv4::operator+= (dv4 r) {
-		x += r.x;
-		y += r.y;
-		z += r.z;
-		w += r.w;
-		return *this;
-	}
-	
-	dv4 dv4::operator-= (dv4 r) {
-		x -= r.x;
-		y -= r.y;
-		z -= r.z;
-		w -= r.w;
-		return *this;
-	}
-	
-	dv4 dv4::operator*= (dv4 r) {
-		x *= r.x;
-		y *= r.y;
-		z *= r.z;
-		w *= r.w;
-		return *this;
-	}
-	
-	dv4 dv4::operator/= (dv4 r) {
-		x /= r.x;
-		y /= r.y;
-		z /= r.z;
-		w /= r.w;
-		return *this;
-	}
-	
 	//// arthmethic ops
-	
-	dv4 operator+ (dv4 v) {
-		return dv4(+v.x, +v.y, +v.z, +v.w);
-	}
-	
-	dv4 operator- (dv4 v) {
-		return dv4(-v.x, -v.y, -v.z, -v.w);
-	}
-	
-	dv4 operator+ (dv4 l, dv4 r) {
-		return dv4(l.x + r.x, l.y + r.y, l.z + r.z, l.w + r.w);
-	}
-	
-	dv4 operator- (dv4 l, dv4 r) {
-		return dv4(l.x - r.x, l.y - r.y, l.z - r.z, l.w - r.w);
-	}
-	
-	dv4 operator* (dv4 l, dv4 r) {
-		return dv4(l.x * r.x, l.y * r.y, l.z * r.z, l.w * r.w);
-	}
-	
-	dv4 operator/ (dv4 l, dv4 r) {
-		return dv4(l.x / r.x, l.y / r.y, l.z / r.z, l.w / r.w);
-	}
 	
 	//// comparison ops
 	
@@ -177,18 +98,6 @@ namespace vector {
 	
 	//// misc ops
 	
-	dv4 abs (dv4 v) {
-		return dv4(abs(v.x), abs(v.y), abs(v.z), abs(v.w));
-	}
-	
-	dv4 min (dv4 l, dv4 r) {
-		return dv4(min(l.x,r.x), min(l.y,r.y), min(l.z,r.z), min(l.w,r.w));
-	}
-	
-	dv4 max (dv4 l, dv4 r) {
-		return dv4(max(l.x,r.x), max(l.y,r.y), max(l.z,r.z), max(l.w,r.w));
-	}
-	
 	dv4 clamp (dv4 x, dv4 a, dv4 b) {
 		return min(max(x,a), b);
 	}
@@ -222,18 +131,6 @@ namespace vector {
 	}
 	
 	
-	dv4 floor (dv4 v) {
-		return dv4(floor(v.x), floor(v.y), floor(v.z), floor(v.w));
-	}
-	
-	dv4 ceil (dv4 v) {
-		return dv4(ceil(v.x), ceil(v.y), ceil(v.z), ceil(v.w));
-	}
-	
-	dv4 round (dv4 v) {
-		return dv4(round(v.x), round(v.y), round(v.z), round(v.w));
-	}
-	
 	s64v4 floori (dv4 v) {
 		return s64v4(floori(v.x), floori(v.y), floori(v.z), floori(v.w));
 	}
@@ -244,18 +141,6 @@ namespace vector {
 	
 	s64v4 roundi (dv4 v) {
 		return s64v4(roundi(v.x), roundi(v.y), roundi(v.z), roundi(v.w));
-	}
-	
-	dv4 pow (dv4 v, dv4 e) {
-		return dv4(pow(v.x,e.x), pow(v.y,e.y), pow(v.z,e.z), pow(v.w,e.w));
-	}
-	
-	dv4 wrap (dv4 v, dv4 range) {
-		return dv4(wrap(v.x,range.x), wrap(v.y,range.y), wrap(v.z,range.z), wrap(v.w,range.w));
-	}
-	
-	dv4 wrap (dv4 v, dv4 a, dv4 b) {
-		return dv4(wrap(v.x,a.x,b.x), wrap(v.y,a.y,b.y), wrap(v.z,a.z,b.z), wrap(v.w,a.w,b.w));
 	}
 	
 	

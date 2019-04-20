@@ -21,15 +21,30 @@ namespace vector {
 		};
 		s32		arr[3];
 		
-		s32& operator[] (int i);
-		s32 const& operator[] (int i) const;
 		
-		iv3 ();
+		inline FORCEINLINE s32& operator[] (int i) {
+			return arr[i];
+		}
+		
+		inline FORCEINLINE s32 const& operator[] (int i) const {
+			return arr[i];
+		}
+		
+		
+		inline FORCEINLINE iv3 () {
+			
+		}
+		
 		// sets all components to one value
 		// implicit constructor -> v3(x,y,z) * 5 will be turned into v3(x,y,z) * v3(5) by to compiler to be able to execute operator*(v3, v3), which is desirable, also v3 a = 0; works
-		iv3 (s32 all);
+		inline FORCEINLINE iv3 (s32 all): x{all}, y{all}, z{all} {
+			
+		}
+		
 		// supply all components
-		iv3 (s32 x, s32 y, s32 z);
+		inline FORCEINLINE iv3 (s32 x, s32 y, s32 z): x{x}, y{y}, z{z} {
+			
+		}
 		// extend vector
 		iv3 (iv2 xy, s32 z);
 		// truncate vector
@@ -47,19 +62,61 @@ namespace vector {
 		explicit operator s64v3 () const;
 		explicit operator u8v3 () const;
 		
-		iv3 operator+= (iv3 r);
-		iv3 operator-= (iv3 r);
-		iv3 operator*= (iv3 r);
-		iv3 operator/= (iv3 r);
+		
+		inline FORCEINLINE iv3 operator+= (iv3 r) {
+			x += r.x;
+			y += r.y;
+			z += r.z;
+			return *this;
+		}
+		
+		inline FORCEINLINE iv3 operator-= (iv3 r) {
+			x -= r.x;
+			y -= r.y;
+			z -= r.z;
+			return *this;
+		}
+		
+		inline FORCEINLINE iv3 operator*= (iv3 r) {
+			x *= r.x;
+			y *= r.y;
+			z *= r.z;
+			return *this;
+		}
+		
+		inline FORCEINLINE iv3 operator/= (iv3 r) {
+			x /= r.x;
+			y /= r.y;
+			z /= r.z;
+			return *this;
+		}
 	};
 	
 	//// arthmethic ops
-	iv3 operator+ (iv3 v);
-	iv3 operator- (iv3 v);
-	iv3 operator+ (iv3 l, iv3 r);
-	iv3 operator- (iv3 l, iv3 r);
-	iv3 operator* (iv3 l, iv3 r);
-	iv3 operator/ (iv3 l, iv3 r);
+	
+	inline FORCEINLINE iv3 operator+ (iv3 v) {
+		return iv3(+v.x, +v.y, +v.z);
+	}
+	
+	inline FORCEINLINE iv3 operator- (iv3 v) {
+		return iv3(-v.x, -v.y, -v.z);
+	}
+	
+	inline FORCEINLINE iv3 operator+ (iv3 l, iv3 r) {
+		return iv3(l.x + r.x, l.y + r.y, l.z + r.z);
+	}
+	
+	inline FORCEINLINE iv3 operator- (iv3 l, iv3 r) {
+		return iv3(l.x - r.x, l.y - r.y, l.z - r.z);
+	}
+	
+	inline FORCEINLINE iv3 operator* (iv3 l, iv3 r) {
+		return iv3(l.x * r.x, l.y * r.y, l.z * r.z);
+	}
+	
+	inline FORCEINLINE iv3 operator/ (iv3 l, iv3 r) {
+		return iv3(l.x / r.x, l.y / r.y, l.z / r.z);
+	}
 	
 	//// comparison ops
 	bv3 operator< (iv3 l, iv3 r);
@@ -74,17 +131,32 @@ namespace vector {
 	iv3 select (bv3 c, iv3 l, iv3 r);
 	
 	//// misc ops
-	iv3 abs (iv3 v);
-	iv3 min (iv3 l, iv3 r);
-	iv3 max (iv3 l, iv3 r);
+	
+	inline FORCEINLINE iv3 abs (iv3 v) {
+		return iv3(abs(v.x), abs(v.y), abs(v.z));
+	}
+	
+	inline FORCEINLINE iv3 min (iv3 l, iv3 r) {
+		return iv3(min(l.x,r.x), min(l.y,r.y), min(l.z,r.z));
+	}
+	
+	inline FORCEINLINE iv3 max (iv3 l, iv3 r) {
+		return iv3(max(l.x,r.x), max(l.y,r.y), max(l.z,r.z));
+	}
 	iv3 clamp (iv3 x, iv3 a=iv3(0), iv3 b=iv3(1));
 	// get min component of vector, optionally get component index via min_index
 	s32 min_component (iv3 v, int* min_index=nullptr);
 	// get max component of vector, optionally get component index via max_index
 	s32 max_component (iv3 v, int* max_index=nullptr);
 	
-	iv3 wrap (iv3 v, iv3 range);
-	iv3 wrap (iv3 v, iv3 a, iv3 b);
+	
+	inline FORCEINLINE iv3 wrap (iv3 v, iv3 range) {
+		return iv3(wrap(v.x,range.x), wrap(v.y,range.y), wrap(v.z,range.z));
+	}
+	
+	inline FORCEINLINE iv3 wrap (iv3 v, iv3 a, iv3 b) {
+		return iv3(wrap(v.x,a.x,b.x), wrap(v.y,a.y,b.y), wrap(v.z,a.z,b.z));
+	}
 	
 	fv3 to_rad (iv3 deg);
 	// degress "literal", converts degrees to radiants

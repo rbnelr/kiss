@@ -8,66 +8,108 @@ import warnings
 def format_indentation(text):
 	lines = text.splitlines(1)
 
-	indenters = ['{', '(', '[']
+	indenters = ['{']
+	aligners = ['(', '[']
+
 	dedenters = ['}', ')', ']']
+	
+	indent_spaces = 4
+	indent_amount = { '{':4 }
 
-	indent_amount = {	'{':1, '(':2, '[':2,
-						'}':1, ')':2, ']':2 }
+	indent_level = [0]
+	in_assignment = False
 
-	def set_indent(line, level):
-		
-		def unindent(line, indent_spaces=4):
-			cur = 0
-			def curc(): return line[cur] if cur < len(line) else 0
+	def unindent(line):
+		cur = 0
+		def curc(): return line[cur] if cur < len(line) else 0
 
-			def eat_tab():
-				nonlocal cur
+		def eat_tab():
+			nonlocal cur
 
-				# spaces as indent mess with my alignment
-				#spaces_eaten = 0
-				#while curc() == ' ':
-				#	if spaces_eaten == indent_spaces:
-				#		return True
-				#	cur += 1
-				#	spaces_eaten += 1
+			# spaces as indent mess with my alignment
+			#spaces_eaten = 0
+			#while curc() == ' ':
+			#	if spaces_eaten == indent_spaces:
+			#		return True
+			#	cur += 1
+			#	spaces_eaten += 1
 				
-				if curc() == '\t':
-					cur += 1
-					return True
+			if curc() == '\t':
+				cur += 1
+				return True
 
-				return False
+			return False
 
-			while eat_tab():
-				pass
+		while eat_tab():
+			pass
 
-			return line[cur:]
+		return line[cur:]
 
-		line = unindent(line)
-
+	def indent(line, level):
+		
 		lev = level
 		if len(line) > 0 and line[0] in dedenters: # '}' should be on line of its corresponding open bracket
-			lev = lev - indent_amount[line[0]] if lev > 0 else 0
+			lev = indent_level[-1] if lev > 0 else 0
 
-		return '\t'*lev + line # remove current indent and add desired indent
+		tabs, spaces = divmod(lev, indent_spaces)
 
-	def parse_indent_diff(line):
-		diff = 0
-		for c in line:
-			if		c in indenters:	diff += indent_amount[c]
-			elif	c in dedenters:	diff -= indent_amount[c]
-		return diff
+		return '\t'*tabs + ' '*spaces + line # remove current indent and add desired indent
 
-	indent_level = 0
+	for line_i, line in enumerate(lines):
+		line_level = indent_level[-1]
 
-	for i,l in enumerate(lines):
-		line_level = indent_level
+		line = unindent(line)
+		
+		def prevc():
+			if (i-1) < 0:	return 0
+			return line[i-1]
+		def nextc():
+			if (i+1) == len(line):	return 0
+			return line[i+1]
 
-		indent_level += parse_indent_diff(l)
+		commented = False
 
-		lines[i] = set_indent(l, line_level)
+		for i,c in enumerate(line):
+			if c == '/' and nextc() == '/':
+				commented = True
+			if c == '\n':
+				commented = False
+			if commented:
+				continue
 
-	if indent_level != 0:
-		warnings.warn('indent_level not 0, wrong brackets?')
+			assignment = c == '=' and nextc() != '=' and \
+				prevc() not in ['!','<','>','='] and not re.findall(r'operator\s*.=', line[:i+1])
+			return_statement = i == 0 and line[:6] == 'return'
+
+			if		c in indenters:
+				indent_level.append(indent_level[-1] + indent_amount[c])
+
+			elif	c in aligners or (assignment and not in_assignment) or return_statement:
+				if return_statement:
+					offs = i + 6 # skip 'return'
+					indent_offs = 6
+				else:
+					offs = i + 1 # skip '='
+					indent_offs = 1
+
+				while (line[offs] in [' ', '\t']):
+					indent_offs += indent_spaces if line[offs] == '\t' else 1
+					offs += 1
+
+				indent_level.append(line_level + i + indent_offs)
+
+			elif	c in dedenters or (c == ';' and in_assignment):
+				indent_level.pop()
+
+			if assignment or return_statement:
+				in_assignment = True
+			if c == ';':
+				in_assignment = False
+
+		lines[line_i] = indent(line, line_level)
+
+	if len(indent_level) != 1:
+		warnings.warn('indent_level not 0, open closing tokes wrong?')
 
 	return ''.join(lines)
 
@@ -154,7 +196,7 @@ class File:
 		self.source += r
 		return self
 
-	def _function(self, ret, name, args, body, clsname=None, init_list=None, template=None, comment=None, const=False, static=False, explicit=False, constexpr='auto', inline='auto'):
+	def _function(self, ret, name, args, body, clsname=None, init_list=None, template=None, forceinline=False, comment=None, const=False, static=False, explicit=False, constexpr='auto', inline='auto'):
 		body = body.strip()
 		comment = ''.join(f'// '+ l.strip() +'\n' for l in comment.splitlines()) if comment else ''
 
@@ -170,6 +212,14 @@ class File:
 		init_list = f': {init_list}' if init_list else ''
 
 		const = ' const' if const else ''
+		
+		declinline = None
+		if forceinline:
+			declinline = 'FORCEINLINE'
+			inline = True
+		#else:
+		#	declinline = 'NOINLINE'
+		#	inline = False
 
 		static = 'static' if static else None
 		constexpr = 'constexpr' if constexpr else None
@@ -177,6 +227,13 @@ class File:
 		explicit = 'explicit' if explicit else ''
 
 		template = 'template<%s>\n' % template.replace('tn', 'typename') if template else ''
+
+		_ctor_dtor = ret == ''
+
+		callconv = None
+		#if not _ctor_dtor:
+		#	callconv = '__vectorcall'
+
 
 		def spaced_join(*args):
 			s = ''
@@ -190,29 +247,29 @@ class File:
 		
 		# header
 		if inline or template:
-			decl = template + spaced_join(static, inline, constexpr, explicit, ret, name)
+			decl = template + spaced_join(static, inline, declinline, constexpr, explicit, ret, callconv, name)
 			self.header += f'''\n{comment}{decl} ({args}){const}{init_list} {{
 				{body}
 			}}\n'''
 		else:
-			decl = spaced_join(static, constexpr, explicit, ret, name)
+			decl = spaced_join(static, declinline, constexpr, explicit, ret, callconv, name)
 			self.header += f'{comment}{decl} ({args}){const};\n'
 
 		# source
 		if inline or template:
 			pass # nothing
 		else:
-			decl = spaced_join(constexpr, ret, clsname + name)
+			decl = spaced_join(declinline, constexpr, ret, callconv, clsname + name)
 			self.source += f'''\n{comment}{decl} ({defi_args}){const}{init_list} {{
 				{body}
 			}}\n'''
 
-	def function(self, ret, name, args, body,										constexpr='auto', template=None, comment=None):
-		return self._function(str(ret), name, args, body,											constexpr=constexpr, template=template, comment=comment)
-	def method(self, clsname, ret, name, args, body, explicit=False,				constexpr='auto', template=None, comment=None, const=False):
-		return self._function(str(ret), name, args, body, clsname=clsname, explicit=explicit,		constexpr=constexpr, template=template, comment=comment, const=const)
-	def static_method(self, clsname, ret, name, args, body,							constexpr='auto', template=None, comment=None, const=False):
-		return self._function(str(ret), name, args, body, clsname=clsname,							constexpr=constexpr, template=template, comment=comment, const=const, static=True)
-	def constructor(self, clsname, args, body='', init_list=None, explicit=False,	constexpr='auto', template=None, comment=None):
-		return self._function('', clsname, args, body, clsname=clsname, init_list=init_list, explicit=explicit,	constexpr=constexpr, template=template, comment=comment)
+	def function(self, ret, name, args, body,										constexpr='auto', template=None, forceinline=False, comment=None):
+		return self._function(str(ret), name, args, body,											constexpr=constexpr, template=template, forceinline=forceinline, comment=comment)
+	def method(self, clsname, ret, name, args, body, explicit=False,				constexpr='auto', template=None, forceinline=False, comment=None, const=False):
+		return self._function(str(ret), name, args, body, clsname=clsname, explicit=explicit,		constexpr=constexpr, template=template, forceinline=forceinline, comment=comment, const=const)
+	def static_method(self, clsname, ret, name, args, body,							constexpr='auto', template=None, forceinline=False, comment=None, const=False):
+		return self._function(str(ret), name, args, body, clsname=clsname,							constexpr=constexpr, template=template, forceinline=forceinline, comment=comment, const=const, static=True)
+	def constructor(self, clsname, args, body='', init_list=None, explicit=False,	constexpr='auto', template=None, forceinline=False, comment=None):
+		return self._function('', clsname, args, body, clsname=clsname, init_list=init_list, explicit=explicit,	constexpr=constexpr, template=template, forceinline=forceinline, comment=comment)
 

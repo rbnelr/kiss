@@ -12,29 +12,6 @@
 
 namespace vector {
 	
-	f64& dv2::operator[] (int i) {
-		return arr[i];
-	}
-	
-	f64 const& dv2::operator[] (int i) const {
-		return arr[i];
-	}
-	
-	
-	dv2::dv2 () {
-		
-	}
-	
-	// sets all components to one value
-	// implicit constructor -> v3(x,y,z) * 5 will be turned into v3(x,y,z) * v3(5) by to compiler to be able to execute operator*(v3, v3), which is desirable, also v3 a = 0; works
-	dv2::dv2 (f64 all): x{all}, y{all} {
-		
-	}
-	
-	// supply all components
-	dv2::dv2 (f64 x, f64 y): x{x}, y{y} {
-		
-	}
 	
 	// truncate vector
 	dv2::dv2 (dv3 v): x{v.x}, y{v.y} {
@@ -73,55 +50,7 @@ namespace vector {
 	}
 	
 	
-	dv2 dv2::operator+= (dv2 r) {
-		x += r.x;
-		y += r.y;
-		return *this;
-	}
-	
-	dv2 dv2::operator-= (dv2 r) {
-		x -= r.x;
-		y -= r.y;
-		return *this;
-	}
-	
-	dv2 dv2::operator*= (dv2 r) {
-		x *= r.x;
-		y *= r.y;
-		return *this;
-	}
-	
-	dv2 dv2::operator/= (dv2 r) {
-		x /= r.x;
-		y /= r.y;
-		return *this;
-	}
-	
 	//// arthmethic ops
-	
-	dv2 operator+ (dv2 v) {
-		return dv2(+v.x, +v.y);
-	}
-	
-	dv2 operator- (dv2 v) {
-		return dv2(-v.x, -v.y);
-	}
-	
-	dv2 operator+ (dv2 l, dv2 r) {
-		return dv2(l.x + r.x, l.y + r.y);
-	}
-	
-	dv2 operator- (dv2 l, dv2 r) {
-		return dv2(l.x - r.x, l.y - r.y);
-	}
-	
-	dv2 operator* (dv2 l, dv2 r) {
-		return dv2(l.x * r.x, l.y * r.y);
-	}
-	
-	dv2 operator/ (dv2 l, dv2 r) {
-		return dv2(l.x / r.x, l.y / r.y);
-	}
 	
 	//// comparison ops
 	
@@ -161,18 +90,6 @@ namespace vector {
 	
 	//// misc ops
 	
-	dv2 abs (dv2 v) {
-		return dv2(abs(v.x), abs(v.y));
-	}
-	
-	dv2 min (dv2 l, dv2 r) {
-		return dv2(min(l.x,r.x), min(l.y,r.y));
-	}
-	
-	dv2 max (dv2 l, dv2 r) {
-		return dv2(max(l.x,r.x), max(l.y,r.y));
-	}
-	
 	dv2 clamp (dv2 x, dv2 a, dv2 b) {
 		return min(max(x,a), b);
 	}
@@ -206,18 +123,6 @@ namespace vector {
 	}
 	
 	
-	dv2 floor (dv2 v) {
-		return dv2(floor(v.x), floor(v.y));
-	}
-	
-	dv2 ceil (dv2 v) {
-		return dv2(ceil(v.x), ceil(v.y));
-	}
-	
-	dv2 round (dv2 v) {
-		return dv2(round(v.x), round(v.y));
-	}
-	
 	s64v2 floori (dv2 v) {
 		return s64v2(floori(v.x), floori(v.y));
 	}
@@ -228,18 +133,6 @@ namespace vector {
 	
 	s64v2 roundi (dv2 v) {
 		return s64v2(roundi(v.x), roundi(v.y));
-	}
-	
-	dv2 pow (dv2 v, dv2 e) {
-		return dv2(pow(v.x,e.x), pow(v.y,e.y));
-	}
-	
-	dv2 wrap (dv2 v, dv2 range) {
-		return dv2(wrap(v.x,range.x), wrap(v.y,range.y));
-	}
-	
-	dv2 wrap (dv2 v, dv2 a, dv2 b) {
-		return dv2(wrap(v.x,a.x,b.x), wrap(v.y,a.y,b.y));
 	}
 	
 	

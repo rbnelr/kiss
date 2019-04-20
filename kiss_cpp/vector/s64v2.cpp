@@ -12,29 +12,6 @@
 
 namespace vector {
 	
-	s64& s64v2::operator[] (int i) {
-		return arr[i];
-	}
-	
-	s64 const& s64v2::operator[] (int i) const {
-		return arr[i];
-	}
-	
-	
-	s64v2::s64v2 () {
-		
-	}
-	
-	// sets all components to one value
-	// implicit constructor -> v3(x,y,z) * 5 will be turned into v3(x,y,z) * v3(5) by to compiler to be able to execute operator*(v3, v3), which is desirable, also v3 a = 0; works
-	s64v2::s64v2 (s64 all): x{all}, y{all} {
-		
-	}
-	
-	// supply all components
-	s64v2::s64v2 (s64 x, s64 y): x{x}, y{y} {
-		
-	}
 	
 	// truncate vector
 	s64v2::s64v2 (s64v3 v): x{v.x}, y{v.y} {
@@ -73,55 +50,7 @@ namespace vector {
 	}
 	
 	
-	s64v2 s64v2::operator+= (s64v2 r) {
-		x += r.x;
-		y += r.y;
-		return *this;
-	}
-	
-	s64v2 s64v2::operator-= (s64v2 r) {
-		x -= r.x;
-		y -= r.y;
-		return *this;
-	}
-	
-	s64v2 s64v2::operator*= (s64v2 r) {
-		x *= r.x;
-		y *= r.y;
-		return *this;
-	}
-	
-	s64v2 s64v2::operator/= (s64v2 r) {
-		x /= r.x;
-		y /= r.y;
-		return *this;
-	}
-	
 	//// arthmethic ops
-	
-	s64v2 operator+ (s64v2 v) {
-		return s64v2(+v.x, +v.y);
-	}
-	
-	s64v2 operator- (s64v2 v) {
-		return s64v2(-v.x, -v.y);
-	}
-	
-	s64v2 operator+ (s64v2 l, s64v2 r) {
-		return s64v2(l.x + r.x, l.y + r.y);
-	}
-	
-	s64v2 operator- (s64v2 l, s64v2 r) {
-		return s64v2(l.x - r.x, l.y - r.y);
-	}
-	
-	s64v2 operator* (s64v2 l, s64v2 r) {
-		return s64v2(l.x * r.x, l.y * r.y);
-	}
-	
-	s64v2 operator/ (s64v2 l, s64v2 r) {
-		return s64v2(l.x / r.x, l.y / r.y);
-	}
 	
 	//// comparison ops
 	
@@ -161,18 +90,6 @@ namespace vector {
 	
 	//// misc ops
 	
-	s64v2 abs (s64v2 v) {
-		return s64v2(abs(v.x), abs(v.y));
-	}
-	
-	s64v2 min (s64v2 l, s64v2 r) {
-		return s64v2(min(l.x,r.x), min(l.y,r.y));
-	}
-	
-	s64v2 max (s64v2 l, s64v2 r) {
-		return s64v2(max(l.x,r.x), max(l.y,r.y));
-	}
-	
 	s64v2 clamp (s64v2 x, s64v2 a, s64v2 b) {
 		return min(max(x,a), b);
 	}
@@ -205,14 +122,6 @@ namespace vector {
 		return max_val;
 	}
 	
-	
-	s64v2 wrap (s64v2 v, s64v2 range) {
-		return s64v2(wrap(v.x,range.x), wrap(v.y,range.y));
-	}
-	
-	s64v2 wrap (s64v2 v, s64v2 a, s64v2 b) {
-		return s64v2(wrap(v.x,a.x,b.x), wrap(v.y,a.y,b.y));
-	}
 	
 	
 	dv2 to_rad (s64v2 deg) {

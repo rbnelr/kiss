@@ -12,29 +12,6 @@
 
 namespace vector {
 	
-	f64& dv3::operator[] (int i) {
-		return arr[i];
-	}
-	
-	f64 const& dv3::operator[] (int i) const {
-		return arr[i];
-	}
-	
-	
-	dv3::dv3 () {
-		
-	}
-	
-	// sets all components to one value
-	// implicit constructor -> v3(x,y,z) * 5 will be turned into v3(x,y,z) * v3(5) by to compiler to be able to execute operator*(v3, v3), which is desirable, also v3 a = 0; works
-	dv3::dv3 (f64 all): x{all}, y{all}, z{all} {
-		
-	}
-	
-	// supply all components
-	dv3::dv3 (f64 x, f64 y, f64 z): x{x}, y{y}, z{z} {
-		
-	}
 	
 	// extend vector
 	dv3::dv3 (dv2 xy, f64 z): x{xy.x}, y{xy.y}, z{z} {
@@ -77,59 +54,7 @@ namespace vector {
 	}
 	
 	
-	dv3 dv3::operator+= (dv3 r) {
-		x += r.x;
-		y += r.y;
-		z += r.z;
-		return *this;
-	}
-	
-	dv3 dv3::operator-= (dv3 r) {
-		x -= r.x;
-		y -= r.y;
-		z -= r.z;
-		return *this;
-	}
-	
-	dv3 dv3::operator*= (dv3 r) {
-		x *= r.x;
-		y *= r.y;
-		z *= r.z;
-		return *this;
-	}
-	
-	dv3 dv3::operator/= (dv3 r) {
-		x /= r.x;
-		y /= r.y;
-		z /= r.z;
-		return *this;
-	}
-	
 	//// arthmethic ops
-	
-	dv3 operator+ (dv3 v) {
-		return dv3(+v.x, +v.y, +v.z);
-	}
-	
-	dv3 operator- (dv3 v) {
-		return dv3(-v.x, -v.y, -v.z);
-	}
-	
-	dv3 operator+ (dv3 l, dv3 r) {
-		return dv3(l.x + r.x, l.y + r.y, l.z + r.z);
-	}
-	
-	dv3 operator- (dv3 l, dv3 r) {
-		return dv3(l.x - r.x, l.y - r.y, l.z - r.z);
-	}
-	
-	dv3 operator* (dv3 l, dv3 r) {
-		return dv3(l.x * r.x, l.y * r.y, l.z * r.z);
-	}
-	
-	dv3 operator/ (dv3 l, dv3 r) {
-		return dv3(l.x / r.x, l.y / r.y, l.z / r.z);
-	}
 	
 	//// comparison ops
 	
@@ -169,18 +94,6 @@ namespace vector {
 	
 	//// misc ops
 	
-	dv3 abs (dv3 v) {
-		return dv3(abs(v.x), abs(v.y), abs(v.z));
-	}
-	
-	dv3 min (dv3 l, dv3 r) {
-		return dv3(min(l.x,r.x), min(l.y,r.y), min(l.z,r.z));
-	}
-	
-	dv3 max (dv3 l, dv3 r) {
-		return dv3(max(l.x,r.x), max(l.y,r.y), max(l.z,r.z));
-	}
-	
 	dv3 clamp (dv3 x, dv3 a, dv3 b) {
 		return min(max(x,a), b);
 	}
@@ -214,18 +127,6 @@ namespace vector {
 	}
 	
 	
-	dv3 floor (dv3 v) {
-		return dv3(floor(v.x), floor(v.y), floor(v.z));
-	}
-	
-	dv3 ceil (dv3 v) {
-		return dv3(ceil(v.x), ceil(v.y), ceil(v.z));
-	}
-	
-	dv3 round (dv3 v) {
-		return dv3(round(v.x), round(v.y), round(v.z));
-	}
-	
 	s64v3 floori (dv3 v) {
 		return s64v3(floori(v.x), floori(v.y), floori(v.z));
 	}
@@ -236,18 +137,6 @@ namespace vector {
 	
 	s64v3 roundi (dv3 v) {
 		return s64v3(roundi(v.x), roundi(v.y), roundi(v.z));
-	}
-	
-	dv3 pow (dv3 v, dv3 e) {
-		return dv3(pow(v.x,e.x), pow(v.y,e.y), pow(v.z,e.z));
-	}
-	
-	dv3 wrap (dv3 v, dv3 range) {
-		return dv3(wrap(v.x,range.x), wrap(v.y,range.y), wrap(v.z,range.z));
-	}
-	
-	dv3 wrap (dv3 v, dv3 a, dv3 b) {
-		return dv3(wrap(v.x,a.x,b.x), wrap(v.y,a.y,b.y), wrap(v.z,a.z,b.z));
 	}
 	
 	
@@ -320,9 +209,9 @@ namespace vector {
 	// 3d cross product
 	dv3 cross (dv3 l, dv3 r) {
 		return dv3(
-				l.y * r.z - l.z * r.y,
-				l.z * r.x - l.x * r.z,
-				l.x * r.y - l.y * r.x);
+				   l.y * r.z - l.z * r.y,
+				   l.z * r.x - l.x * r.z,
+				   l.x * r.y - l.y * r.x);
 	}
 }// namespace vector
 

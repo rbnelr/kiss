@@ -12,29 +12,6 @@
 
 namespace vector {
 	
-	s32& iv3::operator[] (int i) {
-		return arr[i];
-	}
-	
-	s32 const& iv3::operator[] (int i) const {
-		return arr[i];
-	}
-	
-	
-	iv3::iv3 () {
-		
-	}
-	
-	// sets all components to one value
-	// implicit constructor -> v3(x,y,z) * 5 will be turned into v3(x,y,z) * v3(5) by to compiler to be able to execute operator*(v3, v3), which is desirable, also v3 a = 0; works
-	iv3::iv3 (s32 all): x{all}, y{all}, z{all} {
-		
-	}
-	
-	// supply all components
-	iv3::iv3 (s32 x, s32 y, s32 z): x{x}, y{y}, z{z} {
-		
-	}
 	
 	// extend vector
 	iv3::iv3 (iv2 xy, s32 z): x{xy.x}, y{xy.y}, z{z} {
@@ -77,59 +54,7 @@ namespace vector {
 	}
 	
 	
-	iv3 iv3::operator+= (iv3 r) {
-		x += r.x;
-		y += r.y;
-		z += r.z;
-		return *this;
-	}
-	
-	iv3 iv3::operator-= (iv3 r) {
-		x -= r.x;
-		y -= r.y;
-		z -= r.z;
-		return *this;
-	}
-	
-	iv3 iv3::operator*= (iv3 r) {
-		x *= r.x;
-		y *= r.y;
-		z *= r.z;
-		return *this;
-	}
-	
-	iv3 iv3::operator/= (iv3 r) {
-		x /= r.x;
-		y /= r.y;
-		z /= r.z;
-		return *this;
-	}
-	
 	//// arthmethic ops
-	
-	iv3 operator+ (iv3 v) {
-		return iv3(+v.x, +v.y, +v.z);
-	}
-	
-	iv3 operator- (iv3 v) {
-		return iv3(-v.x, -v.y, -v.z);
-	}
-	
-	iv3 operator+ (iv3 l, iv3 r) {
-		return iv3(l.x + r.x, l.y + r.y, l.z + r.z);
-	}
-	
-	iv3 operator- (iv3 l, iv3 r) {
-		return iv3(l.x - r.x, l.y - r.y, l.z - r.z);
-	}
-	
-	iv3 operator* (iv3 l, iv3 r) {
-		return iv3(l.x * r.x, l.y * r.y, l.z * r.z);
-	}
-	
-	iv3 operator/ (iv3 l, iv3 r) {
-		return iv3(l.x / r.x, l.y / r.y, l.z / r.z);
-	}
 	
 	//// comparison ops
 	
@@ -169,18 +94,6 @@ namespace vector {
 	
 	//// misc ops
 	
-	iv3 abs (iv3 v) {
-		return iv3(abs(v.x), abs(v.y), abs(v.z));
-	}
-	
-	iv3 min (iv3 l, iv3 r) {
-		return iv3(min(l.x,r.x), min(l.y,r.y), min(l.z,r.z));
-	}
-	
-	iv3 max (iv3 l, iv3 r) {
-		return iv3(max(l.x,r.x), max(l.y,r.y), max(l.z,r.z));
-	}
-	
 	iv3 clamp (iv3 x, iv3 a, iv3 b) {
 		return min(max(x,a), b);
 	}
@@ -213,14 +126,6 @@ namespace vector {
 		return max_val;
 	}
 	
-	
-	iv3 wrap (iv3 v, iv3 range) {
-		return iv3(wrap(v.x,range.x), wrap(v.y,range.y), wrap(v.z,range.z));
-	}
-	
-	iv3 wrap (iv3 v, iv3 a, iv3 b) {
-		return iv3(wrap(v.x,a.x,b.x), wrap(v.y,a.y,b.y), wrap(v.z,a.z,b.z));
-	}
 	
 	
 	fv3 to_rad (iv3 deg) {
@@ -275,9 +180,9 @@ namespace vector {
 	// 3d cross product
 	iv3 cross (iv3 l, iv3 r) {
 		return iv3(
-				l.y * r.z - l.z * r.y,
-				l.z * r.x - l.x * r.z,
-				l.x * r.y - l.y * r.x);
+				   l.y * r.z - l.z * r.y,
+				   l.z * r.x - l.x * r.z,
+				   l.x * r.y - l.y * r.x);
 	}
 }// namespace vector
 

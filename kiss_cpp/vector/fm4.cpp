@@ -12,16 +12,6 @@ namespace vector {
 	//// Accessors
 	
 	
-	// get cell with r,c indecies (r=row, c=column)
-	f32 const& fm4::get (int r, int c) const {
-		return arr[c][r];
-	}
-	
-	// get matrix column
-	fv4 const& fm4::get_column (int indx) const {
-		return arr[indx];
-	}
-	
 	// get matrix row
 	fv4 fm4::get_row (int indx) const {
 		return fv4(arr[0][indx], arr[1][indx], arr[2][indx], arr[3][indx]);
@@ -30,130 +20,82 @@ namespace vector {
 	//// Constructors
 	
 	
-	fm4::fm4 () {
-		
-	}
-	
-	// supply one value for all cells
-	fm4::fm4 (f32 all): 
-	arr{
-		fv4(all, all, all, all),
-		fv4(all, all, all, all),
-		fv4(all, all, all, all),
-		fv4(all, all, all, all)} {
-		
-	}
-	
-	// supply all cells, in row major order for readability -> c<r><c> (r=row, c=column)
-	fm4::fm4 (
-			f32 c00, f32 c01, f32 c02, f32 c03,
-			f32 c10, f32 c11, f32 c12, f32 c13,
-			f32 c20, f32 c21, f32 c22, f32 c23,
-			f32 c30, f32 c31, f32 c32, f32 c33): 
-	arr{
-		fv4(c00, c10, c20, c30),
-		fv4(c01, c11, c21, c31),
-		fv4(c02, c12, c22, c32),
-		fv4(c03, c13, c23, c33)} {
-		
-	}
-	
 	// static rows() and columns() methods are preferred over constructors, to avoid confusion if column or row vectors are supplied to the constructor
 	
 	// supply all row vectors
 	fm4 fm4::rows (fv4 row0, fv4 row1, fv4 row2, fv4 row3) {
-		return fm4(
-				row0[0], row0[1], row0[2], row0[3],
-				row1[0], row1[1], row1[2], row1[3],
-				row2[0], row2[1], row2[2], row2[3],
-				row3[0], row3[1], row3[2], row3[3]);
+		return fm4(row0[0], row0[1], row0[2], row0[3],
+				   row1[0], row1[1], row1[2], row1[3],
+				   row2[0], row2[1], row2[2], row2[3],
+				   row3[0], row3[1], row3[2], row3[3]);
 	}
 	
 	// supply all cells in row major order
-	fm4 fm4::rows (
-			f32 c00, f32 c01, f32 c02, f32 c03,
-			f32 c10, f32 c11, f32 c12, f32 c13,
-			f32 c20, f32 c21, f32 c22, f32 c23,
-			f32 c30, f32 c31, f32 c32, f32 c33) {
-		return fm4(
-				c00, c01, c02, c03,
-				c10, c11, c12, c13,
-				c20, c21, c22, c23,
-				c30, c31, c32, c33);
+	fm4 fm4::rows (f32 c00, f32 c01, f32 c02, f32 c03,
+				   f32 c10, f32 c11, f32 c12, f32 c13,
+				   f32 c20, f32 c21, f32 c22, f32 c23,
+				   f32 c30, f32 c31, f32 c32, f32 c33) {
+		return fm4(c00, c01, c02, c03,
+				   c10, c11, c12, c13,
+				   c20, c21, c22, c23,
+				   c30, c31, c32, c33);
 	}
 	
 	// supply all column vectors
 	fm4 fm4::columns (fv4 col0, fv4 col1, fv4 col2, fv4 col3) {
-		return fm4(
-				col0[0], col1[0], col2[0], col3[0],
-				col0[1], col1[1], col2[1], col3[1],
-				col0[2], col1[2], col2[2], col3[2],
-				col0[3], col1[3], col2[3], col3[3]);
+		return fm4(col0[0], col1[0], col2[0], col3[0],
+				   col0[1], col1[1], col2[1], col3[1],
+				   col0[2], col1[2], col2[2], col3[2],
+				   col0[3], col1[3], col2[3], col3[3]);
 	}
 	
 	// supply all cells in column major order
-	fm4 fm4::columns (
-			f32 c00, f32 c10, f32 c20, f32 c30,
-			f32 c01, f32 c11, f32 c21, f32 c31,
-			f32 c02, f32 c12, f32 c22, f32 c32,
-			f32 c03, f32 c13, f32 c23, f32 c33) {
-		return fm4(
-				c00, c01, c02, c03,
-				c10, c11, c12, c13,
-				c20, c21, c22, c23,
-				c30, c31, c32, c33);
+	fm4 fm4::columns (f32 c00, f32 c10, f32 c20, f32 c30,
+					  f32 c01, f32 c11, f32 c21, f32 c31,
+					  f32 c02, f32 c12, f32 c22, f32 c32,
+					  f32 c03, f32 c13, f32 c23, f32 c33) {
+		return fm4(c00, c01, c02, c03,
+				   c10, c11, c12, c13,
+				   c20, c21, c22, c23,
+				   c30, c31, c32, c33);
 	}
 	
-	
-	// identity matrix
-	fm4 fm4::identity () {
-		return fm4(
-				1,0,0,0,
-				0,1,0,0,
-				0,0,1,0,
-				0,0,0,1);
-	}
 	
 	// Casting operators
 	
 	
 	// extend/truncate matrix of other size
 	fm4::operator fm2 () const {
-		return fm2(
-				arr[0][0], arr[1][0],
-				arr[0][1], arr[1][1]);
+		return fm2(arr[0][0], arr[1][0],
+				   arr[0][1], arr[1][1]);
 	}
 	
 	// extend/truncate matrix of other size
 	fm4::operator fm3 () const {
-		return fm3(
-				arr[0][0], arr[1][0], arr[2][0],
-				arr[0][1], arr[1][1], arr[2][1],
-				arr[0][2], arr[1][2], arr[2][2]);
+		return fm3(arr[0][0], arr[1][0], arr[2][0],
+				   arr[0][1], arr[1][1], arr[2][1],
+				   arr[0][2], arr[1][2], arr[2][2]);
 	}
 	
 	// extend/truncate matrix of other size
 	fm4::operator fm2x3 () const {
-		return fm2x3(
-				arr[0][0], arr[1][0], arr[2][0],
-				arr[0][1], arr[1][1], arr[2][1]);
+		return fm2x3(arr[0][0], arr[1][0], arr[2][0],
+					 arr[0][1], arr[1][1], arr[2][1]);
 	}
 	
 	// extend/truncate matrix of other size
 	fm4::operator fm3x4 () const {
-		return fm3x4(
-				arr[0][0], arr[1][0], arr[2][0], arr[3][0],
-				arr[0][1], arr[1][1], arr[2][1], arr[3][1],
-				arr[0][2], arr[1][2], arr[2][2], arr[3][2]);
+		return fm3x4(arr[0][0], arr[1][0], arr[2][0], arr[3][0],
+					 arr[0][1], arr[1][1], arr[2][1], arr[3][1],
+					 arr[0][2], arr[1][2], arr[2][2], arr[3][2]);
 	}
 	
 	// typecast
 	fm4::operator dm4 () const {
-		return dm4(
-				(f64)arr[0][0], (f64)arr[0][1], (f64)arr[0][2], (f64)arr[0][3],
-				(f64)arr[1][0], (f64)arr[1][1], (f64)arr[1][2], (f64)arr[1][3],
-				(f64)arr[2][0], (f64)arr[2][1], (f64)arr[2][2], (f64)arr[2][3],
-				(f64)arr[3][0], (f64)arr[3][1], (f64)arr[3][2], (f64)arr[3][3]);
+		return dm4((f64)arr[0][0], (f64)arr[0][1], (f64)arr[0][2], (f64)arr[0][3],
+				   (f64)arr[1][0], (f64)arr[1][1], (f64)arr[1][2], (f64)arr[1][3],
+				   (f64)arr[2][0], (f64)arr[2][1], (f64)arr[2][2], (f64)arr[2][3],
+				   (f64)arr[3][0], (f64)arr[3][1], (f64)arr[3][2], (f64)arr[3][3]);
 	}
 	
 	// Elementwise operators
@@ -191,119 +133,105 @@ namespace vector {
 	
 	
 	fm4 operator+ (fm4 const& m) {
-		return fm4(
-				+m.arr[0][0], +m.arr[1][0], +m.arr[2][0], +m.arr[3][0],
-				+m.arr[0][1], +m.arr[1][1], +m.arr[2][1], +m.arr[3][1],
-				+m.arr[0][2], +m.arr[1][2], +m.arr[2][2], +m.arr[3][2],
-				+m.arr[0][3], +m.arr[1][3], +m.arr[2][3], +m.arr[3][3]);
+		return fm4(+m.arr[0][0], +m.arr[1][0], +m.arr[2][0], +m.arr[3][0],
+				   +m.arr[0][1], +m.arr[1][1], +m.arr[2][1], +m.arr[3][1],
+				   +m.arr[0][2], +m.arr[1][2], +m.arr[2][2], +m.arr[3][2],
+				   +m.arr[0][3], +m.arr[1][3], +m.arr[2][3], +m.arr[3][3]);
 	}
 	
 	fm4 operator- (fm4 const& m) {
-		return fm4(
-				-m.arr[0][0], -m.arr[1][0], -m.arr[2][0], -m.arr[3][0],
-				-m.arr[0][1], -m.arr[1][1], -m.arr[2][1], -m.arr[3][1],
-				-m.arr[0][2], -m.arr[1][2], -m.arr[2][2], -m.arr[3][2],
-				-m.arr[0][3], -m.arr[1][3], -m.arr[2][3], -m.arr[3][3]);
+		return fm4(-m.arr[0][0], -m.arr[1][0], -m.arr[2][0], -m.arr[3][0],
+				   -m.arr[0][1], -m.arr[1][1], -m.arr[2][1], -m.arr[3][1],
+				   -m.arr[0][2], -m.arr[1][2], -m.arr[2][2], -m.arr[3][2],
+				   -m.arr[0][3], -m.arr[1][3], -m.arr[2][3], -m.arr[3][3]);
 	}
 	
 	
 	fm4 operator+ (fm4 const& l, fm4 const& r) {
-		return fm4(
-				l.arr[0][0] + r.arr[0][0], l.arr[1][0] + r.arr[1][0], l.arr[2][0] + r.arr[2][0], l.arr[3][0] + r.arr[3][0],
-				l.arr[0][1] + r.arr[0][1], l.arr[1][1] + r.arr[1][1], l.arr[2][1] + r.arr[2][1], l.arr[3][1] + r.arr[3][1],
-				l.arr[0][2] + r.arr[0][2], l.arr[1][2] + r.arr[1][2], l.arr[2][2] + r.arr[2][2], l.arr[3][2] + r.arr[3][2],
-				l.arr[0][3] + r.arr[0][3], l.arr[1][3] + r.arr[1][3], l.arr[2][3] + r.arr[2][3], l.arr[3][3] + r.arr[3][3]);
+		return fm4(l.arr[0][0] + r.arr[0][0], l.arr[1][0] + r.arr[1][0], l.arr[2][0] + r.arr[2][0], l.arr[3][0] + r.arr[3][0],
+				   l.arr[0][1] + r.arr[0][1], l.arr[1][1] + r.arr[1][1], l.arr[2][1] + r.arr[2][1], l.arr[3][1] + r.arr[3][1],
+				   l.arr[0][2] + r.arr[0][2], l.arr[1][2] + r.arr[1][2], l.arr[2][2] + r.arr[2][2], l.arr[3][2] + r.arr[3][2],
+				   l.arr[0][3] + r.arr[0][3], l.arr[1][3] + r.arr[1][3], l.arr[2][3] + r.arr[2][3], l.arr[3][3] + r.arr[3][3]);
 	}
 	
 	fm4 operator+ (fm4 const& l, f32 r) {
-		return fm4(
-				l.arr[0][0] + r, l.arr[1][0] + r, l.arr[2][0] + r, l.arr[3][0] + r,
-				l.arr[0][1] + r, l.arr[1][1] + r, l.arr[2][1] + r, l.arr[3][1] + r,
-				l.arr[0][2] + r, l.arr[1][2] + r, l.arr[2][2] + r, l.arr[3][2] + r,
-				l.arr[0][3] + r, l.arr[1][3] + r, l.arr[2][3] + r, l.arr[3][3] + r);
+		return fm4(l.arr[0][0] + r, l.arr[1][0] + r, l.arr[2][0] + r, l.arr[3][0] + r,
+				   l.arr[0][1] + r, l.arr[1][1] + r, l.arr[2][1] + r, l.arr[3][1] + r,
+				   l.arr[0][2] + r, l.arr[1][2] + r, l.arr[2][2] + r, l.arr[3][2] + r,
+				   l.arr[0][3] + r, l.arr[1][3] + r, l.arr[2][3] + r, l.arr[3][3] + r);
 	}
 	
 	fm4 operator+ (f32 l, fm4 const& r) {
-		return fm4(
-				l + r.arr[0][0], l + r.arr[1][0], l + r.arr[2][0], l + r.arr[3][0],
-				l + r.arr[0][1], l + r.arr[1][1], l + r.arr[2][1], l + r.arr[3][1],
-				l + r.arr[0][2], l + r.arr[1][2], l + r.arr[2][2], l + r.arr[3][2],
-				l + r.arr[0][3], l + r.arr[1][3], l + r.arr[2][3], l + r.arr[3][3]);
+		return fm4(l + r.arr[0][0], l + r.arr[1][0], l + r.arr[2][0], l + r.arr[3][0],
+				   l + r.arr[0][1], l + r.arr[1][1], l + r.arr[2][1], l + r.arr[3][1],
+				   l + r.arr[0][2], l + r.arr[1][2], l + r.arr[2][2], l + r.arr[3][2],
+				   l + r.arr[0][3], l + r.arr[1][3], l + r.arr[2][3], l + r.arr[3][3]);
 	}
 	
 	
 	fm4 operator- (fm4 const& l, fm4 const& r) {
-		return fm4(
-				l.arr[0][0] - r.arr[0][0], l.arr[1][0] - r.arr[1][0], l.arr[2][0] - r.arr[2][0], l.arr[3][0] - r.arr[3][0],
-				l.arr[0][1] - r.arr[0][1], l.arr[1][1] - r.arr[1][1], l.arr[2][1] - r.arr[2][1], l.arr[3][1] - r.arr[3][1],
-				l.arr[0][2] - r.arr[0][2], l.arr[1][2] - r.arr[1][2], l.arr[2][2] - r.arr[2][2], l.arr[3][2] - r.arr[3][2],
-				l.arr[0][3] - r.arr[0][3], l.arr[1][3] - r.arr[1][3], l.arr[2][3] - r.arr[2][3], l.arr[3][3] - r.arr[3][3]);
+		return fm4(l.arr[0][0] - r.arr[0][0], l.arr[1][0] - r.arr[1][0], l.arr[2][0] - r.arr[2][0], l.arr[3][0] - r.arr[3][0],
+				   l.arr[0][1] - r.arr[0][1], l.arr[1][1] - r.arr[1][1], l.arr[2][1] - r.arr[2][1], l.arr[3][1] - r.arr[3][1],
+				   l.arr[0][2] - r.arr[0][2], l.arr[1][2] - r.arr[1][2], l.arr[2][2] - r.arr[2][2], l.arr[3][2] - r.arr[3][2],
+				   l.arr[0][3] - r.arr[0][3], l.arr[1][3] - r.arr[1][3], l.arr[2][3] - r.arr[2][3], l.arr[3][3] - r.arr[3][3]);
 	}
 	
 	fm4 operator- (fm4 const& l, f32 r) {
-		return fm4(
-				l.arr[0][0] - r, l.arr[1][0] - r, l.arr[2][0] - r, l.arr[3][0] - r,
-				l.arr[0][1] - r, l.arr[1][1] - r, l.arr[2][1] - r, l.arr[3][1] - r,
-				l.arr[0][2] - r, l.arr[1][2] - r, l.arr[2][2] - r, l.arr[3][2] - r,
-				l.arr[0][3] - r, l.arr[1][3] - r, l.arr[2][3] - r, l.arr[3][3] - r);
+		return fm4(l.arr[0][0] - r, l.arr[1][0] - r, l.arr[2][0] - r, l.arr[3][0] - r,
+				   l.arr[0][1] - r, l.arr[1][1] - r, l.arr[2][1] - r, l.arr[3][1] - r,
+				   l.arr[0][2] - r, l.arr[1][2] - r, l.arr[2][2] - r, l.arr[3][2] - r,
+				   l.arr[0][3] - r, l.arr[1][3] - r, l.arr[2][3] - r, l.arr[3][3] - r);
 	}
 	
 	fm4 operator- (f32 l, fm4 const& r) {
-		return fm4(
-				l - r.arr[0][0], l - r.arr[1][0], l - r.arr[2][0], l - r.arr[3][0],
-				l - r.arr[0][1], l - r.arr[1][1], l - r.arr[2][1], l - r.arr[3][1],
-				l - r.arr[0][2], l - r.arr[1][2], l - r.arr[2][2], l - r.arr[3][2],
-				l - r.arr[0][3], l - r.arr[1][3], l - r.arr[2][3], l - r.arr[3][3]);
+		return fm4(l - r.arr[0][0], l - r.arr[1][0], l - r.arr[2][0], l - r.arr[3][0],
+				   l - r.arr[0][1], l - r.arr[1][1], l - r.arr[2][1], l - r.arr[3][1],
+				   l - r.arr[0][2], l - r.arr[1][2], l - r.arr[2][2], l - r.arr[3][2],
+				   l - r.arr[0][3], l - r.arr[1][3], l - r.arr[2][3], l - r.arr[3][3]);
 	}
 	
 	
 	fm4 mul_elementwise (fm4 const& l, fm4 const& r) {
-		return fm4(
-				l.arr[0][0] * r.arr[0][0], l.arr[1][0] * r.arr[1][0], l.arr[2][0] * r.arr[2][0], l.arr[3][0] * r.arr[3][0],
-				l.arr[0][1] * r.arr[0][1], l.arr[1][1] * r.arr[1][1], l.arr[2][1] * r.arr[2][1], l.arr[3][1] * r.arr[3][1],
-				l.arr[0][2] * r.arr[0][2], l.arr[1][2] * r.arr[1][2], l.arr[2][2] * r.arr[2][2], l.arr[3][2] * r.arr[3][2],
-				l.arr[0][3] * r.arr[0][3], l.arr[1][3] * r.arr[1][3], l.arr[2][3] * r.arr[2][3], l.arr[3][3] * r.arr[3][3]);
+		return fm4(l.arr[0][0] * r.arr[0][0], l.arr[1][0] * r.arr[1][0], l.arr[2][0] * r.arr[2][0], l.arr[3][0] * r.arr[3][0],
+				   l.arr[0][1] * r.arr[0][1], l.arr[1][1] * r.arr[1][1], l.arr[2][1] * r.arr[2][1], l.arr[3][1] * r.arr[3][1],
+				   l.arr[0][2] * r.arr[0][2], l.arr[1][2] * r.arr[1][2], l.arr[2][2] * r.arr[2][2], l.arr[3][2] * r.arr[3][2],
+				   l.arr[0][3] * r.arr[0][3], l.arr[1][3] * r.arr[1][3], l.arr[2][3] * r.arr[2][3], l.arr[3][3] * r.arr[3][3]);
 	}
 	
 	fm4 operator* (fm4 const& l, f32 r) {
-		return fm4(
-				l.arr[0][0] * r, l.arr[1][0] * r, l.arr[2][0] * r, l.arr[3][0] * r,
-				l.arr[0][1] * r, l.arr[1][1] * r, l.arr[2][1] * r, l.arr[3][1] * r,
-				l.arr[0][2] * r, l.arr[1][2] * r, l.arr[2][2] * r, l.arr[3][2] * r,
-				l.arr[0][3] * r, l.arr[1][3] * r, l.arr[2][3] * r, l.arr[3][3] * r);
+		return fm4(l.arr[0][0] * r, l.arr[1][0] * r, l.arr[2][0] * r, l.arr[3][0] * r,
+				   l.arr[0][1] * r, l.arr[1][1] * r, l.arr[2][1] * r, l.arr[3][1] * r,
+				   l.arr[0][2] * r, l.arr[1][2] * r, l.arr[2][2] * r, l.arr[3][2] * r,
+				   l.arr[0][3] * r, l.arr[1][3] * r, l.arr[2][3] * r, l.arr[3][3] * r);
 	}
 	
 	fm4 operator* (f32 l, fm4 const& r) {
-		return fm4(
-				l * r.arr[0][0], l * r.arr[1][0], l * r.arr[2][0], l * r.arr[3][0],
-				l * r.arr[0][1], l * r.arr[1][1], l * r.arr[2][1], l * r.arr[3][1],
-				l * r.arr[0][2], l * r.arr[1][2], l * r.arr[2][2], l * r.arr[3][2],
-				l * r.arr[0][3], l * r.arr[1][3], l * r.arr[2][3], l * r.arr[3][3]);
+		return fm4(l * r.arr[0][0], l * r.arr[1][0], l * r.arr[2][0], l * r.arr[3][0],
+				   l * r.arr[0][1], l * r.arr[1][1], l * r.arr[2][1], l * r.arr[3][1],
+				   l * r.arr[0][2], l * r.arr[1][2], l * r.arr[2][2], l * r.arr[3][2],
+				   l * r.arr[0][3], l * r.arr[1][3], l * r.arr[2][3], l * r.arr[3][3]);
 	}
 	
 	
 	fm4 div_elementwise (fm4 const& l, fm4 const& r) {
-		return fm4(
-				l.arr[0][0] / r.arr[0][0], l.arr[1][0] / r.arr[1][0], l.arr[2][0] / r.arr[2][0], l.arr[3][0] / r.arr[3][0],
-				l.arr[0][1] / r.arr[0][1], l.arr[1][1] / r.arr[1][1], l.arr[2][1] / r.arr[2][1], l.arr[3][1] / r.arr[3][1],
-				l.arr[0][2] / r.arr[0][2], l.arr[1][2] / r.arr[1][2], l.arr[2][2] / r.arr[2][2], l.arr[3][2] / r.arr[3][2],
-				l.arr[0][3] / r.arr[0][3], l.arr[1][3] / r.arr[1][3], l.arr[2][3] / r.arr[2][3], l.arr[3][3] / r.arr[3][3]);
+		return fm4(l.arr[0][0] / r.arr[0][0], l.arr[1][0] / r.arr[1][0], l.arr[2][0] / r.arr[2][0], l.arr[3][0] / r.arr[3][0],
+				   l.arr[0][1] / r.arr[0][1], l.arr[1][1] / r.arr[1][1], l.arr[2][1] / r.arr[2][1], l.arr[3][1] / r.arr[3][1],
+				   l.arr[0][2] / r.arr[0][2], l.arr[1][2] / r.arr[1][2], l.arr[2][2] / r.arr[2][2], l.arr[3][2] / r.arr[3][2],
+				   l.arr[0][3] / r.arr[0][3], l.arr[1][3] / r.arr[1][3], l.arr[2][3] / r.arr[2][3], l.arr[3][3] / r.arr[3][3]);
 	}
 	
 	fm4 operator/ (fm4 const& l, f32 r) {
-		return fm4(
-				l.arr[0][0] / r, l.arr[1][0] / r, l.arr[2][0] / r, l.arr[3][0] / r,
-				l.arr[0][1] / r, l.arr[1][1] / r, l.arr[2][1] / r, l.arr[3][1] / r,
-				l.arr[0][2] / r, l.arr[1][2] / r, l.arr[2][2] / r, l.arr[3][2] / r,
-				l.arr[0][3] / r, l.arr[1][3] / r, l.arr[2][3] / r, l.arr[3][3] / r);
+		return fm4(l.arr[0][0] / r, l.arr[1][0] / r, l.arr[2][0] / r, l.arr[3][0] / r,
+				   l.arr[0][1] / r, l.arr[1][1] / r, l.arr[2][1] / r, l.arr[3][1] / r,
+				   l.arr[0][2] / r, l.arr[1][2] / r, l.arr[2][2] / r, l.arr[3][2] / r,
+				   l.arr[0][3] / r, l.arr[1][3] / r, l.arr[2][3] / r, l.arr[3][3] / r);
 	}
 	
 	fm4 operator/ (f32 l, fm4 const& r) {
-		return fm4(
-				l / r.arr[0][0], l / r.arr[1][0], l / r.arr[2][0], l / r.arr[3][0],
-				l / r.arr[0][1], l / r.arr[1][1], l / r.arr[2][1], l / r.arr[3][1],
-				l / r.arr[0][2], l / r.arr[1][2], l / r.arr[2][2], l / r.arr[3][2],
-				l / r.arr[0][3], l / r.arr[1][3], l / r.arr[2][3], l / r.arr[3][3]);
+		return fm4(l / r.arr[0][0], l / r.arr[1][0], l / r.arr[2][0], l / r.arr[3][0],
+				   l / r.arr[0][1], l / r.arr[1][1], l / r.arr[2][1], l / r.arr[3][1],
+				   l / r.arr[0][2], l / r.arr[1][2], l / r.arr[2][2], l / r.arr[3][2],
+				   l / r.arr[0][3], l / r.arr[1][3], l / r.arr[2][3], l / r.arr[3][3]);
 	}
 	
 	// Matrix ops
@@ -336,7 +264,7 @@ namespace vector {
 		return ret;
 	}
 	
-	fm4 transpose (fm4 m) {
+	fm4 transpose (fm4 const& m) {
 		return fm4::rows(m.arr[0], m.arr[1], m.arr[2], m.arr[3]);
 	}
 	
@@ -358,251 +286,106 @@ namespace vector {
 	f32 o = mat.arr[3][2]; \
 	f32 p = mat.arr[3][3];
 	
-	f32 det (fm4 mat) {
+	f32 det (fm4 const& mat) {
 		// optimized from:  // 40 muls, 28 adds, 0 divs = 68 ops
-		// to:              // 28 muls, 22 adds, 0 divs = 50 ops
+		// to:              // 40 muls, 28 adds, 0 divs = 68 ops
 		LETTERIFY
 		
-		f32 ln = l * n;
-		f32 io = i * o;
-		f32 jp = j * p;
-		f32 lm = l * m;
-		f32 km = k * m;
-		f32 kn = k * n;
-		f32 ip = i * p;
-		f32 in = i * n;
-		f32 lo = l * o;
-		f32 kp = k * p;
-		f32 jm = j * m;
-		f32 jo = j * o;
-		
-		f32 iplm = ip - lm;
-		f32 jokn = jo - kn;
-		f32 injm = in - jm;
-		f32 jpln = jp - ln;
-		f32 kplo = kp - lo;
-		f32 iokm = io - km;
-		
-		    f32 det_a_f = kplo;
-		    f32 det_a_g = jpln;
-		    f32 det_a_h = jokn;
-		
-		f32 det_a = + f * det_a_f - g * det_a_g + h * det_a_h;
-		
-		    f32 det_b_e = kplo;
-		    f32 det_b_g = iplm;
-		    f32 det_b_h = iokm;
-		
-		f32 det_b = + e * det_b_e - g * det_b_g + h * det_b_h;
-		
-		    f32 det_c_e = jpln;
-		    f32 det_c_f = iplm;
-		    f32 det_c_h = injm;
-		
-		f32 det_c = + e * det_c_e - f * det_c_f + h * det_c_h;
-		
-		    f32 det_d_e = jokn;
-		    f32 det_d_f = iokm;
-		    f32 det_d_g = injm;
-		
-		f32 det_d = + e * det_d_e - f * det_d_f + g * det_d_g;
-		
-		
-		return + a * det_a - b * det_b + c * det_c - d * det_d;
+		return +a*(+f*(k*p - l*o) -g*(j*p - l*n) +h*(j*o - k*n))
+			   -b*(+e*(k*p - l*o) -g*(i*p - l*m) +h*(i*o - k*m))
+			   +c*(+e*(j*p - l*n) -f*(i*p - l*m) +h*(i*n - j*m))
+			   -d*(+e*(j*o - k*n) -f*(i*o - k*m) +g*(i*n - j*m));
 	}
 	
-	fm4 inverse (fm4 mat) {
+	fm4 inverse (fm4 const& mat) {
 		// optimized from:  // 200 muls, 125 adds, 1 divs = 326 ops
 		// to:              // 116 muls, 83 adds, 1 divs = 200 ops
 		LETTERIFY
 		
-		f32 lm = l * m;
-		f32 ej = e * j;
-		f32 eo = e * o;
-		f32 ip = i * p;
-		f32 gm = g * m;
-		f32 fo = f * o;
-		f32 ek = e * k;
-		f32 jm = j * m;
-		f32 gl = g * l;
+		f32 fl = f * l;
 		f32 ep = e * p;
-		f32 io = i * o;
-		f32 hm = h * m;
-		f32 km = k * m;
-		f32 gp = g * p;
+		f32 ip = i * p;
 		f32 el = e * l;
 		f32 fm = f * m;
-		f32 en = e * n;
-		f32 gn = g * n;
-		f32 gi = g * i;
-		f32 lo = l * o;
-		f32 gj = g * j;
-		f32 kp = k * p;
-		f32 ln = l * n;
-		f32 fl = f * l;
-		f32 fi = f * i;
-		f32 hj = h * j;
-		f32 jp = j * p;
-		f32 ho = h * o;
-		f32 hn = h * n;
-		f32 hi = h * i;
-		f32 kn = k * n;
-		f32 hk = h * k;
-		f32 in = i * n;
-		f32 fp = f * p;
-		f32 fk = f * k;
 		f32 jo = j * o;
+		f32 eo = e * o;
+		f32 gm = g * m;
+		f32 ek = e * k;
+		f32 io = i * o;
+		f32 hj = h * j;
+		f32 kn = k * n;
+		f32 kp = k * p;
+		f32 gl = g * l;
+		f32 hn = h * n;
+		f32 lm = l * m;
+		f32 ej = e * j;
+		f32 in = i * n;
+		f32 jm = j * m;
+		f32 lo = l * o;
+		f32 hm = h * m;
+		f32 gj = g * j;
+		f32 fk = f * k;
+		f32 gi = g * i;
+		f32 hi = h * i;
+		f32 jp = j * p;
+		f32 fo = f * o;
+		f32 gn = g * n;
+		f32 fp = f * p;
+		f32 gp = g * p;
+		f32 km = k * m;
+		f32 fi = f * i;
+		f32 en = e * n;
+		f32 ho = h * o;
+		f32 ln = l * n;
+		f32 hk = h * k;
 		
-		f32 gpho = gp - ho;
-		f32 flhj = fl - hj;
-		f32 enfm = en - fm;
-		f32 eogm = eo - gm;
-		f32 iplm = ip - lm;
 		f32 fkgj = fk - gj;
-		f32 ejfi = ej - fi;
-		f32 glhk = gl - hk;
-		f32 ephm = ep - hm;
-		f32 fphn = fp - hn;
-		f32 fogn = fo - gn;
-		f32 elhi = el - hi;
-		f32 jokn = jo - kn;
-		f32 injm = in - jm;
-		f32 jpln = jp - ln;
-		f32 kplo = kp - lo;
+		f32 iplm = ip - lm;
+		f32 enfm = en - fm;
 		f32 iokm = io - km;
+		f32 fphn = fp - hn;
+		f32 kplo = kp - lo;
+		f32 jokn = jo - kn;
+		f32 eogm = eo - gm;
+		f32 fogn = fo - gn;
+		f32 ejfi = ej - fi;
+		f32 injm = in - jm;
+		f32 ephm = ep - hm;
 		f32 ekgi = ek - gi;
+		f32 elhi = el - hi;
+		f32 flhj = fl - hj;
+		f32 glhk = gl - hk;
+		f32 gpho = gp - ho;
+		f32 jpln = jp - ln;
 		
 		f32 det;
 		{ // clac determinate
-			
-			    f32 det_a_f = kplo;
-			    f32 det_a_g = jpln;
-			    f32 det_a_h = jokn;
-			
-			f32 det_a = + f * det_a_f - g * det_a_g + h * det_a_h;
-			
-			    f32 det_b_e = kplo;
-			    f32 det_b_g = iplm;
-			    f32 det_b_h = iokm;
-			
-			f32 det_b = + e * det_b_e - g * det_b_g + h * det_b_h;
-			
-			    f32 det_c_e = jpln;
-			    f32 det_c_f = iplm;
-			    f32 det_c_h = injm;
-			
-			f32 det_c = + e * det_c_e - f * det_c_f + h * det_c_h;
-			
-			    f32 det_d_e = jokn;
-			    f32 det_d_f = iokm;
-			    f32 det_d_g = injm;
-			
-			f32 det_d = + e * det_d_e - f * det_d_f + g * det_d_g;
-			
-			
-			det = + a * det_a - b * det_b + c * det_c - d * det_d;
+			det = +a*(+f*(kplo) -g*(jpln) +h*(jokn))
+				  -b*(+e*(kplo) -g*(iplm) +h*(iokm))
+				  +c*(+e*(jpln) -f*(iplm) +h*(injm))
+				  -d*(+e*(jokn) -f*(iokm) +g*(injm));
 		}
 		f32 inv_det = f32(1) / det;
 		f32 ninv_det = -inv_det;
 		
 		// calc cofactor matrix
 		
-		    f32 cofac_00_f = kplo;
-		    f32 cofac_00_g = jpln;
-		    f32 cofac_00_h = jokn;
-		    
-		f32 cofac_00 = + f * cofac_00_f - g * cofac_00_g + h * cofac_00_h;
-		
-		    f32 cofac_01_e = kplo;
-		    f32 cofac_01_g = iplm;
-		    f32 cofac_01_h = iokm;
-		    
-		f32 cofac_01 = + e * cofac_01_e - g * cofac_01_g + h * cofac_01_h;
-		
-		    f32 cofac_02_e = jpln;
-		    f32 cofac_02_f = iplm;
-		    f32 cofac_02_h = injm;
-		    
-		f32 cofac_02 = + e * cofac_02_e - f * cofac_02_f + h * cofac_02_h;
-		
-		    f32 cofac_03_e = jokn;
-		    f32 cofac_03_f = iokm;
-		    f32 cofac_03_g = injm;
-		    
-		f32 cofac_03 = + e * cofac_03_e - f * cofac_03_f + g * cofac_03_g;
-		
-		    f32 cofac_10_b = kplo;
-		    f32 cofac_10_c = jpln;
-		    f32 cofac_10_d = jokn;
-		    
-		f32 cofac_10 = + b * cofac_10_b - c * cofac_10_c + d * cofac_10_d;
-		
-		    f32 cofac_11_a = kplo;
-		    f32 cofac_11_c = iplm;
-		    f32 cofac_11_d = iokm;
-		    
-		f32 cofac_11 = + a * cofac_11_a - c * cofac_11_c + d * cofac_11_d;
-		
-		    f32 cofac_12_a = jpln;
-		    f32 cofac_12_b = iplm;
-		    f32 cofac_12_d = injm;
-		    
-		f32 cofac_12 = + a * cofac_12_a - b * cofac_12_b + d * cofac_12_d;
-		
-		    f32 cofac_13_a = jokn;
-		    f32 cofac_13_b = iokm;
-		    f32 cofac_13_c = injm;
-		    
-		f32 cofac_13 = + a * cofac_13_a - b * cofac_13_b + c * cofac_13_c;
-		
-		    f32 cofac_20_b = gpho;
-		    f32 cofac_20_c = fphn;
-		    f32 cofac_20_d = fogn;
-		    
-		f32 cofac_20 = + b * cofac_20_b - c * cofac_20_c + d * cofac_20_d;
-		
-		    f32 cofac_21_a = gpho;
-		    f32 cofac_21_c = ephm;
-		    f32 cofac_21_d = eogm;
-		    
-		f32 cofac_21 = + a * cofac_21_a - c * cofac_21_c + d * cofac_21_d;
-		
-		    f32 cofac_22_a = fphn;
-		    f32 cofac_22_b = ephm;
-		    f32 cofac_22_d = enfm;
-		    
-		f32 cofac_22 = + a * cofac_22_a - b * cofac_22_b + d * cofac_22_d;
-		
-		    f32 cofac_23_a = fogn;
-		    f32 cofac_23_b = eogm;
-		    f32 cofac_23_c = enfm;
-		    
-		f32 cofac_23 = + a * cofac_23_a - b * cofac_23_b + c * cofac_23_c;
-		
-		    f32 cofac_30_b = glhk;
-		    f32 cofac_30_c = flhj;
-		    f32 cofac_30_d = fkgj;
-		    
-		f32 cofac_30 = + b * cofac_30_b - c * cofac_30_c + d * cofac_30_d;
-		
-		    f32 cofac_31_a = glhk;
-		    f32 cofac_31_c = elhi;
-		    f32 cofac_31_d = ekgi;
-		    
-		f32 cofac_31 = + a * cofac_31_a - c * cofac_31_c + d * cofac_31_d;
-		
-		    f32 cofac_32_a = flhj;
-		    f32 cofac_32_b = elhi;
-		    f32 cofac_32_d = ejfi;
-		    
-		f32 cofac_32 = + a * cofac_32_a - b * cofac_32_b + d * cofac_32_d;
-		
-		    f32 cofac_33_a = fkgj;
-		    f32 cofac_33_b = ekgi;
-		    f32 cofac_33_c = ejfi;
-		    
-		f32 cofac_33 = + a * cofac_33_a - b * cofac_33_b + c * cofac_33_c;
-		
+		f32 cofac_00 = +f*(kplo) -g*(jpln) +h*(jokn);
+		f32 cofac_01 = +e*(kplo) -g*(iplm) +h*(iokm);
+		f32 cofac_02 = +e*(jpln) -f*(iplm) +h*(injm);
+		f32 cofac_03 = +e*(jokn) -f*(iokm) +g*(injm);
+		f32 cofac_10 = +b*(kplo) -c*(jpln) +d*(jokn);
+		f32 cofac_11 = +a*(kplo) -c*(iplm) +d*(iokm);
+		f32 cofac_12 = +a*(jpln) -b*(iplm) +d*(injm);
+		f32 cofac_13 = +a*(jokn) -b*(iokm) +c*(injm);
+		f32 cofac_20 = +b*(gpho) -c*(fphn) +d*(fogn);
+		f32 cofac_21 = +a*(gpho) -c*(ephm) +d*(eogm);
+		f32 cofac_22 = +a*(fphn) -b*(ephm) +d*(enfm);
+		f32 cofac_23 = +a*(fogn) -b*(eogm) +c*(enfm);
+		f32 cofac_30 = +b*(glhk) -c*(flhj) +d*(fkgj);
+		f32 cofac_31 = +a*(glhk) -c*(elhi) +d*(ekgi);
+		f32 cofac_32 = +a*(flhj) -b*(elhi) +d*(ejfi);
+		f32 cofac_33 = +a*(fkgj) -b*(ekgi) +c*(ejfi);
 		
 		fm4 ret;
 		

@@ -16,6 +16,10 @@
 #define F64_INF							(1e+300 * 1e+300)
 #define F32_QNAN						std::numeric_limits<float>::quiet_NaN()
 #define F64_QNAN						std::numeric_limits<double>::quiet_NaN()
+
+#define NOINLINE						__declspec(noinline) // for testing/debugging purposes
+#define FORCEINLINE						__forceinline
+
 #elif __GNUC__ || __clan_
 #define F32_INF							(__builtin_inff())
 #define F64_INF							(__builtin_inf())
@@ -282,21 +286,21 @@ namespace vector {
 	template<typename T>
 	u8 bezier (T a, T b, T c, T d, f32 t) {
 		return bezier(
-				lerp(a, b, t),
-				lerp(b, c, t),
-				lerp(c, d, t),
-				t
+					  lerp(a, b, t),
+					  lerp(b, c, t),
+					  lerp(c, d, t),
+					  t
 		);
 	}
 	
 	template<typename T>
 	u8 bezier (T a, T b, T c, T d, T e, f32 t) {
 		return bezier(
-				lerp(a, b, t),
-				lerp(b, c, t),
-				lerp(c, d, t),
-				lerp(d, e, t),
-				t
+					  lerp(a, b, t),
+					  lerp(b, c, t),
+					  lerp(c, d, t),
+					  lerp(d, e, t),
+					  t
 		);
 	}
 	
@@ -311,21 +315,21 @@ namespace vector {
 	template<typename T>
 	u8 bezier (T a, T b, T c, T d, f64 t) {
 		return bezier(
-				lerp(a, b, t),
-				lerp(b, c, t),
-				lerp(c, d, t),
-				t
+					  lerp(a, b, t),
+					  lerp(b, c, t),
+					  lerp(c, d, t),
+					  t
 		);
 	}
 	
 	template<typename T>
 	u8 bezier (T a, T b, T c, T d, T e, f64 t) {
 		return bezier(
-				lerp(a, b, t),
-				lerp(b, c, t),
-				lerp(c, d, t),
-				lerp(d, e, t),
-				t
+					  lerp(a, b, t),
+					  lerp(b, c, t),
+					  lerp(c, d, t),
+					  lerp(d, e, t),
+					  t
 		);
 	}
 	

@@ -12,29 +12,6 @@
 
 namespace vector {
 	
-	u8& u8v2::operator[] (int i) {
-		return arr[i];
-	}
-	
-	u8 const& u8v2::operator[] (int i) const {
-		return arr[i];
-	}
-	
-	
-	u8v2::u8v2 () {
-		
-	}
-	
-	// sets all components to one value
-	// implicit constructor -> v3(x,y,z) * 5 will be turned into v3(x,y,z) * v3(5) by to compiler to be able to execute operator*(v3, v3), which is desirable, also v3 a = 0; works
-	u8v2::u8v2 (u8 all): x{all}, y{all} {
-		
-	}
-	
-	// supply all components
-	u8v2::u8v2 (u8 x, u8 y): x{x}, y{y} {
-		
-	}
 	
 	// truncate vector
 	u8v2::u8v2 (u8v3 v): x{v.x}, y{v.y} {
@@ -73,55 +50,7 @@ namespace vector {
 	}
 	
 	
-	u8v2 u8v2::operator+= (u8v2 r) {
-		x += r.x;
-		y += r.y;
-		return *this;
-	}
-	
-	u8v2 u8v2::operator-= (u8v2 r) {
-		x -= r.x;
-		y -= r.y;
-		return *this;
-	}
-	
-	u8v2 u8v2::operator*= (u8v2 r) {
-		x *= r.x;
-		y *= r.y;
-		return *this;
-	}
-	
-	u8v2 u8v2::operator/= (u8v2 r) {
-		x /= r.x;
-		y /= r.y;
-		return *this;
-	}
-	
 	//// arthmethic ops
-	
-	u8v2 operator+ (u8v2 v) {
-		return u8v2(+v.x, +v.y);
-	}
-	
-	u8v2 operator- (u8v2 v) {
-		return u8v2(-v.x, -v.y);
-	}
-	
-	u8v2 operator+ (u8v2 l, u8v2 r) {
-		return u8v2(l.x + r.x, l.y + r.y);
-	}
-	
-	u8v2 operator- (u8v2 l, u8v2 r) {
-		return u8v2(l.x - r.x, l.y - r.y);
-	}
-	
-	u8v2 operator* (u8v2 l, u8v2 r) {
-		return u8v2(l.x * r.x, l.y * r.y);
-	}
-	
-	u8v2 operator/ (u8v2 l, u8v2 r) {
-		return u8v2(l.x / r.x, l.y / r.y);
-	}
 	
 	//// comparison ops
 	
@@ -161,18 +90,6 @@ namespace vector {
 	
 	//// misc ops
 	
-	u8v2 abs (u8v2 v) {
-		return u8v2(abs(v.x), abs(v.y));
-	}
-	
-	u8v2 min (u8v2 l, u8v2 r) {
-		return u8v2(min(l.x,r.x), min(l.y,r.y));
-	}
-	
-	u8v2 max (u8v2 l, u8v2 r) {
-		return u8v2(max(l.x,r.x), max(l.y,r.y));
-	}
-	
 	u8v2 clamp (u8v2 x, u8v2 a, u8v2 b) {
 		return min(max(x,a), b);
 	}
@@ -205,14 +122,6 @@ namespace vector {
 		return max_val;
 	}
 	
-	
-	u8v2 wrap (u8v2 v, u8v2 range) {
-		return u8v2(wrap(v.x,range.x), wrap(v.y,range.y));
-	}
-	
-	u8v2 wrap (u8v2 v, u8v2 a, u8v2 b) {
-		return u8v2(wrap(v.x,a.x,b.x), wrap(v.y,a.y,b.y));
-	}
 	
 	
 	fv2 to_rad (u8v2 deg) {

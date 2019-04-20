@@ -3,8 +3,8 @@
 
 #include "kissmath.hpp"
 
-#include "fv2.hpp"
 #include "fv3.hpp"
+#include "fv2.hpp"
 
 namespace vector {
 	
@@ -20,40 +20,62 @@ namespace vector {
 		
 		//// Accessors
 		
+		
 		// get cell with r,c indecies (r=row, c=column)
-		f32 const& get (int r, int c) const;
+		inline FORCEINLINE f32 const& get (int r, int c) const {
+			return arr[c][r];
+		}
+		
 		// get matrix column
-		fv2 const& get_column (int indx) const;
+		inline FORCEINLINE fv2 const& get_column (int indx) const {
+			return arr[indx];
+		}
 		// get matrix row
 		fv3 get_row (int indx) const;
 		
 		//// Constructors
 		
-		fm2x3 ();
+		
+		inline FORCEINLINE fm2x3 () {
+			
+		}
+		
 		// supply one value for all cells
-		explicit fm2x3 (f32 all);
+		inline FORCEINLINE explicit fm2x3 (f32 all): 
+		arr{fv2(all, all),
+			fv2(all, all),
+			fv2(all, all)} {
+			
+		}
+		
 		// supply all cells, in row major order for readability -> c<r><c> (r=row, c=column)
-		explicit fm2x3 (
-				f32 c00, f32 c01, f32 c02,
-				f32 c10, f32 c11, f32 c12);
+		inline FORCEINLINE explicit fm2x3 (f32 c00, f32 c01, f32 c02,
+										   f32 c10, f32 c11, f32 c12): 
+		arr{fv2(c00, c10),
+			fv2(c01, c11),
+			fv2(c02, c12)} {
+			
+		}
 		
 		// static rows() and columns() methods are preferred over constructors, to avoid confusion if column or row vectors are supplied to the constructor
 		// supply all row vectors
 		static fm2x3 rows (fv3 row0, fv3 row1);
 		// supply all cells in row major order
-		static fm2x3 rows (
-				f32 c00, f32 c01, f32 c02,
-				f32 c10, f32 c11, f32 c12);
+		static fm2x3 rows (f32 c00, f32 c01, f32 c02,
+						   f32 c10, f32 c11, f32 c12);
 		// supply all column vectors
 		static fm2x3 columns (fv2 col0, fv2 col1, fv2 col2);
 		// supply all cells in column major order
-		static fm2x3 columns (
-				f32 c00, f32 c10,
-				f32 c01, f32 c11,
-				f32 c02, f32 c12);
+		static fm2x3 columns (f32 c00, f32 c10,
+							  f32 c01, f32 c11,
+							  f32 c02, f32 c12);
+		
 		
 		// identity matrix
-		static fm2x3 identity ();
+		static inline FORCEINLINE fm2x3 identity () {
+			return fm2x3(1,0,0,
+						 0,1,0);
+		}
 		
 		// Casting operators
 		

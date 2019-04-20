@@ -12,29 +12,6 @@
 
 namespace vector {
 	
-	u8& u8v3::operator[] (int i) {
-		return arr[i];
-	}
-	
-	u8 const& u8v3::operator[] (int i) const {
-		return arr[i];
-	}
-	
-	
-	u8v3::u8v3 () {
-		
-	}
-	
-	// sets all components to one value
-	// implicit constructor -> v3(x,y,z) * 5 will be turned into v3(x,y,z) * v3(5) by to compiler to be able to execute operator*(v3, v3), which is desirable, also v3 a = 0; works
-	u8v3::u8v3 (u8 all): x{all}, y{all}, z{all} {
-		
-	}
-	
-	// supply all components
-	u8v3::u8v3 (u8 x, u8 y, u8 z): x{x}, y{y}, z{z} {
-		
-	}
 	
 	// extend vector
 	u8v3::u8v3 (u8v2 xy, u8 z): x{xy.x}, y{xy.y}, z{z} {
@@ -77,59 +54,7 @@ namespace vector {
 	}
 	
 	
-	u8v3 u8v3::operator+= (u8v3 r) {
-		x += r.x;
-		y += r.y;
-		z += r.z;
-		return *this;
-	}
-	
-	u8v3 u8v3::operator-= (u8v3 r) {
-		x -= r.x;
-		y -= r.y;
-		z -= r.z;
-		return *this;
-	}
-	
-	u8v3 u8v3::operator*= (u8v3 r) {
-		x *= r.x;
-		y *= r.y;
-		z *= r.z;
-		return *this;
-	}
-	
-	u8v3 u8v3::operator/= (u8v3 r) {
-		x /= r.x;
-		y /= r.y;
-		z /= r.z;
-		return *this;
-	}
-	
 	//// arthmethic ops
-	
-	u8v3 operator+ (u8v3 v) {
-		return u8v3(+v.x, +v.y, +v.z);
-	}
-	
-	u8v3 operator- (u8v3 v) {
-		return u8v3(-v.x, -v.y, -v.z);
-	}
-	
-	u8v3 operator+ (u8v3 l, u8v3 r) {
-		return u8v3(l.x + r.x, l.y + r.y, l.z + r.z);
-	}
-	
-	u8v3 operator- (u8v3 l, u8v3 r) {
-		return u8v3(l.x - r.x, l.y - r.y, l.z - r.z);
-	}
-	
-	u8v3 operator* (u8v3 l, u8v3 r) {
-		return u8v3(l.x * r.x, l.y * r.y, l.z * r.z);
-	}
-	
-	u8v3 operator/ (u8v3 l, u8v3 r) {
-		return u8v3(l.x / r.x, l.y / r.y, l.z / r.z);
-	}
 	
 	//// comparison ops
 	
@@ -169,18 +94,6 @@ namespace vector {
 	
 	//// misc ops
 	
-	u8v3 abs (u8v3 v) {
-		return u8v3(abs(v.x), abs(v.y), abs(v.z));
-	}
-	
-	u8v3 min (u8v3 l, u8v3 r) {
-		return u8v3(min(l.x,r.x), min(l.y,r.y), min(l.z,r.z));
-	}
-	
-	u8v3 max (u8v3 l, u8v3 r) {
-		return u8v3(max(l.x,r.x), max(l.y,r.y), max(l.z,r.z));
-	}
-	
 	u8v3 clamp (u8v3 x, u8v3 a, u8v3 b) {
 		return min(max(x,a), b);
 	}
@@ -213,14 +126,6 @@ namespace vector {
 		return max_val;
 	}
 	
-	
-	u8v3 wrap (u8v3 v, u8v3 range) {
-		return u8v3(wrap(v.x,range.x), wrap(v.y,range.y), wrap(v.z,range.z));
-	}
-	
-	u8v3 wrap (u8v3 v, u8v3 a, u8v3 b) {
-		return u8v3(wrap(v.x,a.x,b.x), wrap(v.y,a.y,b.y), wrap(v.z,a.z,b.z));
-	}
 	
 	
 	fv3 to_rad (u8v3 deg) {
@@ -275,9 +180,9 @@ namespace vector {
 	// 3d cross product
 	u8v3 cross (u8v3 l, u8v3 r) {
 		return u8v3(
-				l.y * r.z - l.z * r.y,
-				l.z * r.x - l.x * r.z,
-				l.x * r.y - l.y * r.x);
+					l.y * r.z - l.z * r.y,
+					l.z * r.x - l.x * r.z,
+					l.x * r.y - l.y * r.x);
 	}
 }// namespace vector
 

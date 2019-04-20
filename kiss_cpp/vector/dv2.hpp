@@ -21,15 +21,30 @@ namespace vector {
 		};
 		f64		arr[2];
 		
-		f64& operator[] (int i);
-		f64 const& operator[] (int i) const;
 		
-		dv2 ();
+		inline FORCEINLINE f64& operator[] (int i) {
+			return arr[i];
+		}
+		
+		inline FORCEINLINE f64 const& operator[] (int i) const {
+			return arr[i];
+		}
+		
+		
+		inline FORCEINLINE dv2 () {
+			
+		}
+		
 		// sets all components to one value
 		// implicit constructor -> v3(x,y,z) * 5 will be turned into v3(x,y,z) * v3(5) by to compiler to be able to execute operator*(v3, v3), which is desirable, also v3 a = 0; works
-		dv2 (f64 all);
+		inline FORCEINLINE dv2 (f64 all): x{all}, y{all} {
+			
+		}
+		
 		// supply all components
-		dv2 (f64 x, f64 y);
+		inline FORCEINLINE dv2 (f64 x, f64 y): x{x}, y{y} {
+			
+		}
 		// truncate vector
 		dv2 (dv3 v);
 		// truncate vector
@@ -46,19 +61,57 @@ namespace vector {
 		explicit operator s64v2 () const;
 		explicit operator u8v2 () const;
 		
-		dv2 operator+= (dv2 r);
-		dv2 operator-= (dv2 r);
-		dv2 operator*= (dv2 r);
-		dv2 operator/= (dv2 r);
+		
+		inline FORCEINLINE dv2 operator+= (dv2 r) {
+			x += r.x;
+			y += r.y;
+			return *this;
+		}
+		
+		inline FORCEINLINE dv2 operator-= (dv2 r) {
+			x -= r.x;
+			y -= r.y;
+			return *this;
+		}
+		
+		inline FORCEINLINE dv2 operator*= (dv2 r) {
+			x *= r.x;
+			y *= r.y;
+			return *this;
+		}
+		
+		inline FORCEINLINE dv2 operator/= (dv2 r) {
+			x /= r.x;
+			y /= r.y;
+			return *this;
+		}
 	};
 	
 	//// arthmethic ops
-	dv2 operator+ (dv2 v);
-	dv2 operator- (dv2 v);
-	dv2 operator+ (dv2 l, dv2 r);
-	dv2 operator- (dv2 l, dv2 r);
-	dv2 operator* (dv2 l, dv2 r);
-	dv2 operator/ (dv2 l, dv2 r);
+	
+	inline FORCEINLINE dv2 operator+ (dv2 v) {
+		return dv2(+v.x, +v.y);
+	}
+	
+	inline FORCEINLINE dv2 operator- (dv2 v) {
+		return dv2(-v.x, -v.y);
+	}
+	
+	inline FORCEINLINE dv2 operator+ (dv2 l, dv2 r) {
+		return dv2(l.x + r.x, l.y + r.y);
+	}
+	
+	inline FORCEINLINE dv2 operator- (dv2 l, dv2 r) {
+		return dv2(l.x - r.x, l.y - r.y);
+	}
+	
+	inline FORCEINLINE dv2 operator* (dv2 l, dv2 r) {
+		return dv2(l.x * r.x, l.y * r.y);
+	}
+	
+	inline FORCEINLINE dv2 operator/ (dv2 l, dv2 r) {
+		return dv2(l.x / r.x, l.y / r.y);
+	}
 	
 	//// comparison ops
 	bv2 operator< (dv2 l, dv2 r);
@@ -73,24 +126,51 @@ namespace vector {
 	dv2 select (bv2 c, dv2 l, dv2 r);
 	
 	//// misc ops
-	dv2 abs (dv2 v);
-	dv2 min (dv2 l, dv2 r);
-	dv2 max (dv2 l, dv2 r);
+	
+	inline FORCEINLINE dv2 abs (dv2 v) {
+		return dv2(abs(v.x), abs(v.y));
+	}
+	
+	inline FORCEINLINE dv2 min (dv2 l, dv2 r) {
+		return dv2(min(l.x,r.x), min(l.y,r.y));
+	}
+	
+	inline FORCEINLINE dv2 max (dv2 l, dv2 r) {
+		return dv2(max(l.x,r.x), max(l.y,r.y));
+	}
 	dv2 clamp (dv2 x, dv2 a=dv2(0), dv2 b=dv2(1));
 	// get min component of vector, optionally get component index via min_index
 	f64 min_component (dv2 v, int* min_index=nullptr);
 	// get max component of vector, optionally get component index via max_index
 	f64 max_component (dv2 v, int* max_index=nullptr);
 	
-	dv2 floor (dv2 v);
-	dv2 ceil (dv2 v);
-	dv2 round (dv2 v);
+	
+	inline FORCEINLINE dv2 floor (dv2 v) {
+		return dv2(floor(v.x), floor(v.y));
+	}
+	
+	inline FORCEINLINE dv2 ceil (dv2 v) {
+		return dv2(ceil(v.x), ceil(v.y));
+	}
+	
+	inline FORCEINLINE dv2 round (dv2 v) {
+		return dv2(round(v.x), round(v.y));
+	}
 	s64v2 floori (dv2 v);
 	s64v2 ceili (dv2 v);
 	s64v2 roundi (dv2 v);
-	dv2 pow (dv2 v, dv2 e);
-	dv2 wrap (dv2 v, dv2 range);
-	dv2 wrap (dv2 v, dv2 a, dv2 b);
+	
+	inline FORCEINLINE dv2 pow (dv2 v, dv2 e) {
+		return dv2(pow(v.x,e.x), pow(v.y,e.y));
+	}
+	
+	inline FORCEINLINE dv2 wrap (dv2 v, dv2 range) {
+		return dv2(wrap(v.x,range.x), wrap(v.y,range.y));
+	}
+	
+	inline FORCEINLINE dv2 wrap (dv2 v, dv2 a, dv2 b) {
+		return dv2(wrap(v.x,a.x,b.x), wrap(v.y,a.y,b.y));
+	}
 	
 	// linear interpolation t=0 -> a ; t=1 -> b ; t=0.5 -> (a+b)/2
 	dv2 lerp (dv2 a, dv2 b, dv2 t);

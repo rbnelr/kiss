@@ -12,29 +12,6 @@
 
 namespace vector {
 	
-	s64& s64v4::operator[] (int i) {
-		return arr[i];
-	}
-	
-	s64 const& s64v4::operator[] (int i) const {
-		return arr[i];
-	}
-	
-	
-	s64v4::s64v4 () {
-		
-	}
-	
-	// sets all components to one value
-	// implicit constructor -> v3(x,y,z) * 5 will be turned into v3(x,y,z) * v3(5) by to compiler to be able to execute operator*(v3, v3), which is desirable, also v3 a = 0; works
-	s64v4::s64v4 (s64 all): x{all}, y{all}, z{all}, w{all} {
-		
-	}
-	
-	// supply all components
-	s64v4::s64v4 (s64 x, s64 y, s64 z, s64 w): x{x}, y{y}, z{z}, w{w} {
-		
-	}
 	
 	// extend vector
 	s64v4::s64v4 (s64v2 xy, s64 z, s64 w): x{xy.x}, y{xy.y}, z{z}, w{w} {
@@ -81,63 +58,7 @@ namespace vector {
 	}
 	
 	
-	s64v4 s64v4::operator+= (s64v4 r) {
-		x += r.x;
-		y += r.y;
-		z += r.z;
-		w += r.w;
-		return *this;
-	}
-	
-	s64v4 s64v4::operator-= (s64v4 r) {
-		x -= r.x;
-		y -= r.y;
-		z -= r.z;
-		w -= r.w;
-		return *this;
-	}
-	
-	s64v4 s64v4::operator*= (s64v4 r) {
-		x *= r.x;
-		y *= r.y;
-		z *= r.z;
-		w *= r.w;
-		return *this;
-	}
-	
-	s64v4 s64v4::operator/= (s64v4 r) {
-		x /= r.x;
-		y /= r.y;
-		z /= r.z;
-		w /= r.w;
-		return *this;
-	}
-	
 	//// arthmethic ops
-	
-	s64v4 operator+ (s64v4 v) {
-		return s64v4(+v.x, +v.y, +v.z, +v.w);
-	}
-	
-	s64v4 operator- (s64v4 v) {
-		return s64v4(-v.x, -v.y, -v.z, -v.w);
-	}
-	
-	s64v4 operator+ (s64v4 l, s64v4 r) {
-		return s64v4(l.x + r.x, l.y + r.y, l.z + r.z, l.w + r.w);
-	}
-	
-	s64v4 operator- (s64v4 l, s64v4 r) {
-		return s64v4(l.x - r.x, l.y - r.y, l.z - r.z, l.w - r.w);
-	}
-	
-	s64v4 operator* (s64v4 l, s64v4 r) {
-		return s64v4(l.x * r.x, l.y * r.y, l.z * r.z, l.w * r.w);
-	}
-	
-	s64v4 operator/ (s64v4 l, s64v4 r) {
-		return s64v4(l.x / r.x, l.y / r.y, l.z / r.z, l.w / r.w);
-	}
 	
 	//// comparison ops
 	
@@ -177,18 +98,6 @@ namespace vector {
 	
 	//// misc ops
 	
-	s64v4 abs (s64v4 v) {
-		return s64v4(abs(v.x), abs(v.y), abs(v.z), abs(v.w));
-	}
-	
-	s64v4 min (s64v4 l, s64v4 r) {
-		return s64v4(min(l.x,r.x), min(l.y,r.y), min(l.z,r.z), min(l.w,r.w));
-	}
-	
-	s64v4 max (s64v4 l, s64v4 r) {
-		return s64v4(max(l.x,r.x), max(l.y,r.y), max(l.z,r.z), max(l.w,r.w));
-	}
-	
 	s64v4 clamp (s64v4 x, s64v4 a, s64v4 b) {
 		return min(max(x,a), b);
 	}
@@ -221,14 +130,6 @@ namespace vector {
 		return max_val;
 	}
 	
-	
-	s64v4 wrap (s64v4 v, s64v4 range) {
-		return s64v4(wrap(v.x,range.x), wrap(v.y,range.y), wrap(v.z,range.z), wrap(v.w,range.w));
-	}
-	
-	s64v4 wrap (s64v4 v, s64v4 a, s64v4 b) {
-		return s64v4(wrap(v.x,a.x,b.x), wrap(v.y,a.y,b.y), wrap(v.z,a.z,b.z), wrap(v.w,a.w,b.w));
-	}
 	
 	
 	dv4 to_rad (s64v4 deg) {

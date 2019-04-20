@@ -22,9 +22,15 @@ def letterify(size):
 	return lambda r,c: cell_letter[r][c]
 
 def optimize(T, txt): # optimize m2 - m4 to not do redudant calculations
-	def _optimize(T, txt, op, len):
+	def _optimize(T, txt, op, var_len):
 		import re
-		ops = [tuple(x.replace(' ', '').split(op)) for x in re.findall(rf"\b[a-z]{{{len}}}\s*\{op}\s*[a-z]{{{len}}}\b", txt)]
+
+		def multiple_replace(string, rep_dict):
+			pattern = re.compile("|".join([re.escape(k) for k in sorted(rep_dict,key=len,reverse=True)]), flags=re.DOTALL)
+			return pattern.sub(lambda x: rep_dict[x.group(0)], string)
+
+		ops = [tuple(multiple_replace(x, {' ':'', '(':'', ')':''}).split(op)) for x in \
+			re.findall(rf"(?:\b|\(?)[a-z]{{{var_len}}}\s*\{op}\s*[a-z]{{{var_len}}}(?:\)?|\b)", txt)]
 		ops_txt = ''
 
 		ops_set = set(ops)
@@ -85,7 +91,7 @@ def _gen_determinate_code(T, size, cell, det_chain='det', depth=0):
 		expr = f'{cell(0,0)}'
 
 	elif size == 2:
-		expr = f'{cell(0,0)} * {cell(1,1)} - {cell(0,1)} * {cell(1,0)}'
+		expr = f'{cell(0,0)}*{cell(1,1)} - {cell(0,1)}*{cell(1,0)}'
 
 	else:
 		expr = []
@@ -97,12 +103,12 @@ def _gen_determinate_code(T, size, cell, det_chain='det', depth=0):
 				lambda minor_r,minor_c: cell(*get_minor_cell(minor_r,minor_c, 0,c)), det, depth+1)
 
 			txt += indent(minor_txt, depth)
-			txt += indent(f'{T} {det} = {minor_expr};\n' + ('\n' if size>3 else ''), depth)
 
-			expr += [sign(0,c) + f' {cell(0,c)} * {det}']
-		txt += '\n'
+			expr += [sign(0,c) + f'{cell(0,c)}*({minor_expr})']
+		if txt:
+			txt += '\n'
 
-		expr = ' '.join(expr)
+		expr = ('\n' if size >= 4 else ' ').join(expr)
 
 	return txt, expr
 
@@ -110,7 +116,7 @@ def gen_inverse_code(M, T, size):
 	cell = letterify(size)
 
 	txt = ''
-	txt += f'{T} det;\n{{ // clac determinate\n\n'
+	txt += f'{T} det;\n{{ // clac determinate\n'
 
 	det_txt, det_expr = _gen_determinate_code(T, size, cell)
 	txt += det_txt

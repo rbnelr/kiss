@@ -21,15 +21,30 @@ namespace vector {
 		};
 		f64		arr[4];
 		
-		f64& operator[] (int i);
-		f64 const& operator[] (int i) const;
 		
-		dv4 ();
+		inline FORCEINLINE f64& operator[] (int i) {
+			return arr[i];
+		}
+		
+		inline FORCEINLINE f64 const& operator[] (int i) const {
+			return arr[i];
+		}
+		
+		
+		inline FORCEINLINE dv4 () {
+			
+		}
+		
 		// sets all components to one value
 		// implicit constructor -> v3(x,y,z) * 5 will be turned into v3(x,y,z) * v3(5) by to compiler to be able to execute operator*(v3, v3), which is desirable, also v3 a = 0; works
-		dv4 (f64 all);
+		inline FORCEINLINE dv4 (f64 all): x{all}, y{all}, z{all}, w{all} {
+			
+		}
+		
 		// supply all components
-		dv4 (f64 x, f64 y, f64 z, f64 w);
+		inline FORCEINLINE dv4 (f64 x, f64 y, f64 z, f64 w): x{x}, y{y}, z{z}, w{w} {
+			
+		}
 		// extend vector
 		dv4 (dv2 xy, f64 z, f64 w);
 		// extend vector
@@ -48,19 +63,65 @@ namespace vector {
 		explicit operator s64v4 () const;
 		explicit operator u8v4 () const;
 		
-		dv4 operator+= (dv4 r);
-		dv4 operator-= (dv4 r);
-		dv4 operator*= (dv4 r);
-		dv4 operator/= (dv4 r);
+		
+		inline FORCEINLINE dv4 operator+= (dv4 r) {
+			x += r.x;
+			y += r.y;
+			z += r.z;
+			w += r.w;
+			return *this;
+		}
+		
+		inline FORCEINLINE dv4 operator-= (dv4 r) {
+			x -= r.x;
+			y -= r.y;
+			z -= r.z;
+			w -= r.w;
+			return *this;
+		}
+		
+		inline FORCEINLINE dv4 operator*= (dv4 r) {
+			x *= r.x;
+			y *= r.y;
+			z *= r.z;
+			w *= r.w;
+			return *this;
+		}
+		
+		inline FORCEINLINE dv4 operator/= (dv4 r) {
+			x /= r.x;
+			y /= r.y;
+			z /= r.z;
+			w /= r.w;
+			return *this;
+		}
 	};
 	
 	//// arthmethic ops
-	dv4 operator+ (dv4 v);
-	dv4 operator- (dv4 v);
-	dv4 operator+ (dv4 l, dv4 r);
-	dv4 operator- (dv4 l, dv4 r);
-	dv4 operator* (dv4 l, dv4 r);
-	dv4 operator/ (dv4 l, dv4 r);
+	
+	inline FORCEINLINE dv4 operator+ (dv4 v) {
+		return dv4(+v.x, +v.y, +v.z, +v.w);
+	}
+	
+	inline FORCEINLINE dv4 operator- (dv4 v) {
+		return dv4(-v.x, -v.y, -v.z, -v.w);
+	}
+	
+	inline FORCEINLINE dv4 operator+ (dv4 l, dv4 r) {
+		return dv4(l.x + r.x, l.y + r.y, l.z + r.z, l.w + r.w);
+	}
+	
+	inline FORCEINLINE dv4 operator- (dv4 l, dv4 r) {
+		return dv4(l.x - r.x, l.y - r.y, l.z - r.z, l.w - r.w);
+	}
+	
+	inline FORCEINLINE dv4 operator* (dv4 l, dv4 r) {
+		return dv4(l.x * r.x, l.y * r.y, l.z * r.z, l.w * r.w);
+	}
+	
+	inline FORCEINLINE dv4 operator/ (dv4 l, dv4 r) {
+		return dv4(l.x / r.x, l.y / r.y, l.z / r.z, l.w / r.w);
+	}
 	
 	//// comparison ops
 	bv4 operator< (dv4 l, dv4 r);
@@ -75,24 +136,51 @@ namespace vector {
 	dv4 select (bv4 c, dv4 l, dv4 r);
 	
 	//// misc ops
-	dv4 abs (dv4 v);
-	dv4 min (dv4 l, dv4 r);
-	dv4 max (dv4 l, dv4 r);
+	
+	inline FORCEINLINE dv4 abs (dv4 v) {
+		return dv4(abs(v.x), abs(v.y), abs(v.z), abs(v.w));
+	}
+	
+	inline FORCEINLINE dv4 min (dv4 l, dv4 r) {
+		return dv4(min(l.x,r.x), min(l.y,r.y), min(l.z,r.z), min(l.w,r.w));
+	}
+	
+	inline FORCEINLINE dv4 max (dv4 l, dv4 r) {
+		return dv4(max(l.x,r.x), max(l.y,r.y), max(l.z,r.z), max(l.w,r.w));
+	}
 	dv4 clamp (dv4 x, dv4 a=dv4(0), dv4 b=dv4(1));
 	// get min component of vector, optionally get component index via min_index
 	f64 min_component (dv4 v, int* min_index=nullptr);
 	// get max component of vector, optionally get component index via max_index
 	f64 max_component (dv4 v, int* max_index=nullptr);
 	
-	dv4 floor (dv4 v);
-	dv4 ceil (dv4 v);
-	dv4 round (dv4 v);
+	
+	inline FORCEINLINE dv4 floor (dv4 v) {
+		return dv4(floor(v.x), floor(v.y), floor(v.z), floor(v.w));
+	}
+	
+	inline FORCEINLINE dv4 ceil (dv4 v) {
+		return dv4(ceil(v.x), ceil(v.y), ceil(v.z), ceil(v.w));
+	}
+	
+	inline FORCEINLINE dv4 round (dv4 v) {
+		return dv4(round(v.x), round(v.y), round(v.z), round(v.w));
+	}
 	s64v4 floori (dv4 v);
 	s64v4 ceili (dv4 v);
 	s64v4 roundi (dv4 v);
-	dv4 pow (dv4 v, dv4 e);
-	dv4 wrap (dv4 v, dv4 range);
-	dv4 wrap (dv4 v, dv4 a, dv4 b);
+	
+	inline FORCEINLINE dv4 pow (dv4 v, dv4 e) {
+		return dv4(pow(v.x,e.x), pow(v.y,e.y), pow(v.z,e.z), pow(v.w,e.w));
+	}
+	
+	inline FORCEINLINE dv4 wrap (dv4 v, dv4 range) {
+		return dv4(wrap(v.x,range.x), wrap(v.y,range.y), wrap(v.z,range.z), wrap(v.w,range.w));
+	}
+	
+	inline FORCEINLINE dv4 wrap (dv4 v, dv4 a, dv4 b) {
+		return dv4(wrap(v.x,a.x,b.x), wrap(v.y,a.y,b.y), wrap(v.z,a.z,b.z), wrap(v.w,a.w,b.w));
+	}
 	
 	// linear interpolation t=0 -> a ; t=1 -> b ; t=0.5 -> (a+b)/2
 	dv4 lerp (dv4 a, dv4 b, dv4 t);
