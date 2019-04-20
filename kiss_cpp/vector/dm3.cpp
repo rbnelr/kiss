@@ -322,27 +322,85 @@ namespace vector {
 		return dm3::rows(m.arr[0], m.arr[1], m.arr[2]);
 	}
 	
+	#define LETTERIFY \
+	f64 a = mat.arr[0][0]; \
+	f64 b = mat.arr[0][1]; \
+	f64 c = mat.arr[0][2]; \
+	f64 d = mat.arr[1][0]; \
+	f64 e = mat.arr[1][1]; \
+	f64 f = mat.arr[1][2]; \
+	f64 g = mat.arr[2][0]; \
+	f64 h = mat.arr[2][1]; \
+	f64 i = mat.arr[2][2];
 	
-	f64 det (dm3 m) {
+	f64 det (dm3 mat) {
 		// optimized from:  // 9 muls, 6 adds, 0 divs = 15 ops
 		// to:              // 9 muls, 6 adds, 0 divs = 15 ops
-		f64 a = m.arr[0][0];
-		f64 b = m.arr[0][1];
-		f64 c = m.arr[0][2];
-		f64 d = m.arr[1][0];
-		f64 e = m.arr[1][1];
-		f64 f = m.arr[1][2];
-		f64 g = m.arr[2][0];
-		f64 h = m.arr[2][1];
-		f64 i = m.arr[2][2];
+		LETTERIFY
 		
+		f64 det_a = e * i - f * h;
+		f64 det_b = d * i - f * g;
+		f64 det_c = d * h - e * g;
 		
-		// 2D minors
-		f64 det_a = e*i - f*h;
-		f64 det_b = d*i - f*g;
-		f64 det_c = d*h - e*g;
-		
-		return +a*det_a -b*det_b +c*det_c;
+		return + a * det_a - b * det_b + c * det_c;
 	}
+	
+	dm3 inverse (dm3 mat) {
+		// optimized from:  // 36 muls, 16 adds, 1 divs = 53 ops
+		// to:              // 30 muls, 13 adds, 1 divs = 44 ops
+		LETTERIFY
+		
+		f64 di = d * i;
+		f64 dh = d * h;
+		f64 ei = e * i;
+		f64 eg = e * g;
+		f64 fg = f * g;
+		f64 fh = f * h;
+		
+		f64 difg = di - fg;
+		f64 eifh = ei - fh;
+		f64 dheg = dh - eg;
+		
+		f64 det;
+		{ // clac determinate
+			
+			f64 det_a = eifh;
+			f64 det_b = difg;
+			f64 det_c = dheg;
+			
+			det = + a * det_a - b * det_b + c * det_c;
+		}
+		f64 inv_det = f64(1) / det;
+		f64 ninv_det = -inv_det;
+		
+		// calc cofactor matrix
+		
+		f64 cofac_00 = eifh;
+		f64 cofac_01 = difg;
+		f64 cofac_02 = dheg;
+		f64 cofac_10 = b * i - c * h;
+		f64 cofac_11 = a * i - c * g;
+		f64 cofac_12 = a * h - b * g;
+		f64 cofac_20 = b * f - c * e;
+		f64 cofac_21 = a * f - c * d;
+		f64 cofac_22 = a * e - b * d;
+		
+		dm3 ret;
+		
+		ret.arr[0][0] = cofac_00 *  inv_det;
+		ret.arr[0][1] = cofac_10 * ninv_det;
+		ret.arr[0][2] = cofac_20 *  inv_det;
+		ret.arr[1][0] = cofac_01 * ninv_det;
+		ret.arr[1][1] = cofac_11 *  inv_det;
+		ret.arr[1][2] = cofac_21 * ninv_det;
+		ret.arr[2][0] = cofac_02 *  inv_det;
+		ret.arr[2][1] = cofac_12 * ninv_det;
+		ret.arr[2][2] = cofac_22 *  inv_det;
+		
+		return ret;
+	}
+	
+	#undef LETTERIFY
+	
 } // namespace vector
 

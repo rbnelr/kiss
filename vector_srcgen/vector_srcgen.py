@@ -790,77 +790,16 @@ def gen_matrix(M, f):
 	if size[0] == size[1]:
 		f += '\n'
 
-		f.function(f'{T}', 'det', f'{M} m', gen_determinate_code(T, size[0], lambda r,c: f'm.arr[{r}][{c}]'))
+		import matrix_stuff as ms
 
+		f.source += ms.define_letterify(T, size[0]) + '\n'
+
+		f.function(f'{T}', 'det', f'{M} mat', ms.gen_determinate_code(T, size[0]))
+		f.function(f'{M}', 'inverse', f'{M} mat', ms.gen_inverse_code(M, T, size[0]))
+		
+		f.source += '\n#undef LETTERIFY\n\n'
 
 	f += '} // namespace vector\n'
-
-def indent(txt, level):
-  return ''.join('    '*level + l for l in txt.splitlines(1))
-
-def gen_determinate_code(T, size, cell):
-	cell_letter = [[chr(ord('a') + r*size + c) for c in range(size)] for r in range(size)]
-	
-	letterify = ''
-	for r in range(size):
-		for c in range(size):
-			letterify += f'{T} {cell_letter[r][c]} = {cell(r,c)};\n'
-	letterify += '\n'
-
-	cell = lambda r,c: cell_letter[r][c]
-
-	txt, expr = _gen_determinate_code(T, size, cell)
-
-	def optimize(txt):
-		import re
-		letter_muls = re.findall(r"\b.\*.\b", txt)
-		letter_muls_txt = ''
-
-		letter_mul_set = set(letter_muls)
-		letter_muls = [ (lm,letter_muls.count(lm)) for lm in letter_mul_set ]
-
-		for lm,count in letter_muls:
-			if count > 1:
-				shortform = lm[0]+lm[2]
-				txt = re.sub(rf"\b{lm[0]}\*{lm[2]}\b", shortform, txt)
-				letter_muls_txt += f'{T} {shortform} = {lm};\n'
-
-		return letter_muls_txt +'\n'+ txt
-	
-	def stats(txt):
-		import re
-		muls = txt.count("*")
-		adds = txt.count("+") + txt.count("-")
-		divs = len(re.findall(r"[^/]/[^/]", txt))
-		stats = f'// {muls} muls, {adds} adds, {divs} divs = {muls + adds + divs} ops'
-		return stats
-
-	unopt_stats = stats(txt + expr)
-	txt = optimize(txt)
-	opt_stats = stats(txt + expr)
-	
-	txt = letterify + txt + f'return %s;' % expr
-	
-	return f'// optimized from:  {unopt_stats}\n// to:              {opt_stats}\n' + txt
-
-def _gen_determinate_code(T, size, cell, depth=0):
-	txt = ''
-
-	if size == 2:
-		expr = f'{cell(0,0)}*{cell(1,1)} - {cell(0,1)}*{cell(1,0)}'
-
-	else:
-		txt += indent(f'// {size-1}D minors\n', depth)
-		for i in range(size):
-			minor_txt, minor_expr = _gen_determinate_code(T, size-1, lambda r,c: cell(r+1, c+1 if c >= i else c), depth+1)
-
-			txt += indent(minor_txt, depth)
-			txt += indent(f'{T} det_{cell(0,i)} = {minor_expr};\n' + ('\n' if size>3 else ''), depth)
-		txt += '\n'
-
-		expr = ' '.join(('-' if i%2 else '+') + f'{cell(0,i)}*det_{cell(0,i)}' for i in range(size))
-
-	return txt, expr
 
 for tmat in matricies:
 	for m in tmat:
@@ -933,7 +872,7 @@ def main(f):
 
 	f.header += 'using namespace vector;\n\n'
 
-	f.header += "// Typedefs that define 'standart' floats to use across program\n"
+	f.header += "// Typedefs that define 'standard' floats to use across program\n"
 	f.header += 'typedef float flt;\n\n'
 
 	for v in all_vectors:
@@ -944,7 +883,7 @@ def main(f):
 		if m.scalar_type.name == 'f32':
 			f.header += f'typedef {m} {m.name[1:]};\n'
 				
-	f.header += '#include "transformations.hpp"\n\n'
+	f.header += '\n#include "transformations.hpp"\n\n'
 	
 main(gen.add_file('vector'))
 

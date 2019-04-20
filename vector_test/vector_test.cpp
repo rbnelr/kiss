@@ -317,11 +317,29 @@ int main() {
 							 9,10,11,12,
 							 0, 0, 0, 0)); // no m4x3 type, since it's not that useful
 
-	//f = det(scl);
-	//scl = inverse(scl);
-	//
-	//f = det(trnsl);
-	//trnsl = inverse(trnsl)
+	f = det(scl);
+	f = det((m3)trnsl);
+
+	auto _4 = m4(	-2, 0, 0, 7,
+					 0, 3, 0, 4,
+					 0, 0, 0.5f, -13,
+					 0, 0, 0, 1);
+	auto det_4 = det(_4);
+	auto inv_4 = inverse(_4);
+	auto test_4 = _4 * inv_4;
+	test_4 = inv_4 * _4;
+	
+	auto inv_scl = inverse(scl);
+
+	auto test_scl = inv_scl * scl;
+	test_scl = scl * inv_scl;
+	uu = inv_scl * (scl * u);
+	
+	auto inv_trnsl = inverse((m3)trnsl);
+
+	auto test_trnsl = inv_trnsl * (m3)trnsl;
+	test_trnsl = (m3)trnsl * inv_trnsl;
+	uu = (v2)(inv_trnsl * ((m3)trnsl * v3(u,1)));
 
 	return 0;
 }

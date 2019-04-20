@@ -43,7 +43,7 @@
 
 using namespace vector;
 
-// Typedefs that define 'standart' floats to use across program
+// Typedefs that define 'standard' floats to use across program
 typedef float flt;
 
 typedef fv2 v2;
@@ -54,6 +54,7 @@ typedef fm3 m3;
 typedef fm4 m4;
 typedef fm2x3 m2x3;
 typedef fm3x4 m3x4;
+
 #include "transformations.hpp"
 
 

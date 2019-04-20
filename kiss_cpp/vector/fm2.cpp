@@ -294,17 +294,51 @@ namespace vector {
 		return fm2::rows(m.arr[0], m.arr[1]);
 	}
 	
+	#define LETTERIFY \
+	f32 a = mat.arr[0][0]; \
+	f32 b = mat.arr[0][1]; \
+	f32 c = mat.arr[1][0]; \
+	f32 d = mat.arr[1][1];
 	
-	f32 det (fm2 m) {
+	f32 det (fm2 mat) {
 		// optimized from:  // 2 muls, 1 adds, 0 divs = 3 ops
 		// to:              // 2 muls, 1 adds, 0 divs = 3 ops
-		f32 a = m.arr[0][0];
-		f32 b = m.arr[0][1];
-		f32 c = m.arr[1][0];
-		f32 d = m.arr[1][1];
+		LETTERIFY
 		
-		
-		return a*d - b*c;
+		return a * d - b * c;
 	}
+	
+	fm2 inverse (fm2 mat) {
+		// optimized from:  // 6 muls, 2 adds, 1 divs = 9 ops
+		// to:              // 6 muls, 2 adds, 1 divs = 9 ops
+		LETTERIFY
+		
+		f32 det;
+		{ // clac determinate
+			
+			det = a * d - b * c;
+		}
+		f32 inv_det = f32(1) / det;
+		f32 ninv_det = -inv_det;
+		
+		// calc cofactor matrix
+		
+		f32 cofac_00 = d;
+		f32 cofac_01 = c;
+		f32 cofac_10 = b;
+		f32 cofac_11 = a;
+		
+		fm2 ret;
+		
+		ret.arr[0][0] = cofac_00 *  inv_det;
+		ret.arr[0][1] = cofac_10 * ninv_det;
+		ret.arr[1][0] = cofac_01 * ninv_det;
+		ret.arr[1][1] = cofac_11 *  inv_det;
+		
+		return ret;
+	}
+	
+	#undef LETTERIFY
+	
 } // namespace vector
 

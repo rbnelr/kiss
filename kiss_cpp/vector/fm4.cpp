@@ -340,71 +340,293 @@ namespace vector {
 		return fm4::rows(m.arr[0], m.arr[1], m.arr[2], m.arr[3]);
 	}
 	
+	#define LETTERIFY \
+	f32 a = mat.arr[0][0]; \
+	f32 b = mat.arr[0][1]; \
+	f32 c = mat.arr[0][2]; \
+	f32 d = mat.arr[0][3]; \
+	f32 e = mat.arr[1][0]; \
+	f32 f = mat.arr[1][1]; \
+	f32 g = mat.arr[1][2]; \
+	f32 h = mat.arr[1][3]; \
+	f32 i = mat.arr[2][0]; \
+	f32 j = mat.arr[2][1]; \
+	f32 k = mat.arr[2][2]; \
+	f32 l = mat.arr[2][3]; \
+	f32 m = mat.arr[3][0]; \
+	f32 n = mat.arr[3][1]; \
+	f32 o = mat.arr[3][2]; \
+	f32 p = mat.arr[3][3];
 	
-	f32 det (fm4 m) {
+	f32 det (fm4 mat) {
 		// optimized from:  // 40 muls, 28 adds, 0 divs = 68 ops
-		// to:              // 28 muls, 28 adds, 0 divs = 56 ops
-		f32 a = m.arr[0][0];
-		f32 b = m.arr[0][1];
-		f32 c = m.arr[0][2];
-		f32 d = m.arr[0][3];
-		f32 e = m.arr[1][0];
-		f32 f = m.arr[1][1];
-		f32 g = m.arr[1][2];
-		f32 h = m.arr[1][3];
-		f32 i = m.arr[2][0];
-		f32 j = m.arr[2][1];
-		f32 k = m.arr[2][2];
-		f32 l = m.arr[2][3];
-		f32 m = m.arr[3][0];
-		f32 n = m.arr[3][1];
-		f32 o = m.arr[3][2];
-		f32 p = m.arr[3][3];
+		// to:              // 28 muls, 22 adds, 0 divs = 50 ops
+		LETTERIFY
 		
-		f32 lm = l*m;
-		f32 in = i*n;
-		f32 ln = l*n;
-		f32 jo = j*o;
-		f32 km = k*m;
-		f32 lo = l*o;
-		f32 kn = k*n;
-		f32 io = i*o;
-		f32 ip = i*p;
-		f32 jm = j*m;
-		f32 kp = k*p;
-		f32 jp = j*p;
+		f32 ln = l * n;
+		f32 io = i * o;
+		f32 jp = j * p;
+		f32 lm = l * m;
+		f32 km = k * m;
+		f32 kn = k * n;
+		f32 ip = i * p;
+		f32 in = i * n;
+		f32 lo = l * o;
+		f32 kp = k * p;
+		f32 jm = j * m;
+		f32 jo = j * o;
 		
-		// 3D minors
-		    // 2D minors
-		    f32 det_f = kp - lo;
-		    f32 det_g = jp - ln;
-		    f32 det_h = jo - kn;
+		f32 iplm = ip - lm;
+		f32 jokn = jo - kn;
+		f32 injm = in - jm;
+		f32 jpln = jp - ln;
+		f32 kplo = kp - lo;
+		f32 iokm = io - km;
 		
-		f32 det_a = +f*det_f -g*det_g +h*det_h;
+		    f32 det_a_f = kplo;
+		    f32 det_a_g = jpln;
+		    f32 det_a_h = jokn;
 		
-		    // 2D minors
-		    f32 det_e = kp - lo;
-		    f32 det_g = ip - lm;
-		    f32 det_h = io - km;
+		f32 det_a = + f * det_a_f - g * det_a_g + h * det_a_h;
 		
-		f32 det_b = +e*det_e -g*det_g +h*det_h;
+		    f32 det_b_e = kplo;
+		    f32 det_b_g = iplm;
+		    f32 det_b_h = iokm;
 		
-		    // 2D minors
-		    f32 det_e = jp - ln;
-		    f32 det_f = ip - lm;
-		    f32 det_h = in - jm;
+		f32 det_b = + e * det_b_e - g * det_b_g + h * det_b_h;
 		
-		f32 det_c = +e*det_e -f*det_f +h*det_h;
+		    f32 det_c_e = jpln;
+		    f32 det_c_f = iplm;
+		    f32 det_c_h = injm;
 		
-		    // 2D minors
-		    f32 det_e = jo - kn;
-		    f32 det_f = io - km;
-		    f32 det_g = in - jm;
+		f32 det_c = + e * det_c_e - f * det_c_f + h * det_c_h;
 		
-		f32 det_d = +e*det_e -f*det_f +g*det_g;
+		    f32 det_d_e = jokn;
+		    f32 det_d_f = iokm;
+		    f32 det_d_g = injm;
+		
+		f32 det_d = + e * det_d_e - f * det_d_f + g * det_d_g;
 		
 		
-		return +a*det_a -b*det_b +c*det_c -d*det_d;
+		return + a * det_a - b * det_b + c * det_c - d * det_d;
 	}
+	
+	fm4 inverse (fm4 mat) {
+		// optimized from:  // 200 muls, 125 adds, 1 divs = 326 ops
+		// to:              // 116 muls, 83 adds, 1 divs = 200 ops
+		LETTERIFY
+		
+		f32 lm = l * m;
+		f32 ej = e * j;
+		f32 eo = e * o;
+		f32 ip = i * p;
+		f32 gm = g * m;
+		f32 fo = f * o;
+		f32 ek = e * k;
+		f32 jm = j * m;
+		f32 gl = g * l;
+		f32 ep = e * p;
+		f32 io = i * o;
+		f32 hm = h * m;
+		f32 km = k * m;
+		f32 gp = g * p;
+		f32 el = e * l;
+		f32 fm = f * m;
+		f32 en = e * n;
+		f32 gn = g * n;
+		f32 gi = g * i;
+		f32 lo = l * o;
+		f32 gj = g * j;
+		f32 kp = k * p;
+		f32 ln = l * n;
+		f32 fl = f * l;
+		f32 fi = f * i;
+		f32 hj = h * j;
+		f32 jp = j * p;
+		f32 ho = h * o;
+		f32 hn = h * n;
+		f32 hi = h * i;
+		f32 kn = k * n;
+		f32 hk = h * k;
+		f32 in = i * n;
+		f32 fp = f * p;
+		f32 fk = f * k;
+		f32 jo = j * o;
+		
+		f32 gpho = gp - ho;
+		f32 flhj = fl - hj;
+		f32 enfm = en - fm;
+		f32 eogm = eo - gm;
+		f32 iplm = ip - lm;
+		f32 fkgj = fk - gj;
+		f32 ejfi = ej - fi;
+		f32 glhk = gl - hk;
+		f32 ephm = ep - hm;
+		f32 fphn = fp - hn;
+		f32 fogn = fo - gn;
+		f32 elhi = el - hi;
+		f32 jokn = jo - kn;
+		f32 injm = in - jm;
+		f32 jpln = jp - ln;
+		f32 kplo = kp - lo;
+		f32 iokm = io - km;
+		f32 ekgi = ek - gi;
+		
+		f32 det;
+		{ // clac determinate
+			
+			    f32 det_a_f = kplo;
+			    f32 det_a_g = jpln;
+			    f32 det_a_h = jokn;
+			
+			f32 det_a = + f * det_a_f - g * det_a_g + h * det_a_h;
+			
+			    f32 det_b_e = kplo;
+			    f32 det_b_g = iplm;
+			    f32 det_b_h = iokm;
+			
+			f32 det_b = + e * det_b_e - g * det_b_g + h * det_b_h;
+			
+			    f32 det_c_e = jpln;
+			    f32 det_c_f = iplm;
+			    f32 det_c_h = injm;
+			
+			f32 det_c = + e * det_c_e - f * det_c_f + h * det_c_h;
+			
+			    f32 det_d_e = jokn;
+			    f32 det_d_f = iokm;
+			    f32 det_d_g = injm;
+			
+			f32 det_d = + e * det_d_e - f * det_d_f + g * det_d_g;
+			
+			
+			det = + a * det_a - b * det_b + c * det_c - d * det_d;
+		}
+		f32 inv_det = f32(1) / det;
+		f32 ninv_det = -inv_det;
+		
+		// calc cofactor matrix
+		
+		    f32 cofac_00_f = kplo;
+		    f32 cofac_00_g = jpln;
+		    f32 cofac_00_h = jokn;
+		    
+		f32 cofac_00 = + f * cofac_00_f - g * cofac_00_g + h * cofac_00_h;
+		
+		    f32 cofac_01_e = kplo;
+		    f32 cofac_01_g = iplm;
+		    f32 cofac_01_h = iokm;
+		    
+		f32 cofac_01 = + e * cofac_01_e - g * cofac_01_g + h * cofac_01_h;
+		
+		    f32 cofac_02_e = jpln;
+		    f32 cofac_02_f = iplm;
+		    f32 cofac_02_h = injm;
+		    
+		f32 cofac_02 = + e * cofac_02_e - f * cofac_02_f + h * cofac_02_h;
+		
+		    f32 cofac_03_e = jokn;
+		    f32 cofac_03_f = iokm;
+		    f32 cofac_03_g = injm;
+		    
+		f32 cofac_03 = + e * cofac_03_e - f * cofac_03_f + g * cofac_03_g;
+		
+		    f32 cofac_10_b = kplo;
+		    f32 cofac_10_c = jpln;
+		    f32 cofac_10_d = jokn;
+		    
+		f32 cofac_10 = + b * cofac_10_b - c * cofac_10_c + d * cofac_10_d;
+		
+		    f32 cofac_11_a = kplo;
+		    f32 cofac_11_c = iplm;
+		    f32 cofac_11_d = iokm;
+		    
+		f32 cofac_11 = + a * cofac_11_a - c * cofac_11_c + d * cofac_11_d;
+		
+		    f32 cofac_12_a = jpln;
+		    f32 cofac_12_b = iplm;
+		    f32 cofac_12_d = injm;
+		    
+		f32 cofac_12 = + a * cofac_12_a - b * cofac_12_b + d * cofac_12_d;
+		
+		    f32 cofac_13_a = jokn;
+		    f32 cofac_13_b = iokm;
+		    f32 cofac_13_c = injm;
+		    
+		f32 cofac_13 = + a * cofac_13_a - b * cofac_13_b + c * cofac_13_c;
+		
+		    f32 cofac_20_b = gpho;
+		    f32 cofac_20_c = fphn;
+		    f32 cofac_20_d = fogn;
+		    
+		f32 cofac_20 = + b * cofac_20_b - c * cofac_20_c + d * cofac_20_d;
+		
+		    f32 cofac_21_a = gpho;
+		    f32 cofac_21_c = ephm;
+		    f32 cofac_21_d = eogm;
+		    
+		f32 cofac_21 = + a * cofac_21_a - c * cofac_21_c + d * cofac_21_d;
+		
+		    f32 cofac_22_a = fphn;
+		    f32 cofac_22_b = ephm;
+		    f32 cofac_22_d = enfm;
+		    
+		f32 cofac_22 = + a * cofac_22_a - b * cofac_22_b + d * cofac_22_d;
+		
+		    f32 cofac_23_a = fogn;
+		    f32 cofac_23_b = eogm;
+		    f32 cofac_23_c = enfm;
+		    
+		f32 cofac_23 = + a * cofac_23_a - b * cofac_23_b + c * cofac_23_c;
+		
+		    f32 cofac_30_b = glhk;
+		    f32 cofac_30_c = flhj;
+		    f32 cofac_30_d = fkgj;
+		    
+		f32 cofac_30 = + b * cofac_30_b - c * cofac_30_c + d * cofac_30_d;
+		
+		    f32 cofac_31_a = glhk;
+		    f32 cofac_31_c = elhi;
+		    f32 cofac_31_d = ekgi;
+		    
+		f32 cofac_31 = + a * cofac_31_a - c * cofac_31_c + d * cofac_31_d;
+		
+		    f32 cofac_32_a = flhj;
+		    f32 cofac_32_b = elhi;
+		    f32 cofac_32_d = ejfi;
+		    
+		f32 cofac_32 = + a * cofac_32_a - b * cofac_32_b + d * cofac_32_d;
+		
+		    f32 cofac_33_a = fkgj;
+		    f32 cofac_33_b = ekgi;
+		    f32 cofac_33_c = ejfi;
+		    
+		f32 cofac_33 = + a * cofac_33_a - b * cofac_33_b + c * cofac_33_c;
+		
+		
+		fm4 ret;
+		
+		ret.arr[0][0] = cofac_00 *  inv_det;
+		ret.arr[0][1] = cofac_10 * ninv_det;
+		ret.arr[0][2] = cofac_20 *  inv_det;
+		ret.arr[0][3] = cofac_30 * ninv_det;
+		ret.arr[1][0] = cofac_01 * ninv_det;
+		ret.arr[1][1] = cofac_11 *  inv_det;
+		ret.arr[1][2] = cofac_21 * ninv_det;
+		ret.arr[1][3] = cofac_31 *  inv_det;
+		ret.arr[2][0] = cofac_02 *  inv_det;
+		ret.arr[2][1] = cofac_12 * ninv_det;
+		ret.arr[2][2] = cofac_22 *  inv_det;
+		ret.arr[2][3] = cofac_32 * ninv_det;
+		ret.arr[3][0] = cofac_03 * ninv_det;
+		ret.arr[3][1] = cofac_13 *  inv_det;
+		ret.arr[3][2] = cofac_23 * ninv_det;
+		ret.arr[3][3] = cofac_33 *  inv_det;
+		
+		return ret;
+	}
+	
+	#undef LETTERIFY
+	
 } // namespace vector
 

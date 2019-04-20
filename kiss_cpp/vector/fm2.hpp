@@ -107,6 +107,7 @@ namespace vector {
 	fv2 operator* (fv2 l, fm2 const& r);
 	fm2 transpose (fm2 m);
 	
-	f32 det (fm2 m);
+	f32 det (fm2 mat);
+	fm2 inverse (fm2 mat);
 } // namespace vector
 
