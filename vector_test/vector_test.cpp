@@ -309,5 +309,19 @@ int main() {
 
 	std::cout << T <<"\n"<< V;
 
+	//auto l = transpose(m3x4(	1,2,3,4,
+	//							5,6,7,8,
+	//							9,10,11,12)); // no m4x3 type, since it's not that useful
+	auto l = transpose(m4(	 1, 2, 3, 4,
+							 5, 6, 7, 8,
+							 9,10,11,12,
+							 0, 0, 0, 0)); // no m4x3 type, since it's not that useful
+
+	//f = det(scl);
+	//scl = inverse(scl);
+	//
+	//f = det(trnsl);
+	//trnsl = inverse(trnsl)
+
 	return 0;
 }

@@ -25,18 +25,23 @@ namespace vector {
 		
 	}
 	
+	// sets all components to one value
+	// implicit constructor -> v3(x,y,z) * 5 will be turned into v3(x,y,z) * v3(5) by to compiler to be able to execute operator*(v3, v3), which is desirable, also v3 a = 0; works
 	fv3::fv3 (f32 all): x{all}, y{all}, z{all} {
 		
 	}
 	
+	// supply all components
 	fv3::fv3 (f32 x, f32 y, f32 z): x{x}, y{y}, z{z} {
 		
 	}
 	
+	// extend vector
 	fv3::fv3 (fv2 xy, f32 z): x{xy.x}, y{xy.y}, z{z} {
 		
 	}
 	
+	// truncate vector
 	fv3::fv3 (fv4 v): x{v.x}, y{v.y}, z{v.z} {
 		
 	}
@@ -152,10 +157,12 @@ namespace vector {
 		return bv3(l.x != r.x, l.y != r.y, l.z != r.z);
 	}
 	
+	// vectors are equal, equivalent to all(l == r)
 	bool equal (fv3 l, fv3 r) {
 		return all(l == r);
 	}
 	
+	// componentwise ternary c ? l : r
 	fv3 select (bv3 c, fv3 l, fv3 r) {
 		return c.x ? l.x : r.x, c.y ? l.y : r.y, c.z ? l.z : r.z;
 	}
@@ -178,6 +185,7 @@ namespace vector {
 		return min(max(x,a), b);
 	}
 	
+	// get min component of vector, optionally get component index via min_index
 	f32 min_component (fv3 v, int* min_index) {
 		int index = 0;
 		f32 min_val = v.x;	
@@ -191,6 +199,7 @@ namespace vector {
 		return min_val;
 	}
 	
+	// get max component of vector, optionally get component index via max_index
 	f32 max_component (fv3 v, int* max_index) {
 		int index = 0;
 		f32 max_val = v.x;	
@@ -242,14 +251,17 @@ namespace vector {
 	}
 	
 	
+	// linear interpolation t=0 -> a ; t=1 -> b ; t=0.5 -> (a+b)/2
 	fv3 lerp (fv3 a, fv3 b, fv3 t) {
 		return a * (fv3(1) - t) + b * t;
 	}
 	
+	// linear mapping (reverse linear interpolation), map(70, 0,100) -> 0.7 ; map(0.5, -1,+1) -> 0.75
 	fv3 map (fv3 x, fv3 in_a, fv3 in_b) {
 		return (x - in_a) / (in_b - in_a);
 	}
 	
+	// linear mapping, lerp(out_a, out_b, map(x, in_a, in_b))
 	fv3 map (fv3 x, fv3 in_a, fv3 in_b, fv3 out_a, fv3 out_b) {
 		return lerp(out_a, out_b, map(x, in_a, in_b));
 	}
@@ -260,6 +272,7 @@ namespace vector {
 		return (fv3)deg * DEG_TO_RAD;
 	}
 	
+	// degress "literal", converts degrees to radiants
 	fv3 deg (fv3 deg) {
 		return (fv3)deg * DEG_TO_RAD;
 	}
@@ -270,22 +283,27 @@ namespace vector {
 	
 	//// linear algebra ops
 	
+	// magnitude of vector
 	f32 length (fv3 v) {
 		return sqrt((f32)(v.x * v.x + v.y * v.y + v.z * v.z));
 	}
 	
+	// squared magnitude of vector, cheaper than length() because it avoids the sqrt(), some algorithms only need the squared magnitude
 	f32 length_sqr (fv3 v) {
 		return v.x * v.x + v.y * v.y + v.z * v.z;
 	}
 	
+	// distance between points, equivalent to length(a - b)
 	f32 distance (fv3 a, fv3 b) {
 		return length(a - b);
 	}
 	
+	// normalize vector so that it has length() = 1, undefined for zero vector
 	fv3 normalize (fv3 v) {
 		return fv3(v) / length(v);
 	}
 	
+	// normalize vector so that it has length() = 1, returns zero vector if vector was zero vector
 	fv3 normalize_or_zero (fv3 v) {
 		f32 len = length(v);
 		if (len == f32(0)) {
@@ -294,10 +312,12 @@ namespace vector {
 		return fv3(v) / fv3(len);
 	}
 	
+	// dot product
 	f32 dot (fv3 l, fv3 r) {
 		return l.x * r.x + l.y * r.y + l.z * r.z;
 	}
 	
+	// 3d cross product
 	fv3 cross (fv3 l, fv3 r) {
 		return fv3(
 				l.y * r.z - l.z * r.y,

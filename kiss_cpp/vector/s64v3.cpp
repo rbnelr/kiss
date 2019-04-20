@@ -25,18 +25,23 @@ namespace vector {
 		
 	}
 	
+	// sets all components to one value
+	// implicit constructor -> v3(x,y,z) * 5 will be turned into v3(x,y,z) * v3(5) by to compiler to be able to execute operator*(v3, v3), which is desirable, also v3 a = 0; works
 	s64v3::s64v3 (s64 all): x{all}, y{all}, z{all} {
 		
 	}
 	
+	// supply all components
 	s64v3::s64v3 (s64 x, s64 y, s64 z): x{x}, y{y}, z{z} {
 		
 	}
 	
+	// extend vector
 	s64v3::s64v3 (s64v2 xy, s64 z): x{xy.x}, y{xy.y}, z{z} {
 		
 	}
 	
+	// truncate vector
 	s64v3::s64v3 (s64v4 v): x{v.x}, y{v.y}, z{v.z} {
 		
 	}
@@ -152,10 +157,12 @@ namespace vector {
 		return bv3(l.x != r.x, l.y != r.y, l.z != r.z);
 	}
 	
+	// vectors are equal, equivalent to all(l == r)
 	bool equal (s64v3 l, s64v3 r) {
 		return all(l == r);
 	}
 	
+	// componentwise ternary c ? l : r
 	s64v3 select (bv3 c, s64v3 l, s64v3 r) {
 		return c.x ? l.x : r.x, c.y ? l.y : r.y, c.z ? l.z : r.z;
 	}
@@ -178,6 +185,7 @@ namespace vector {
 		return min(max(x,a), b);
 	}
 	
+	// get min component of vector, optionally get component index via min_index
 	s64 min_component (s64v3 v, int* min_index) {
 		int index = 0;
 		s64 min_val = v.x;	
@@ -191,6 +199,7 @@ namespace vector {
 		return min_val;
 	}
 	
+	// get max component of vector, optionally get component index via max_index
 	s64 max_component (s64v3 v, int* max_index) {
 		int index = 0;
 		s64 max_val = v.x;	
@@ -218,6 +227,7 @@ namespace vector {
 		return (dv3)deg * DEG_TO_RADd;
 	}
 	
+	// degress "literal", converts degrees to radiants
 	dv3 deg (s64v3 deg) {
 		return (dv3)deg * DEG_TO_RADd;
 	}
@@ -228,22 +238,27 @@ namespace vector {
 	
 	//// linear algebra ops
 	
+	// magnitude of vector
 	f64 length (s64v3 v) {
 		return sqrt((f64)(v.x * v.x + v.y * v.y + v.z * v.z));
 	}
 	
+	// squared magnitude of vector, cheaper than length() because it avoids the sqrt(), some algorithms only need the squared magnitude
 	s64 length_sqr (s64v3 v) {
 		return v.x * v.x + v.y * v.y + v.z * v.z;
 	}
 	
+	// distance between points, equivalent to length(a - b)
 	f64 distance (s64v3 a, s64v3 b) {
 		return length(a - b);
 	}
 	
+	// normalize vector so that it has length() = 1, undefined for zero vector
 	dv3 normalize (s64v3 v) {
 		return dv3(v) / length(v);
 	}
 	
+	// normalize vector so that it has length() = 1, returns zero vector if vector was zero vector
 	dv3 normalize_or_zero (s64v3 v) {
 		f64 len = length(v);
 		if (len == f64(0)) {
@@ -252,10 +267,12 @@ namespace vector {
 		return dv3(v) / dv3(len);
 	}
 	
+	// dot product
 	s64 dot (s64v3 l, s64v3 r) {
 		return l.x * r.x + l.y * r.y + l.z * r.z;
 	}
 	
+	// 3d cross product
 	s64v3 cross (s64v3 l, s64v3 r) {
 		return s64v3(
 				l.y * r.z - l.z * r.y,

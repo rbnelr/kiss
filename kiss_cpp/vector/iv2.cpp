@@ -25,18 +25,23 @@ namespace vector {
 		
 	}
 	
+	// sets all components to one value
+	// implicit constructor -> v3(x,y,z) * 5 will be turned into v3(x,y,z) * v3(5) by to compiler to be able to execute operator*(v3, v3), which is desirable, also v3 a = 0; works
 	iv2::iv2 (s32 all): x{all}, y{all} {
 		
 	}
 	
+	// supply all components
 	iv2::iv2 (s32 x, s32 y): x{x}, y{y} {
 		
 	}
 	
+	// truncate vector
 	iv2::iv2 (iv3 v): x{v.x}, y{v.y} {
 		
 	}
 	
+	// truncate vector
 	iv2::iv2 (iv4 v): x{v.x}, y{v.y} {
 		
 	}
@@ -144,10 +149,12 @@ namespace vector {
 		return bv2(l.x != r.x, l.y != r.y);
 	}
 	
+	// vectors are equal, equivalent to all(l == r)
 	bool equal (iv2 l, iv2 r) {
 		return all(l == r);
 	}
 	
+	// componentwise ternary c ? l : r
 	iv2 select (bv2 c, iv2 l, iv2 r) {
 		return c.x ? l.x : r.x, c.y ? l.y : r.y;
 	}
@@ -170,6 +177,7 @@ namespace vector {
 		return min(max(x,a), b);
 	}
 	
+	// get min component of vector, optionally get component index via min_index
 	s32 min_component (iv2 v, int* min_index) {
 		int index = 0;
 		s32 min_val = v.x;	
@@ -183,6 +191,7 @@ namespace vector {
 		return min_val;
 	}
 	
+	// get max component of vector, optionally get component index via max_index
 	s32 max_component (iv2 v, int* max_index) {
 		int index = 0;
 		s32 max_val = v.x;	
@@ -210,6 +219,7 @@ namespace vector {
 		return (fv2)deg * DEG_TO_RAD;
 	}
 	
+	// degress "literal", converts degrees to radiants
 	fv2 deg (iv2 deg) {
 		return (fv2)deg * DEG_TO_RAD;
 	}
@@ -220,22 +230,27 @@ namespace vector {
 	
 	//// linear algebra ops
 	
+	// magnitude of vector
 	f32 length (iv2 v) {
 		return sqrt((f32)(v.x * v.x + v.y * v.y));
 	}
 	
+	// squared magnitude of vector, cheaper than length() because it avoids the sqrt(), some algorithms only need the squared magnitude
 	s32 length_sqr (iv2 v) {
 		return v.x * v.x + v.y * v.y;
 	}
 	
+	// distance between points, equivalent to length(a - b)
 	f32 distance (iv2 a, iv2 b) {
 		return length(a - b);
 	}
 	
+	// normalize vector so that it has length() = 1, undefined for zero vector
 	fv2 normalize (iv2 v) {
 		return fv2(v) / length(v);
 	}
 	
+	// normalize vector so that it has length() = 1, returns zero vector if vector was zero vector
 	fv2 normalize_or_zero (iv2 v) {
 		f32 len = length(v);
 		if (len == f32(0)) {
@@ -244,14 +259,21 @@ namespace vector {
 		return fv2(v) / fv2(len);
 	}
 	
+	// dot product
 	s32 dot (iv2 l, iv2 r) {
 		return l.x * r.x + l.y * r.y;
 	}
 	
+	// 
+	// 2d cross product hack for convinient 2d stuff
+	// same as cross(v3(l, 0), v3(r, 0)).z,
+	// ie. the cross product of the 2d vectors on the z=0 plane in 3d space and then return the z coord of that (signed mag of cross product)
+	// 
 	s32 cross (iv2 l, iv2 r) {
 		return l.x * r.y - l.y * r.x;
 	}
 	
+	// rotate 2d vector counterclockwise 90 deg, ie. iv2(-y, x) which is fast
 	iv2 rotate90 (iv2 v) {
 		return iv2(-v.y, v.x);
 	}

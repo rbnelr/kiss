@@ -25,18 +25,23 @@ namespace vector {
 		
 	}
 	
+	// sets all components to one value
+	// implicit constructor -> v3(x,y,z) * 5 will be turned into v3(x,y,z) * v3(5) by to compiler to be able to execute operator*(v3, v3), which is desirable, also v3 a = 0; works
 	iv4::iv4 (s32 all): x{all}, y{all}, z{all}, w{all} {
 		
 	}
 	
+	// supply all components
 	iv4::iv4 (s32 x, s32 y, s32 z, s32 w): x{x}, y{y}, z{z}, w{w} {
 		
 	}
 	
+	// extend vector
 	iv4::iv4 (iv2 xy, s32 z, s32 w): x{xy.x}, y{xy.y}, z{z}, w{w} {
 		
 	}
 	
+	// extend vector
 	iv4::iv4 (iv3 xyz, s32 w): x{xyz.x}, y{xyz.y}, z{xyz.z}, w{w} {
 		
 	}
@@ -160,10 +165,12 @@ namespace vector {
 		return bv4(l.x != r.x, l.y != r.y, l.z != r.z, l.w != r.w);
 	}
 	
+	// vectors are equal, equivalent to all(l == r)
 	bool equal (iv4 l, iv4 r) {
 		return all(l == r);
 	}
 	
+	// componentwise ternary c ? l : r
 	iv4 select (bv4 c, iv4 l, iv4 r) {
 		return c.x ? l.x : r.x, c.y ? l.y : r.y, c.z ? l.z : r.z, c.w ? l.w : r.w;
 	}
@@ -186,6 +193,7 @@ namespace vector {
 		return min(max(x,a), b);
 	}
 	
+	// get min component of vector, optionally get component index via min_index
 	s32 min_component (iv4 v, int* min_index) {
 		int index = 0;
 		s32 min_val = v.x;	
@@ -199,6 +207,7 @@ namespace vector {
 		return min_val;
 	}
 	
+	// get max component of vector, optionally get component index via max_index
 	s32 max_component (iv4 v, int* max_index) {
 		int index = 0;
 		s32 max_val = v.x;	
@@ -226,6 +235,7 @@ namespace vector {
 		return (fv4)deg * DEG_TO_RAD;
 	}
 	
+	// degress "literal", converts degrees to radiants
 	fv4 deg (iv4 deg) {
 		return (fv4)deg * DEG_TO_RAD;
 	}
@@ -236,22 +246,27 @@ namespace vector {
 	
 	//// linear algebra ops
 	
+	// magnitude of vector
 	f32 length (iv4 v) {
 		return sqrt((f32)(v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w));
 	}
 	
+	// squared magnitude of vector, cheaper than length() because it avoids the sqrt(), some algorithms only need the squared magnitude
 	s32 length_sqr (iv4 v) {
 		return v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w;
 	}
 	
+	// distance between points, equivalent to length(a - b)
 	f32 distance (iv4 a, iv4 b) {
 		return length(a - b);
 	}
 	
+	// normalize vector so that it has length() = 1, undefined for zero vector
 	fv4 normalize (iv4 v) {
 		return fv4(v) / length(v);
 	}
 	
+	// normalize vector so that it has length() = 1, returns zero vector if vector was zero vector
 	fv4 normalize_or_zero (iv4 v) {
 		f32 len = length(v);
 		if (len == f32(0)) {
@@ -260,6 +275,7 @@ namespace vector {
 		return fv4(v) / fv4(len);
 	}
 	
+	// dot product
 	s32 dot (iv4 l, iv4 r) {
 		return l.x * r.x + l.y * r.y + l.z * r.z + l.w * r.w;
 	}

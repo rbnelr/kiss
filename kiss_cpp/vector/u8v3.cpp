@@ -25,18 +25,23 @@ namespace vector {
 		
 	}
 	
+	// sets all components to one value
+	// implicit constructor -> v3(x,y,z) * 5 will be turned into v3(x,y,z) * v3(5) by to compiler to be able to execute operator*(v3, v3), which is desirable, also v3 a = 0; works
 	u8v3::u8v3 (u8 all): x{all}, y{all}, z{all} {
 		
 	}
 	
+	// supply all components
 	u8v3::u8v3 (u8 x, u8 y, u8 z): x{x}, y{y}, z{z} {
 		
 	}
 	
+	// extend vector
 	u8v3::u8v3 (u8v2 xy, u8 z): x{xy.x}, y{xy.y}, z{z} {
 		
 	}
 	
+	// truncate vector
 	u8v3::u8v3 (u8v4 v): x{v.x}, y{v.y}, z{v.z} {
 		
 	}
@@ -152,10 +157,12 @@ namespace vector {
 		return bv3(l.x != r.x, l.y != r.y, l.z != r.z);
 	}
 	
+	// vectors are equal, equivalent to all(l == r)
 	bool equal (u8v3 l, u8v3 r) {
 		return all(l == r);
 	}
 	
+	// componentwise ternary c ? l : r
 	u8v3 select (bv3 c, u8v3 l, u8v3 r) {
 		return c.x ? l.x : r.x, c.y ? l.y : r.y, c.z ? l.z : r.z;
 	}
@@ -178,6 +185,7 @@ namespace vector {
 		return min(max(x,a), b);
 	}
 	
+	// get min component of vector, optionally get component index via min_index
 	u8 min_component (u8v3 v, int* min_index) {
 		int index = 0;
 		u8 min_val = v.x;	
@@ -191,6 +199,7 @@ namespace vector {
 		return min_val;
 	}
 	
+	// get max component of vector, optionally get component index via max_index
 	u8 max_component (u8v3 v, int* max_index) {
 		int index = 0;
 		u8 max_val = v.x;	
@@ -218,6 +227,7 @@ namespace vector {
 		return (fv3)deg * DEG_TO_RAD;
 	}
 	
+	// degress "literal", converts degrees to radiants
 	fv3 deg (u8v3 deg) {
 		return (fv3)deg * DEG_TO_RAD;
 	}
@@ -228,22 +238,27 @@ namespace vector {
 	
 	//// linear algebra ops
 	
+	// magnitude of vector
 	f32 length (u8v3 v) {
 		return sqrt((f32)(v.x * v.x + v.y * v.y + v.z * v.z));
 	}
 	
+	// squared magnitude of vector, cheaper than length() because it avoids the sqrt(), some algorithms only need the squared magnitude
 	u8 length_sqr (u8v3 v) {
 		return v.x * v.x + v.y * v.y + v.z * v.z;
 	}
 	
+	// distance between points, equivalent to length(a - b)
 	f32 distance (u8v3 a, u8v3 b) {
 		return length(a - b);
 	}
 	
+	// normalize vector so that it has length() = 1, undefined for zero vector
 	fv3 normalize (u8v3 v) {
 		return fv3(v) / length(v);
 	}
 	
+	// normalize vector so that it has length() = 1, returns zero vector if vector was zero vector
 	fv3 normalize_or_zero (u8v3 v) {
 		f32 len = length(v);
 		if (len == f32(0)) {
@@ -252,10 +267,12 @@ namespace vector {
 		return fv3(v) / fv3(len);
 	}
 	
+	// dot product
 	u8 dot (u8v3 l, u8v3 r) {
 		return l.x * r.x + l.y * r.y + l.z * r.z;
 	}
 	
+	// 3d cross product
 	u8v3 cross (u8v3 l, u8v3 r) {
 		return u8v3(
 				l.y * r.z - l.z * r.y,

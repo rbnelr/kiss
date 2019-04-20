@@ -67,6 +67,9 @@ def get_type(scalar_type, size=1):
 
 	return t
 
+def type_exist(scalar_type, size):
+	return (str(scalar_type), size) in _types
+
 floats =	[get_type(t) for t in ['f32', 'f64']]
 ints =		[get_type(t) for t in ['s32', 's64', 's8']]
 uints =		[get_type(t) for t in ['u32', 'u64', 'u8']]
@@ -98,83 +101,15 @@ matricies = [
 ]
 all_matricies = list(chain.from_iterable(matricies))
 
+##########
+import os
 
-use_contexpr_where_possible = False
-all_inline = False
-
-def _function(file, ret, name, args, body, clsname=None, init_list=None, template=None, comment=None, const=False, static=False, explicit=False, constexpr='auto', inline='auto'):
-	body = body.strip()
-	comment = ''.join(f'// '+ l.strip() +'\n' for l in comment.splitlines()) if comment else ''
-
-	# automaticly try to detect constexpr-ness by looking at the numer of lines in code body and function name blacklist (blacklisted functions call non-constexpr funcs like std lib sqrt())
-	# this is what the c++ standard should have make the compiler do, instead of introducing another keyword that makes everyones live harder 
-	non_constexpr_funcs = ['abs', 'sqrt', 'length', 'distance', 'normalize', 'normalize_or_zero', 'floor', 'floori', 'ceil', 'ceili', 'round', 'roundi', 'pow', 'wrap', 'min', 'max', 'clamp', 'bezier']
-	if constexpr == 'auto':
-		constexpr = use_contexpr_where_possible and (init_list or body.count(';') == 1) and name not in non_constexpr_funcs
-	if inline == 'auto':
-		inline = all_inline
-
-	clsname = f'{clsname}::' if clsname else ''
-	init_list = f': {init_list}' if init_list else ''
-
-	const = ' const' if const else ''
-
-	static = 'static' if static else None
-	constexpr = 'constexpr' if constexpr else None
-	inline = 'inline' if inline else None
-	explicit = 'explicit' if explicit else ''
-
-	template = 'template<%s>\n' % template.replace('tn', 'typename') if template else ''
-
-	def spaced_join(*args):
-		s = ''
-		for a in args:
-			if a:
-				if s: s += ' '
-				s += a
-		return s
-
-	def body_(decl, comment=''):
-		nonlocal args
-
-		if file == 'source' and '=' in args:
-			import re
-			args = re.sub(r'=.*?(?=(?:,|$))', '', args)
-
-		return f'''\n{comment}{decl} ({args}){const}{init_list} {{
-			{body}
-		}}\n'''
-
-	if file == 'header':
-		if inline or template:
-			decl = template + spaced_join(static, inline, constexpr, explicit, ret, name)
-			return body_(decl, comment)
-		else:
-			decl = spaced_join(static, constexpr, explicit, ret, name)
-			return f'{comment}{decl} ({args}){const};\n'
-	elif file == 'source':
-		if inline or template:
-			return ''
-		else:
-			decl = spaced_join(constexpr, ret, clsname + name)
-			return body_(decl)
-		
-	else:
-		raise ValueError(f"Wrong file type '{file}'")
-
-def function(file, ret, name, args, body,										constexpr='auto', template=None, comment=None):
-	return _function(file, ret, name, args, body,											constexpr=constexpr, template=template, comment=comment)
-def method(file, clsname, ret, name, args, body, explicit=False,				constexpr='auto', template=None, comment=None, const=False):
-	return _function(file, ret, name, args, body, clsname=clsname, explicit=explicit,		constexpr=constexpr, template=template, comment=comment, const=const)
-def static_method(file, clsname, ret, name, args, body,							constexpr='auto', template=None, comment=None, const=False):
-	return _function(file, ret, name, args, body, clsname=clsname,							constexpr=constexpr, template=template, comment=comment, const=const, static=True)
-def constructor(file, clsname, args, body='', init_list=None, explicit=False,	constexpr='auto', template=None, comment=None):
-	return _function(file, '', clsname, args, body, clsname=clsname, init_list=init_list,	explicit=explicit,	constexpr=constexpr, template=template, comment=comment)
+dir = os.path.join('..', 'kiss_cpp', 'vector')
+gen = srcgen.Generator(dir, default_constexpr=False, default_inline=False)
 
 def util(f):
-	if f == 'header':
-		return '''
-		#define STRINGIFY(x) #x
+	f.header += \
+	'''	#define STRINGIFY(x) #x
 		#define TO_STRING(x) STRINGIFY(x)
 
 		#define CONCAT(a,b) a##b
@@ -187,16 +122,13 @@ def util(f):
 		#define ODD(i)			(((i) % 2) == 1)
 
 		#define BOOL_XOR(a, b)	(((a) != 0) != ((b) != 0))
-		'''.strip()
-	else:
-		return ''
+		'''
 
-srcgen.generate('util', util)
+util(gen.add_file('util'))
 
 def types(f):
-	if f == 'header':
-		return \
-	''' #include "stdint.h"
+	f.header += '''
+		#include "stdint.h"
 		namespace vector {
 			typedef signed char			schar;
 			typedef unsigned char		uchar;
@@ -234,17 +166,12 @@ def types(f):
 			typedef char32_t			utf32;
 		}
 		'''.strip()
-	else:
-		return ''
 
-srcgen.generate('types', types)
+types(gen.add_file('types'))
 
 def kissmath(f):
-	src = ''
-
-	if f == 'header':
-		src += \
-		''' #include "types.hpp"
+	f.header += \
+		'''	#include "types.hpp"
 			#include "util.hpp"
 			#include <cmath>
 			
@@ -267,11 +194,10 @@ def kissmath(f):
 			#endif
 		'''
 
-	src += 'namespace vector {\n'
+	f += '\nnamespace vector {\n\n'
 			
-	if f == 'header':
-		src += \
-		''' // Use std math functions for these
+	f.header += \
+		'''	// Use std math functions for these
 			using std::abs;
 			using std::sin;
 			using std::cos;
@@ -298,29 +224,29 @@ def kissmath(f):
 			constexpr f32 RAD_TO_DEG	= 57.295779513082320876798154814105f;
 		'''
 	
-	src += '\n////// Scalar math ///////\n'
+	f += '\n////// Scalar math ///////\n'
 
 	for T in scalars:
-		src += f'\n//// {T}\n\n'
+		f += f'\n//// {T}\n\n'
 		
-		src += scalar_math(T, f)
-		src += generic_math(T, f)
+		scalar_math(T, f)
+		generic_math(T, f)
 		
-	src += f'\n//// templated math\n\n'
+	f += f'\n//// templated math\n\n'
 
-	src += function(f, template='tn T', ret='T', name='smoothstep',	args='T x', body='''
+	f.function(template='tn T', ret='T', name='smoothstep',	args='T x', body='''
 		T t = clamp(x);
 		return t * t * (T(3) - T(2) * t);
 	''')
 
 	for ST in floats:
-		src += function(f, template='tn T', ret='T', name='bezier', args=f'T a, T b, T c, {ST} t', body='''
+		f.function(template='tn T', ret='T', name='bezier', args=f'T a, T b, T c, {ST} t', body='''
 			T d = lerp(a, b, t);
 			T e = lerp(b, c, t);
 			T f = lerp(d, e, t);
 			return f;
 		''')
-		src += function(f, template='tn T', ret=f'{T}', name='bezier', args=f'T a, T b, T c, T d, {ST} t', body='''
+		f.function(template='tn T', ret=f'{T}', name='bezier', args=f'T a, T b, T c, T d, {ST} t', body='''
 			return bezier(
 							lerp(a, b, t),
 							lerp(b, c, t),
@@ -328,7 +254,7 @@ def kissmath(f):
 							t
 						);
 		''')
-		src += function(f, template='tn T', ret=f'{T}', name='bezier', args=f'T a, T b, T c, T d, T e, {ST} t', body='''
+		f.function(template='tn T', ret=f'{T}', name='bezier', args=f'T a, T b, T c, T d, T e, {ST} t', body='''
 			return bezier(
 							lerp(a, b, t),
 							lerp(b, c, t),
@@ -339,16 +265,13 @@ def kissmath(f):
 		''')
 
 
-	src += '} // namespace vector\n'
-	return src
+	f += '\n} // namespace vector\n'
 
 def scalar_math(T, f):
-	src = ''
-
 	BT = T.bool_type
 	IT = T.int_cast_type # int scalar for roundi funcs
 	
-	src += function(f, f'{T}', 'wrap', f'{T} x, {T} range', f'''
+	f.function(f'{T}', 'wrap', f'{T} x, {T} range', f'''
 		{T} modded = '''+ ('std::fmod(x, range)' if T in floats else 'x % range') +''';
 		if (range > 0) {
 			if (modded < 0) modded += range;
@@ -358,7 +281,7 @@ def scalar_math(T, f):
 		return modded;
 	''', comment='wrap x into range [0,range), negative x wrap back to +range unlike c++ % operator, negative range supported')
 
-	src += function(f, f'{T}', 'wrap', f'{T} x, {T} a, {T} b', f'''
+	f.function(f'{T}', 'wrap', f'{T} x, {T} a, {T} b', f'''
 		x -= a;
 		{T} range = b -a;
 			
@@ -368,7 +291,7 @@ def scalar_math(T, f):
 	''', comment='wrap x into [a,b) range')
 		
 	if T in floats:
-		src += function(f, f'{T}', 'wrap', f'{T} x, {T} a, {T} b, {IT}* quotient', f'''
+		f.function(f'{T}', 'wrap', f'{T} x, {T} a, {T} b, {IT}* quotient', f'''
 			x -= a;
 			{T} range = b -a;
 			
@@ -377,33 +300,33 @@ def scalar_math(T, f):
 			
 			return modulo + a;
 		''')
-		src += '\n'
+		f += '\n'
 			
-		src += function(f, f'{IT}', 'floori',	f'{T} x', f'return ({IT})floor(x);')
-		src += function(f, f'{IT}', 'ceili',	f'{T} x', f'return ({IT})ceil(x);')
-		src += function(f, f'{IT}', 'roundi',	f'{T} x', f'return '+ {'f32':'std::lround(x)', 'f64':'std::llround(x)'}[str(T)] +';')
+		f.function(f'{IT}', 'floori',	f'{T} x', f'return ({IT})floor(x);')
+		f.function(f'{IT}', 'ceili',	f'{T} x', f'return ({IT})ceil(x);')
+		f.function(f'{IT}', 'roundi',	f'{T} x', f'return '+ {'f32':'std::lround(x)', 'f64':'std::llround(x)'}[str(T)] +';')
 			
-		src += '\n'
+		f += '\n'
 
 	min_func = 'std::fmin(l,r)' if T in floats else f'l <= r ? l : r'
 	max_func = 'std::fmax(l,r)' if T in floats else f'l >= r ? l : r'
 		
-	src += function(f, f'{T}', 'min',		f'{T} l, {T} r',			f'return {min_func};')
-	src += function(f, f'{T}', 'max',		f'{T} l, {T} r',			f'return {max_func};')
-	src += function(f, f'{T}', 'clamp',		f'{T} x, {T} a=0, {T} b=1',	f'return min(max(x,a), b);')
-	src += function(f, f'{T}', 'select',	f'{BT} c, {T} l, {T} r',	f'return c ? l : r;', comment='equivalent to ternary c ? l : r, for conformity with vectors')
+	f.function(f'{T}', 'min',		f'{T} l, {T} r',			f'return {min_func};')
+	f.function(f'{T}', 'max',		f'{T} l, {T} r',			f'return {max_func};')
+	f.function(f'{T}', 'clamp',		f'{T} x, {T} a=0, {T} b=1',	f'return min(max(x,a), b);')
+	f.function(f'{T}', 'select',	f'{BT} c, {T} l, {T} r',	f'return c ? l : r;', comment='equivalent to ternary c ? l : r, for conformity with vectors')
 
-	src += '\n'
+	f += '\n'
 
 	abs_func = f'std::fabs(x)' if T in floats else f'std::abs(x)'
 		
 	if T not in uints: # no abs for unsigned types
-		src += function(f, f'{T}', 'length',		f'{T} x',	f'return {abs_func};', comment="length(scalar) = abs(scalar), for conformity with vectors")
-		src += function(f, f'{T}', 'length_sqr',	f'{T} x',	f'x = {abs_func};\nreturn x*x;', comment="length_sqr(scalar) = abs(scalar)^2, for conformity with vectors (for vectors this func would save the sqrt)")
+		f.function(f'{T}', 'length',		f'{T} x',	f'return {abs_func};', comment="length(scalar) = abs(scalar), for conformity with vectors")
+		f.function(f'{T}', 'length_sqr',	f'{T} x',	f'x = {abs_func};\nreturn x*x;', comment="length_sqr(scalar) = abs(scalar)^2, for conformity with vectors (for vectors this func would save the sqrt)")
 			
-		src += function(f, f'{T}', 'normalize',		f'{T} x',	f'return x / length(x);', comment="normalize(-6.2f) = -1f, normalize(7) = 1, normalize(0) = <div 0>, can be useful")
+		f.function(f'{T}', 'normalize',		f'{T} x',	f'return x / length(x);', comment="normalize(-6.2f) = -1f, normalize(7) = 1, normalize(0) = <div 0>, can be useful")
 		
-		src += function(f, f'{T}', 'normalize_or_zero', f'{T} x', f'''
+		f.function(f'{T}', 'normalize_or_zero', f'{T} x', f'''
 			{T} len = length(x);
 			if (len == {T}(0)) {{
 				return {T}(0);
@@ -411,35 +334,29 @@ def scalar_math(T, f):
 			return x /= len;
 		''', comment='normalize(x) for length(x) != 0 else 0')
 
-		src += '\n'
-	
-	return src
+		f += '\n'
 
 def generic_math(T, f):
-	src = ''
-
 	ST = T.scalar_type
 	FT = T.float_cast_type
 	FST = T.scalar_type.float_cast_type
 	
 	if ST in floats:
-		src += function(f, f'{T}', 'lerp',	f'{T} a, {T} b, {T} t',
+		f.function(f'{T}', 'lerp',	f'{T} a, {T} b, {T} t',
 				  f'return a * ({T}(1) - t) + b * t;', comment='linear interpolation t=0 -> a ; t=1 -> b ; t=0.5 -> (a+b)/2')
-		src += function(f, f'{T}', 'map',	f'{T} x, {T} in_a, {T} in_b',
+		f.function(f'{T}', 'map',	f'{T} x, {T} in_a, {T} in_b',
 				  f'return (x - in_a) / (in_b - in_a);', comment='linear mapping (reverse linear interpolation), map(70, 0,100) -> 0.7 ; map(0.5, -1,+1) -> 0.75')
-		src += function(f, f'{T}', 'map',	f'{T} x, {T} in_a, {T} in_b, {T} out_a, {T} out_b',
+		f.function(f'{T}', 'map',	f'{T} x, {T} in_a, {T} in_b, {T} out_a, {T} out_b',
 				  f'return lerp(out_a, out_b, map(x, in_a, in_b));', comment='linear mapping, lerp(out_a, out_b, map(x, in_a, in_b))')
 
-		src += '\n//// angle stuff\n'
+		f += '\n//// angle stuff\n'
 	
 	if ST.name != 'bool':
-		src += function(f, f'{FT}', 'to_rad',	f'{T} deg', f'return ({FT})deg * DEG_TO_RAD{float_const[str(FST)]};')
-		src += function(f, f'{FT}', 'deg',		f'{T} deg', f'return ({FT})deg * DEG_TO_RAD{float_const[str(FST)]};', comment='degress "literal", converts degrees to radiants')
-		src += function(f, f'{FT}', 'to_deg',	f'{T} rad', f'return ({FT})rad * RAD_TO_DEG{float_const[str(FST)]};')
-		
-	return src
-
-srcgen.generate('kissmath', kissmath)
+		f.function(f'{FT}', 'to_rad',	f'{T} deg', f'return ({FT})deg * DEG_TO_RAD{float_const[str(FST)]};')
+		f.function(f'{FT}', 'deg',		f'{T} deg', f'return ({FT})deg * DEG_TO_RAD{float_const[str(FST)]};', comment='degress "literal", converts degrees to radiants')
+		f.function(f'{FT}', 'to_deg',	f'{T} rad', f'return ({FT})rad * RAD_TO_DEG{float_const[str(FST)]};')
+	
+kissmath(gen.add_file('kissmath'))
 
 def gen_vector(V, f):
 	size = V.size
@@ -453,23 +370,21 @@ def gen_vector(V, f):
 	IV = V.int_cast_type
 	BV = V.bool_type
 
-	src = ''
-	
 	def unary_op(op):
 		tmp = ', '.join(f'{op}v.{d}' for d in dims)
-		return function(f, f'{V}', f'operator{op}', f'{V} v', f'return {V}({tmp});')
+		f.function(f'{V}', f'operator{op}', f'{V} v', f'return {V}({tmp});')
 	def binary_op(op):
 		tmp = ', '.join(f'l.{d} {op} r.{d}' for d in dims)
-		return function(f, f'{V}', f'operator{op}', f'{V} l, {V} r', f'return {V}({tmp});')
+		f.function(f'{V}', f'operator{op}', f'{V} l, {V} r', f'return {V}({tmp});')
 	def comparison_op(op):
 		tmp = ', '.join(f'l.{d} {op} r.{d}' for d in dims)
-		return function(f, f'{BV}', f'operator{op}', f'{V} l, {V} r', f'return {BV}({tmp});')
+		f.function(f'{BV}', f'operator{op}', f'{V} l, {V} r', f'return {BV}({tmp});')
 	
 	def unary_func(func, arg='v', ret=None):
 		ret = ret or V
-		return function(f, f'{ret}', func, f'{V} {arg}', f'return {ret}(%s);' % ', '.join(f'{func}({arg}.{d})' for d in dims))
+		f.function(f'{ret}', func, f'{V} {arg}', f'return {ret}(%s);' % ', '.join(f'{func}({arg}.{d})' for d in dims))
 	def nary_func(func, args):
-		return function(f, f'{V}', func, ', '.join(f'{V} {a}' for a in args),
+		f.function(f'{V}', func, ', '.join(f'{V} {a}' for a in args),
 			f'return {V}(%s);' % ', '.join(f'{func}(%s)' % ','.join(f'{a}.{d}' for a in args) for d in dims))
 
 	def compound_binary_op(op):
@@ -479,7 +394,7 @@ def gen_vector(V, f):
 		else:
 			body = ''.join(f'{d} {op}= r.{d};\n' for d in dims) + 'return *this;'
 
-		return method(f, f'{V}', f'{V}', f'operator{op}=', f'{V} r', body)
+		f.method(f'{V}', f'{V}', f'operator{op}=', f'{V} r', body)
 
 	def casting_op(to_type):
 		tt = to_type.scalar_type
@@ -487,27 +402,25 @@ def gen_vector(V, f):
 		tmp = ', '.join(f'({tt}){d}' for d in dims)
 		body = f'return {to_type}({tmp});'
 		
-		return method(f, f'{V}', '', f'operator {to_type}', '', body, const=True, explicit=True)
+		f.method(f'{V}', '', f'operator {to_type}', '', body, const=True, explicit=True)
 
 	other_size_vecs = [v for v in all_vectors if v.size != size and v.scalar_type == T]
 	other_type_vecs = [v for v in all_vectors if v.size == size and v.scalar_type != T]
 
 	forward_decl_vecs = other_size_vecs +[BV]+ other_type_vecs
-	if f == 'header':
-		src += '#include "kissmath.hpp"\n\n'
+	
+	f.header += '#include "kissmath.hpp"\n\n'
+	f.header += '\nnamespace vector {\n'
 		
-		src += '\nnamespace vector {\n'
-		
-		src += '//// forward declarations\n'
-		src += ''.join(f'union {n};\n' for n in forward_decl_vecs)
+	f.header += '//// forward declarations\n'
+	f.header += ''.join(f'union {n};\n' for n in forward_decl_vecs)
+	
+	#
+	f.source += ''.join(f'#include "{n}.hpp"\n' for n in forward_decl_vecs)
 
-	else:
-		src += ''.join(f'#include "{n}.hpp"\n' for n in forward_decl_vecs)
+	f.source += '\nnamespace vector {\n'
 
-		src += '\nnamespace vector {\n'
-
-	if f == 'header':
-		src += f'''
+	f.header += f'''
 		union {V} {{
 			struct {{
 				{T}	{', '.join(dims)};
@@ -516,100 +429,99 @@ def gen_vector(V, f):
 
 		'''
 		
-	src += method(f, V, f'{T}&', 'operator[]', 'int i', 'return arr[i];')
-	src += method(f, V, f'{T} const&', 'operator[]', 'int i', 'return arr[i];', const=True)
+	f.method(V, f'{T}&', 'operator[]', 'int i', 'return arr[i];')
+	f.method(V, f'{T} const&', 'operator[]', 'int i', 'return arr[i];', const=True)
 
-	src += '\n'
+	f += '\n'
 	
-	src += constructor(f, f'{V}', args='')
-	src += constructor(f, f'{V}', args=f'{T} all',						init_list=', '.join(f'{d}{{all}}' for d in dims),
+	f.constructor(f'{V}', args='')
+	f.constructor(f'{V}', args=f'{T} all',						init_list=', '.join(f'{d}{{all}}' for d in dims),
 		comment='sets all components to one value\nimplicit constructor -> v3(x,y,z) * 5 will be turned into v3(x,y,z) * v3(5) by to compiler to be able to execute operator*(v3, v3), which is desirable, also v3 a = 0; works')
-	src += constructor(f, f'{V}', args=', '.join(f'{T} {d}' for d in dims), init_list=', '.join(f'{d}{{{d}}}' for d in dims),
+	f.constructor(f'{V}', args=', '.join(f'{T} {d}' for d in dims), init_list=', '.join(f'{d}{{{d}}}' for d in dims),
 		comment='supply all components')
 	
 	for vsz in range(2,size):
 		U = get_type(T, vsz)
 		u = ''.join(dims[:vsz])
 
-		src += constructor(f, f'{V}', comment='extend vector',
+		f.constructor(f'{V}', comment='extend vector',
 					 args=', '.join([f'{U} {u}'] + [f'{T} {d}' for d in dims[vsz:]]),
 					 init_list=', '.join([f'{d}{{{u}.{d}}}' for d in dims[:vsz]] + [f'{d}{{{d}}}' for d in dims[vsz:]]))
 
 	for vsz in range(size+1,vec_sizes[-1]+1):
 		U = get_type(T, vsz)
 
-		src += constructor(f, f'{V}', comment='truncate vector',
+		f.constructor(f'{V}', comment='truncate vector',
 					 args=f'{U} v',
 					 init_list=', '.join(f'{d}{{v.{d}}}' for d in dims[:size]))
 		
-	src += '\n//// Truncating cast operators\n\n'
+	f += '\n//// Truncating cast operators\n\n'
 	
 	for vsz in range(2,size):
 		U = get_type(T, vsz)
 		vdims = dims[:vsz]
 		
-		src += method(f, f'{V}', '', f'operator {U}', '', f'return {U}(%s);' % ', '.join(vdims), const=True, explicit=True)
+		f.method(f'{V}', '', f'operator {U}', '', f'return {U}(%s);' % ', '.join(vdims), const=True, explicit=True)
 		
-	src += '\n//// Type cast operators\n\n'
+	f += '\n//// Type cast operators\n\n'
 	if str(T) != 'bool':
 		for to_vec in other_type_vecs:
-			src += casting_op(to_vec)
+			casting_op(to_vec)
 			
-		src += '\n'
+		f += '\n'
 
 		for op in ('+', '-', '*', '/'):
-			src += compound_binary_op(op)
+			compound_binary_op(op)
 		
 
-	if f == 'header':
-		src += '};\n'
+	f.header += '};\n'
 	
 	if str(T) == 'bool':
-		src += '\n//// reducing ops\n'
+		f += '\n//// reducing ops\n'
 		
-		src += function(f, f'{T}', 'all', f'{V} v', 'return %s;' % ' && '.join(f'v.{d}' for d in dims), comment='all components are true')
-		src += function(f, f'{T}', 'any', f'{V} v', 'return %s;' % ' || '.join(f'v.{d}' for d in dims), comment='any components is true')
+		f.function(f'{T}', 'all', f'{V} v', 'return %s;' % ' && '.join(f'v.{d}' for d in dims), comment='all components are true')
+		f.function(f'{T}', 'any', f'{V} v', 'return %s;' % ' || '.join(f'v.{d}' for d in dims), comment='any components is true')
 		
-		src += '\n//// arthmethic ops\n'
+		f += '\n//// arthmethic ops\n'
 		
-		src += unary_op('!')
-		src += binary_op('&&')
-		src += binary_op('||')
+		unary_op('!')
+		binary_op('&&')
+		binary_op('||')
 		
-		src += '\n//// comparison ops\n'
+		f += '\n//// comparison ops\n'
 	else:
-		src += '\n//// arthmethic ops\n'
+		f += '\n//// arthmethic ops\n'
 		for op in ['+', '-']:
-			src += unary_op(op)
+			unary_op(op)
 		for op in ['+', '-', '*', '/']:
-			src += binary_op(op)
+			binary_op(op)
 		
-		src += '\n//// comparison ops\n'
-		src += comparison_op('<')
-		src += comparison_op('<=')
-		src += comparison_op('>')
-		src += comparison_op('>=')
+		f += '\n//// comparison ops\n'
+		comparison_op('<')
+		comparison_op('<=')
+		comparison_op('>')
+		comparison_op('>=')
 
-	src += comparison_op('==')
-	src += comparison_op('!=')
-	src += function(f, f'bool', 'equal', f'{V} l, {V} r', 'return all(l == r);', comment='vectors are equal, equivalent to all(l == r)')
+	comparison_op('==')
+	comparison_op('!=')
+	f.function(f'bool', 'equal', f'{V} l, {V} r', 'return all(l == r);', comment='vectors are equal, equivalent to all(l == r)')
 	
-	src += function(f, f'{V}', 'select', f'{BV} c, {V} l, {V} r', 'return %s;' % ', '.join(f'c.{d} ? l.{d} : r.{d}' for d in dims),
+	f.function(f'{V}', 'select', f'{BV} c, {V} l, {V} r', 'return %s;' % ', '.join(f'c.{d} ? l.{d} : r.{d}' for d in dims),
 		comment='componentwise ternary c ? l : r')
 	
 	if str(T) != 'bool':
-		src += '\n//// misc ops\n'
+		f += '\n//// misc ops\n'
 		
-		src += unary_func('abs')
+		unary_func('abs')
 		
-		src += nary_func('min', ('l', 'r'))
-		src += nary_func('max', ('l', 'r'))
+		nary_func('min', ('l', 'r'))
+		nary_func('max', ('l', 'r'))
 
-		src += function(f, f'{V}', 'clamp', f'{V} x, {V} a={V}(0), {V} b={V}(1)', f'return min(max(x,a), b);')
+		f.function(f'{V}', 'clamp', f'{V} x, {V} a={V}(0), {V} b={V}(1)', f'return min(max(x,a), b);')
 		
 		def minmax_component(mode):
 			op = {'min':'<=', 'max':'>='}[mode]
-			return function(f, f'{T}', f'{mode}_component', f'{V} v, int* {mode}_index=nullptr', f'''
+			f.function(f'{T}', f'{mode}_component', f'{V} v, int* {mode}_index=nullptr', f'''
 				int index = 0;
 				{T} {mode}_val = v.x;	
 				for (int i=1; i<{size}; ++i) {{
@@ -622,36 +534,36 @@ def gen_vector(V, f):
 				return {mode}_val;
 			''', comment=f'get {mode} component of vector, optionally get component index via {mode}_index')
 
-		src += minmax_component('min')
-		src += minmax_component('max')
+		minmax_component('min')
+		minmax_component('max')
 		
-		src += '\n'
+		f += '\n'
 		
 		if T in floats:
-			src += unary_func('floor')
-			src += unary_func('ceil')
-			src += unary_func('round')
+			unary_func('floor')
+			unary_func('ceil')
+			unary_func('round')
 
-			src += unary_func('floori', ret=IV)
-			src += unary_func('ceili', ret=IV)
-			src += unary_func('roundi', ret=IV)
+			unary_func('floori', ret=IV)
+			unary_func('ceili', ret=IV)
+			unary_func('roundi', ret=IV)
 
-			src += nary_func('pow', ('v','e'))
+			nary_func('pow', ('v','e'))
 
-		src += nary_func('wrap', ('v','range'))
-		src += nary_func('wrap', ('v','a','b'))
+		nary_func('wrap', ('v','range'))
+		nary_func('wrap', ('v','a','b'))
 
-		src += '\n'
+		f += '\n'
 
-		src += generic_math(V, f)
+		generic_math(V, f)
 
-		src += '\n//// linear algebra ops\n'
+		f += '\n//// linear algebra ops\n'
 		
-		src += function(f, f'{FT}', 'length', f'{V} v',				f'return sqrt(({FT})(%s));' % ' + '.join(f'v.{d} * v.{d}' for d in dims), comment='magnitude of vector')
-		src += function(f, f'{T}', 'length_sqr', f'{V} v',			f'return %s;' % ' + '.join(f'v.{d} * v.{d}' for d in dims), comment='squared magnitude of vector, cheaper than length() because it avoids the sqrt(), some algorithms only need the squared magnitude')
-		src += function(f, f'{FT}', 'distance', f'{V} a, {V} b',	f'return length(a - b);', comment='distance between points, equivalent to length(a - b)')
-		src += function(f, f'{FV}', 'normalize', f'{V} v',			f'return {FV}(v) / length(v);', comment='normalize vector so that it has length() = 1, undefined for zero vector')
-		src += function(f, f'{FV}', 'normalize_or_zero', f'{V} v', f'''
+		f.function(f'{FT}', 'length', f'{V} v',				f'return sqrt(({FT})(%s));' % ' + '.join(f'v.{d} * v.{d}' for d in dims), comment='magnitude of vector')
+		f.function(f'{T}', 'length_sqr', f'{V} v',			f'return %s;' % ' + '.join(f'v.{d} * v.{d}' for d in dims), comment='squared magnitude of vector, cheaper than length() because it avoids the sqrt(), some algorithms only need the squared magnitude')
+		f.function(f'{FT}', 'distance', f'{V} a, {V} b',	f'return length(a - b);', comment='distance between points, equivalent to length(a - b)')
+		f.function(f'{FV}', 'normalize', f'{V} v',			f'return {FV}(v) / length(v);', comment='normalize vector so that it has length() = 1, undefined for zero vector')
+		f.function(f'{FV}', 'normalize_or_zero', f'{V} v', f'''
 			{FT} len = length(v);
 			if (len == {FT}(0)) {{
 				return {FT}(0);
@@ -659,10 +571,10 @@ def gen_vector(V, f):
 			return {FV}(v) / {FV}(len);
 		''', comment='normalize vector so that it has length() = 1, returns zero vector if vector was zero vector')
 		
-		src += function(f, f'{T}', 'dot', f'{V} l, {V} r', f'return %s;' % ' + '.join(f'l.{d} * r.{d}' for d in dims), comment='dot product')
+		f.function(f'{T}', 'dot', f'{V} l, {V} r', f'return %s;' % ' + '.join(f'l.{d} * r.{d}' for d in dims), comment='dot product')
 		
 		if size == 3:
-			src += function(f, f'{V}', 'cross', f'{V} l, {V} r', comment='3d cross product', body=f'''
+			f.function(f'{V}', 'cross', f'{V} l, {V} r', comment='3d cross product', body=f'''
 				return {V}(
 					l.y * r.z - l.z * r.y,
 					l.z * r.x - l.x * r.z,
@@ -670,22 +582,21 @@ def gen_vector(V, f):
 			''')
 				
 		elif size == 2:
-			src += function(f, f'{T}', 'cross', f'{V} l, {V} r', 'return l.x * r.y - l.y * r.x;',
+			f.function(f'{T}', 'cross', f'{V} l, {V} r', 'return l.x * r.y - l.y * r.x;',
 				comment='''
 				2d cross product hack for convinient 2d stuff
 				same as cross(v3(l, 0), v3(r, 0)).z,
 				ie. the cross product of the 2d vectors on the z=0 plane in 3d space and then return the z coord of that (signed mag of cross product)
 				''')
 			
-			src += function(f, f'{V}', 'rotate90', f'{V} v', f'return {V}(-v.y, v.x);',
+			f.function(f'{V}', 'rotate90', f'{V} v', f'return {V}(-v.y, v.x);',
 				comment=f'rotate 2d vector counterclockwise 90 deg, ie. {V}(-y, x) which is fast')
 
-	src += '}// namespace vector\n'
-	return src
+	f += '}// namespace vector\n'
 
 for tvec in vectors:
 	for v in tvec:
-		srcgen.generate(v.name, lambda f: gen_vector(v, f))
+		gen_vector(v, gen.add_file(v.name))
 
 def gen_matrix(M, f):
 	
@@ -701,27 +612,25 @@ def gen_matrix(M, f):
 	V = get_type(T, size[0]).name # column vectors
 	RV = get_type(T, size[1]).name # row vectors
 
-	src = ''
-	
 	other_size_mats = [m for m in all_matricies if m.size[0] != size[0] or m.size[1] != size[1] if m.scalar_type == T]
 	other_type_mats = [m for m in all_matricies if m.size[0] == size[0] and m.size[1] == size[1] if m.scalar_type != T]
 
 	forward_decl_vecs = [m.name for m in other_size_mats] + [m.name for m in other_type_mats]
-	if f == 'header':
-		src += '#include "kissmath.hpp"\n\n'
+	
+	f.header += '#include "kissmath.hpp"\n\n'
 
-		for v in set((V, RV)):
-			src += f'#include "{v}.hpp"\n'
+	for v in set((V, RV)):
+		f.header += f'#include "{v}.hpp"\n'
 		
-		src += '\nnamespace vector {\n\n'
+	f.header += '\nnamespace vector {\n\n'
 
-		src += '//// matrix forward declarations\n'
-		src += ''.join(f'struct {n};\n' for n in forward_decl_vecs)
+	f.header += '//// matrix forward declarations\n'
+	f.header += ''.join(f'struct {n};\n' for n in forward_decl_vecs)
 
-	else:
-		src += ''.join(f'#include "{n}.hpp"\n' for n in forward_decl_vecs)
+	#
+	f.source += ''.join(f'#include "{n}.hpp"\n' for n in forward_decl_vecs)
 
-		src += '\nnamespace vector {\n\n'
+	f.source += '\nnamespace vector {\n\n'
 
 	def row_major(cell_format):	return '\n'+ ',\n'.join(', '.join(cell_format.format(c=c,r=r) for c in range(size[1])) for r in range(size[0]))
 	def col_major(cell_format):	return '\n'+ ',\n'.join(', '.join(cell_format.format(c=c,r=r) for r in range(size[0])) for c in range(size[1]))
@@ -736,46 +645,45 @@ def gen_matrix(M, f):
 		return f'return {M}(%s);' % row_major(op_format)
 	
 	################
-	if f == 'header':
-		src += f'''
+	f.header += f'''
 		struct {M} {{
 			{V} arr[{size[1]}]; // column major for compatibility with OpenGL
 		\n'''
 		
-	src += '//// Accessors\n\n'
+	f += '//// Accessors\n\n'
 	#src += method(f, f'{M}', f'{T}&', 'get', F'int r, int c', 'return arr[c][r];', comment='get cell with r,c indecies (r=row, c=column)')
-	src += method(f, f'{M}', f'{T} const&', 'get', F'int r, int c', 'return arr[c][r];', const=True, comment='get cell with r,c indecies (r=row, c=column)')
+	f.method(f'{M}', f'{T} const&', 'get', F'int r, int c', 'return arr[c][r];', const=True, comment='get cell with r,c indecies (r=row, c=column)')
 
-	#src += method(f, f'{M}', f'{V}&', 'get_column', F'int indx', 'return arr[indx];', comment='get matrix column')
-	src += method(f, f'{M}', f'{V} const&', 'get_column', F'int indx', 'return arr[indx];', const=True, comment='get matrix column')
+	#f.method(f'{M}', f'{V}&', 'get_column', F'int indx', 'return arr[indx];', comment='get matrix column')
+	f.method(f'{M}', f'{V} const&', 'get_column', F'int indx', 'return arr[indx];', const=True, comment='get matrix column')
 	
-	src += method(f, f'{M}', f'{RV}', 'get_row', F'int indx', f'return {RV}(%s);' % ', '.join(f'arr[{c}][indx]' for c in range(size[1])),
+	f.method(f'{M}', f'{RV}', 'get_row', F'int indx', f'return {RV}(%s);' % ', '.join(f'arr[{c}][indx]' for c in range(size[1])),
 		const=True, comment='get matrix row')
 	
-	src += '\n//// Constructors\n\n'
-	src += constructor(f, f'{M}', '')
+	f += '\n//// Constructors\n\n'
+	f.constructor(f'{M}', '')
 
-	src += constructor(f, f'{M}', args=f'{T} all',						explicit=True, init_list='\narr{%s}' % col_vec_cells('all'),		comment='supply one value for all cells')
-	src += constructor(f, f'{M}', args=row_major(str(T) +' c{r}{c}'),	explicit=True, init_list='\narr{%s}' % col_vec_cells('c{r}{c}'),	comment='supply all cells, in row major order for readability -> c<r><c> (r=row, c=column)')
+	f.constructor(f'{M}', args=f'{T} all',						explicit=True, init_list='\narr{%s}' % col_vec_cells('all'),		comment='supply one value for all cells')
+	f.constructor(f'{M}', args=row_major(str(T) +' c{r}{c}'),	explicit=True, init_list='\narr{%s}' % col_vec_cells('c{r}{c}'),	comment='supply all cells, in row major order for readability -> c<r><c> (r=row, c=column)')
 	
-	src += '\n// static rows() and columns() methods are preferred over constructors, to avoid confusion if column or row vectors are supplied to the constructor\n'
+	f += '\n// static rows() and columns() methods are preferred over constructors, to avoid confusion if column or row vectors are supplied to the constructor\n'
 	
-	src += static_method(f, f'{M}', f'{M}', 'rows',	args=row_vecs(str(RV) +' row{r}'), body=f'return {M}(%s);' % row_major('row{r}[{c}]'),
+	f.static_method(f'{M}', f'{M}', 'rows',	args=row_vecs(str(RV) +' row{r}'), body=f'return {M}(%s);' % row_major('row{r}[{c}]'),
 		comment='supply all row vectors')
-	src += static_method(f, f'{M}', f'{M}', 'rows',	args=row_major(str(T) +' c{r}{c}'), body=f'return {M}(%s);' % row_major('c{r}{c}'),
+	f.static_method(f'{M}', f'{M}', 'rows',	args=row_major(str(T) +' c{r}{c}'), body=f'return {M}(%s);' % row_major('c{r}{c}'),
 		comment='supply all cells in row major order')
 
-	src += static_method(f, f'{M}', f'{M}', 'columns',	args=col_vecs(str(V) +' col{c}'), body=f'return {M}(%s);' % row_major('col{c}[{r}]'),
+	f.static_method(f'{M}', f'{M}', 'columns',	args=col_vecs(str(V) +' col{c}'), body=f'return {M}(%s);' % row_major('col{c}[{r}]'),
 		comment='supply all column vectors')
-	src += static_method(f, f'{M}', f'{M}', 'columns',	args=col_major(str(T) +' c{r}{c}'), body=f'return {M}(%s);' % row_major('c{r}{c}'),
+	f.static_method(f'{M}', f'{M}', 'columns',	args=col_major(str(T) +' c{r}{c}'), body=f'return {M}(%s);' % row_major('c{r}{c}'),
 		comment='supply all cells in column major order')
 
-	src += '\n'
-	src += static_method(f, f'{M}', f'{M}', 'identity', args='',
+	f += '\n'
+	f.static_method(f'{M}', f'{M}', 'identity', args='',
 		comment='identity matrix',
 		body=f'return {M}(\n%s);' % ',\n'.join(','.join('1' if x==y else '0' for x in range(size[1])) for y in range(size[0])))
 	
-	src += '\n// Casting operators\n\n'
+	f += '\n// Casting operators\n\n'
 	for m in other_size_mats:
 		def cell(r,c):
 			if r<size[1] and c<size[0]:
@@ -783,53 +691,54 @@ def gen_matrix(M, f):
 			else:
 				return '        1' if r == c else '        0'
 
-		src += method(f, f'{M}', '', f'operator {m.name}', '', explicit=True, const=True,
+		f.method(f'{M}', '', f'operator {m.name}', '', explicit=True, const=True,
 			comment='extend/truncate matrix of other size',
 			body=f'return {m.name}(\n%s);' % ',\n'.join(', '.join(cell(c,r) for c in range(m.size[1])) for r in range(m.size[0])))
 
 	for m in other_type_mats:
-		src += method(f, f'{M}', '', f'operator {m.name}', '', explicit=True, const=True,
+		f.method(f'{M}', '', f'operator {m.name}', '', explicit=True, const=True,
 			comment='typecast',
 			body=f'return {m.name}(\n%s);' % ',\n'.join(', '.join(f'({m.scalar_type})arr[{r}][{c}]' for c in range(m.size[1])) for r in range(m.size[0])))
 	
-	src += '\n// Elementwise operators\n\n'
+	f += '\n// Elementwise operators\n\n'
 
 	for op in ['+', '-', '*', '/']:
-		src += method(f, f'{M}', f'{M}&', f'operator{op}=', f'{T} r', f'*this = *this {op} r;\nreturn *this;')
+		f.method(f'{M}', f'{M}&', f'operator{op}=', f'{T} r', f'*this = *this {op} r;\nreturn *this;')
 		
-	src += '\n// Matrix multiplication\n\n'
+	f += '\n// Matrix multiplication\n\n'
 
-	src += method(f, f'{M}', f'{M}&', 'operator*=', f'{M} {mpass} r', '*this = *this * r;\nreturn *this;')
+	f.method(f'{M}', f'{M}&', 'operator*=', f'{M} {mpass} r', '*this = *this * r;\nreturn *this;')
 		
-	if f == 'header':
-		src += '};\n'
+	f.header += '};\n'
 
-	src += '\n// Elementwise operators\n\n'
+	f += '\n// Elementwise operators\n\n'
 	
 	for op in ['+', '-']:
-		src += function(f, f'{M}', 'operator'+ op, f'{M} {mpass} m', elementwise(op +'m.arr[{c}][{r}]'))
+		f.function(f'{M}', 'operator'+ op, f'{M} {mpass} m', elementwise(op +'m.arr[{c}][{r}]'))
 		
 	for op in ['+', '-', '*', '/']:
-		src += '\n'
+		f += '\n'
 
 		name = f'operator{op}'
 
 		if op == '*':	name = 'mul_elementwise'
 		elif op == '/':	name = 'div_elementwise'
 
-		src += function(f, f'{M}', name, f'{M} {mpass} l, {M} {mpass} r', elementwise(f'l.arr[{{c}}][{{r}}] {op} r.arr[{{c}}][{{r}}]'))
-		src += function(f, f'{M}', f'operator{op}', f'{M} {mpass} l, {T} r', elementwise(f'l.arr[{{c}}][{{r}}] {op} r'))
-		src += function(f, f'{M}', f'operator{op}', f'{T} l, {M} {mpass} r', elementwise(f'l {op} r.arr[{{c}}][{{r}}]'))
+		f.function(f'{M}', name, f'{M} {mpass} l, {M} {mpass} r', elementwise(f'l.arr[{{c}}][{{r}}] {op} r.arr[{{c}}][{{r}}]'))
+		f.function(f'{M}', f'operator{op}', f'{M} {mpass} l, {T} r', elementwise(f'l.arr[{{c}}][{{r}}] {op} r'))
+		f.function(f'{M}', f'operator{op}', f'{T} l, {M} {mpass} r', elementwise(f'l {op} r.arr[{{c}}][{{r}}]'))
 	
-	src += '\n// Matrix ops\n\n'
+	f += '\n// Matrix ops\n\n'
 
 	dims = ['x', 'y', 'z', 'w']
 	def matmul(op, m=None):
+		nonlocal f
 		if op == 'mm':
 			if M.scalar_type != m.scalar_type or size[1] != m.size[0]:
-				return ''
-			if (str(T), (size[0], m.size[1])) not in _types:
-				return f'// {M} * {m} -> {size[0]}x{m.size[1]} ; matrix not implemented\n'
+				return
+			if not type_exist(T, (size[0], m.size[1])):
+				f += f'// {M} * {m} -> {size[0]}x{m.size[1]} ; matrix not implemented\n'
+				return
 
 			ret = get_type(T, (size[0], m.size[1])).name
 			args = f'{M} const& l, {m} const& r'
@@ -842,75 +751,151 @@ def gen_matrix(M, f):
 			ret = f'{RV}'
 			args = f'{V} l, {M} const& r'
 			body = f'{RV} ret;\n%s\nreturn ret;' % '\n'.join(f'ret.{dims[c]} = %s;' % ' + '.join(f'l.{dims[r]} * r.arr[{c}].{dims[r]}' for r in range(size[0])) for c in range(size[1]))
-		return function(f, ret, 'operator*', args, body)
+		f.function(ret, 'operator*', args, body)
 	def matmul_shortform(op, r):
+		nonlocal f
 		if r == None:
-			return ''
+			return
 		if op == 'mm':
 			sqr = get_type(T, (size[1],size[1]))
 		
-			return function(f, f'{M}', 'operator*', f'{M} const& l, {r} const& r', f'''
+			f.function(f'{M}', 'operator*', f'{M} const& l, {r} const& r', f'''
 				return l * ({sqr})r;
 			''', comment=f'{M} * {r} = {M}, shortform for {M} * ({sqr}){r} = {M}')
 		elif op == 'mv':
 			v = get_type(T, size[1])
 		
-			return function(f, f'{r}', 'operator*', f'{M} const& l, {r} r', f'''
+			f.function(f'{r}', 'operator*', f'{M} const& l, {r} r', f'''
 				return l * {v}(r, 1);
 			''', comment=f'{M} * {r} = {r}, shortform for {M} * {v}({r}, 1) = {r}')
 			
 
 	for m in all_matricies:
-		src += matmul('mm', m)
-	src += matmul('mv')
-	src += matmul('vm')
+		matmul('mm', m)
+	matmul('mv')
+	matmul('vm')
 	
 	if size[0] == size[1]-1:
-		src += f'\n// Matrix op shortforms for working with {size[0]}x{size[0]+1} matricies as {size[0]}x{size[0]} matricies plus translation\n\n'
+		f += f'\n// Matrix op shortforms for working with {size[0]}x{size[0]+1} matricies as {size[0]}x{size[0]} matricies plus translation\n\n'
 
-		src += matmul_shortform('mm', get_type(T, (size[0],size[0])))
-		src += matmul_shortform('mm', get_type(T, size))
+		matmul_shortform('mm', get_type(T, (size[0],size[0])))
+		matmul_shortform('mm', get_type(T, size))
 
-		src += matmul_shortform('mv', get_type(T, size[0]))
+		matmul_shortform('mv', get_type(T, size[0]))
 
-	src += '} // namespace vector\n'
-	return src
+	if type_exist(T, (size[1], size[0])):
+		m = get_type(T, (size[1], size[0]))
+		f.function(m, 'transpose', f'{M} m', f'return {m}::rows(%s);' % ', '.join( f'm.arr[{c}]' for c in range(size[1]) ))
+
+	if size[0] == size[1]:
+		f += '\n'
+
+		f.function(f'{T}', 'det', f'{M} m', gen_determinate_code(T, size[0], lambda r,c: f'm.arr[{r}][{c}]'))
+
+
+	f += '} // namespace vector\n'
+
+def indent(txt, level):
+  return ''.join('    '*level + l for l in txt.splitlines(1))
+
+def gen_determinate_code(T, size, cell):
+	cell_letter = [[chr(ord('a') + r*size + c) for c in range(size)] for r in range(size)]
+	
+	letterify = ''
+	for r in range(size):
+		for c in range(size):
+			letterify += f'{T} {cell_letter[r][c]} = {cell(r,c)};\n'
+	letterify += '\n'
+
+	cell = lambda r,c: cell_letter[r][c]
+
+	txt, expr = _gen_determinate_code(T, size, cell)
+
+	def optimize(txt):
+		import re
+		letter_muls = re.findall(r"\b.\*.\b", txt)
+		letter_muls_txt = ''
+
+		letter_mul_set = set(letter_muls)
+		letter_muls = [ (lm,letter_muls.count(lm)) for lm in letter_mul_set ]
+
+		for lm,count in letter_muls:
+			if count > 1:
+				shortform = lm[0]+lm[2]
+				txt = re.sub(rf"\b{lm[0]}\*{lm[2]}\b", shortform, txt)
+				letter_muls_txt += f'{T} {shortform} = {lm};\n'
+
+		return letter_muls_txt +'\n'+ txt
+	
+	def stats(txt):
+		import re
+		muls = txt.count("*")
+		adds = txt.count("+") + txt.count("-")
+		divs = len(re.findall(r"[^/]/[^/]", txt))
+		stats = f'// {muls} muls, {adds} adds, {divs} divs = {muls + adds + divs} ops'
+		return stats
+
+	unopt_stats = stats(txt + expr)
+	txt = optimize(txt)
+	opt_stats = stats(txt + expr)
+	
+	txt = letterify + txt + f'return %s;' % expr
+	
+	return f'// optimized from:  {unopt_stats}\n// to:              {opt_stats}\n' + txt
+
+def _gen_determinate_code(T, size, cell, depth=0):
+	txt = ''
+
+	if size == 2:
+		expr = f'{cell(0,0)}*{cell(1,1)} - {cell(0,1)}*{cell(1,0)}'
+
+	else:
+		txt += indent(f'// {size-1}D minors\n', depth)
+		for i in range(size):
+			minor_txt, minor_expr = _gen_determinate_code(T, size-1, lambda r,c: cell(r+1, c+1 if c >= i else c), depth+1)
+
+			txt += indent(minor_txt, depth)
+			txt += indent(f'{T} det_{cell(0,i)} = {minor_expr};\n' + ('\n' if size>3 else ''), depth)
+		txt += '\n'
+
+		expr = ' '.join(('-' if i%2 else '+') + f'{cell(0,i)}*det_{cell(0,i)}' for i in range(size))
+
+	return txt, expr
 
 for tmat in matricies:
 	for m in tmat:
-		srcgen.generate(m.name, lambda f: gen_matrix(m, f))
+		gen_matrix(m, gen.add_file(m.name))
 
 def transformations(f):
 	src = ''
 
-	if f == 'header':
-		src += '#include "vector.hpp"\n\n'
+	f.header += '#include "vector.hpp"\n\n'
 		
-	src += 'namespace vector {\n'
+	f += 'namespace vector {\n\n'
 
-	src += function(f, 'fm2', 'scale', 'fv2 v', '''
+	f.function('fm2', 'scale', 'fv2 v', '''
 		return fm2(
 			v.x,   0,
 			  0, v.y
 		);
 	''')
-	src += function(f, 'fm2x3', 'translate', 'fv2 v', '''
+	f.function('fm2x3', 'translate', 'fv2 v', '''
 		return fm2x3(
 			1, 0, v.x,
 			0, 1, v.y
 		);
 	''')
 	
-	src += '\n'
+	f += '\n'
 
-	src += function(f, 'fm3', 'scale', 'fv3 v', '''
+	f.function('fm3', 'scale', 'fv3 v', '''
 		return fm3(
 			v.x,   0,   0,
 			  0, v.y,   0,
 			  0,   0, v.z
 		);
 	''')
-	src += function(f, 'fm3x4', 'translate', 'fv3 v', '''
+	f.function('fm3x4', 'translate', 'fv3 v', '''
 		return fm3x4(
 			1, 0, 0, v.x,
 			0, 1, 0, v.y,
@@ -918,53 +903,49 @@ def transformations(f):
 		);
 	''')
 	
-	src += '} // namespace vector\n'
-	return src
+	f += '} // namespace vector\n'
 
-srcgen.generate('transformations', transformations)
+transformations(gen.add_file('transformations'))
 
 def main(f):
 	# main file to include
 	
-	src = ''
-
-	if f == 'header':
-		src += '#include "kissmath.hpp"\n\n'
-		
-		src += '// Vectors\n'
-		for tvec in vectors:
-			for v in tvec:
-				src += f'#include "{v.name}.hpp"\n'
-
-			src += '\n'
-			
-		src += '// Matricies\n'
-		for tmat in matricies:
-			for m in tmat:
-				src += f'#include "{m.name}.hpp"\n'
-
-			src += '\n'
-		
-		#s.include('fquat', nl=1)
-		#
-		#s.include('lrgb')
-		#s.include('lrgba', nl=2)
-
-		src += 'using namespace vector;\n\n'
-
-		src += "// Typedefs that define 'standart' floats to use across program\n"
-		src += 'typedef float flt;\n\n'
-
-		for v in all_vectors:
-			if v.scalar_type.name == 'f32':
-				src += f'typedef {v} v{v.size};\n'
-
-		for m in all_matricies:
-			if m.scalar_type.name == 'f32':
-				src += f'typedef {m} {m.name[1:]};\n'
-				
-		src += '#include "transformations.hpp"\n\n'
-
-	return src
+	f.header += '#include "kissmath.hpp"\n\n'
 	
-srcgen.generate('vector', main)
+	f.header += '// Vectors\n'
+	for tvec in vectors:
+		for v in tvec:
+			f.header += f'#include "{v.name}.hpp"\n'
+
+		f.header += '\n'
+			
+	f.header += '// Matricies\n'
+	for tmat in matricies:
+		for m in tmat:
+			f.header += f'#include "{m.name}.hpp"\n'
+
+		f.header += '\n'
+		
+	#s.include('fquat', nl=1)
+	#
+	#s.include('lrgb')
+	#s.include('lrgba', nl=2)
+
+	f.header += 'using namespace vector;\n\n'
+
+	f.header += "// Typedefs that define 'standart' floats to use across program\n"
+	f.header += 'typedef float flt;\n\n'
+
+	for v in all_vectors:
+		if v.scalar_type.name == 'f32':
+			f.header += f'typedef {v} v{v.size};\n'
+
+	for m in all_matricies:
+		if m.scalar_type.name == 'f32':
+			f.header += f'typedef {m} {m.name[1:]};\n'
+				
+	f.header += '#include "transformations.hpp"\n\n'
+	
+main(gen.add_file('vector'))
+
+gen.write_files()

@@ -25,18 +25,23 @@ namespace vector {
 		
 	}
 	
+	// sets all components to one value
+	// implicit constructor -> v3(x,y,z) * 5 will be turned into v3(x,y,z) * v3(5) by to compiler to be able to execute operator*(v3, v3), which is desirable, also v3 a = 0; works
 	bv3::bv3 (bool all): x{all}, y{all}, z{all} {
 		
 	}
 	
+	// supply all components
 	bv3::bv3 (bool x, bool y, bool z): x{x}, y{y}, z{z} {
 		
 	}
 	
+	// extend vector
 	bv3::bv3 (bv2 xy, bool z): x{xy.x}, y{xy.y}, z{z} {
 		
 	}
 	
+	// truncate vector
 	bv3::bv3 (bv4 v): x{v.x}, y{v.y}, z{v.z} {
 		
 	}
@@ -53,10 +58,12 @@ namespace vector {
 	
 	//// reducing ops
 	
+	// all components are true
 	bool all (bv3 v) {
 		return v.x && v.y && v.z;
 	}
 	
+	// any components is true
 	bool any (bv3 v) {
 		return v.x || v.y || v.z;
 	}
@@ -85,10 +92,12 @@ namespace vector {
 		return bv3(l.x != r.x, l.y != r.y, l.z != r.z);
 	}
 	
+	// vectors are equal, equivalent to all(l == r)
 	bool equal (bv3 l, bv3 r) {
 		return all(l == r);
 	}
 	
+	// componentwise ternary c ? l : r
 	bv3 select (bv3 c, bv3 l, bv3 r) {
 		return c.x ? l.x : r.x, c.y ? l.y : r.y, c.z ? l.z : r.z;
 	}

@@ -25,18 +25,23 @@ namespace vector {
 		
 	}
 	
+	// sets all components to one value
+	// implicit constructor -> v3(x,y,z) * 5 will be turned into v3(x,y,z) * v3(5) by to compiler to be able to execute operator*(v3, v3), which is desirable, also v3 a = 0; works
 	dv4::dv4 (f64 all): x{all}, y{all}, z{all}, w{all} {
 		
 	}
 	
+	// supply all components
 	dv4::dv4 (f64 x, f64 y, f64 z, f64 w): x{x}, y{y}, z{z}, w{w} {
 		
 	}
 	
+	// extend vector
 	dv4::dv4 (dv2 xy, f64 z, f64 w): x{xy.x}, y{xy.y}, z{z}, w{w} {
 		
 	}
 	
+	// extend vector
 	dv4::dv4 (dv3 xyz, f64 w): x{xyz.x}, y{xyz.y}, z{xyz.z}, w{w} {
 		
 	}
@@ -160,10 +165,12 @@ namespace vector {
 		return bv4(l.x != r.x, l.y != r.y, l.z != r.z, l.w != r.w);
 	}
 	
+	// vectors are equal, equivalent to all(l == r)
 	bool equal (dv4 l, dv4 r) {
 		return all(l == r);
 	}
 	
+	// componentwise ternary c ? l : r
 	dv4 select (bv4 c, dv4 l, dv4 r) {
 		return c.x ? l.x : r.x, c.y ? l.y : r.y, c.z ? l.z : r.z, c.w ? l.w : r.w;
 	}
@@ -186,6 +193,7 @@ namespace vector {
 		return min(max(x,a), b);
 	}
 	
+	// get min component of vector, optionally get component index via min_index
 	f64 min_component (dv4 v, int* min_index) {
 		int index = 0;
 		f64 min_val = v.x;	
@@ -199,6 +207,7 @@ namespace vector {
 		return min_val;
 	}
 	
+	// get max component of vector, optionally get component index via max_index
 	f64 max_component (dv4 v, int* max_index) {
 		int index = 0;
 		f64 max_val = v.x;	
@@ -250,14 +259,17 @@ namespace vector {
 	}
 	
 	
+	// linear interpolation t=0 -> a ; t=1 -> b ; t=0.5 -> (a+b)/2
 	dv4 lerp (dv4 a, dv4 b, dv4 t) {
 		return a * (dv4(1) - t) + b * t;
 	}
 	
+	// linear mapping (reverse linear interpolation), map(70, 0,100) -> 0.7 ; map(0.5, -1,+1) -> 0.75
 	dv4 map (dv4 x, dv4 in_a, dv4 in_b) {
 		return (x - in_a) / (in_b - in_a);
 	}
 	
+	// linear mapping, lerp(out_a, out_b, map(x, in_a, in_b))
 	dv4 map (dv4 x, dv4 in_a, dv4 in_b, dv4 out_a, dv4 out_b) {
 		return lerp(out_a, out_b, map(x, in_a, in_b));
 	}
@@ -268,6 +280,7 @@ namespace vector {
 		return (dv4)deg * DEG_TO_RADd;
 	}
 	
+	// degress "literal", converts degrees to radiants
 	dv4 deg (dv4 deg) {
 		return (dv4)deg * DEG_TO_RADd;
 	}
@@ -278,22 +291,27 @@ namespace vector {
 	
 	//// linear algebra ops
 	
+	// magnitude of vector
 	f64 length (dv4 v) {
 		return sqrt((f64)(v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w));
 	}
 	
+	// squared magnitude of vector, cheaper than length() because it avoids the sqrt(), some algorithms only need the squared magnitude
 	f64 length_sqr (dv4 v) {
 		return v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w;
 	}
 	
+	// distance between points, equivalent to length(a - b)
 	f64 distance (dv4 a, dv4 b) {
 		return length(a - b);
 	}
 	
+	// normalize vector so that it has length() = 1, undefined for zero vector
 	dv4 normalize (dv4 v) {
 		return dv4(v) / length(v);
 	}
 	
+	// normalize vector so that it has length() = 1, returns zero vector if vector was zero vector
 	dv4 normalize_or_zero (dv4 v) {
 		f64 len = length(v);
 		if (len == f64(0)) {
@@ -302,6 +320,7 @@ namespace vector {
 		return dv4(v) / dv4(len);
 	}
 	
+	// dot product
 	f64 dot (dv4 l, dv4 r) {
 		return l.x * r.x + l.y * r.y + l.z * r.z + l.w * r.w;
 	}

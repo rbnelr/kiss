@@ -12,14 +12,17 @@ namespace vector {
 	//// Accessors
 	
 	
+	// get cell with r,c indecies (r=row, c=column)
 	f64 const& dm3x4::get (int r, int c) const {
 		return arr[c][r];
 	}
 	
+	// get matrix column
 	dv3 const& dm3x4::get_column (int indx) const {
 		return arr[indx];
 	}
 	
+	// get matrix row
 	dv4 dm3x4::get_row (int indx) const {
 		return dv4(arr[0][indx], arr[1][indx], arr[2][indx], arr[3][indx]);
 	}
@@ -31,6 +34,7 @@ namespace vector {
 		
 	}
 	
+	// supply one value for all cells
 	dm3x4::dm3x4 (f64 all): 
 	arr{
 		dv3(all, all, all),
@@ -40,6 +44,7 @@ namespace vector {
 		
 	}
 	
+	// supply all cells, in row major order for readability -> c<r><c> (r=row, c=column)
 	dm3x4::dm3x4 (
 			f64 c00, f64 c01, f64 c02, f64 c03,
 			f64 c10, f64 c11, f64 c12, f64 c13,
@@ -54,6 +59,7 @@ namespace vector {
 	
 	// static rows() and columns() methods are preferred over constructors, to avoid confusion if column or row vectors are supplied to the constructor
 	
+	// supply all row vectors
 	dm3x4 dm3x4::rows (dv4 row0, dv4 row1, dv4 row2) {
 		return dm3x4(
 				row0[0], row0[1], row0[2], row0[3],
@@ -61,6 +67,7 @@ namespace vector {
 				row2[0], row2[1], row2[2], row2[3]);
 	}
 	
+	// supply all cells in row major order
 	dm3x4 dm3x4::rows (
 			f64 c00, f64 c01, f64 c02, f64 c03,
 			f64 c10, f64 c11, f64 c12, f64 c13,
@@ -71,6 +78,7 @@ namespace vector {
 				c20, c21, c22, c23);
 	}
 	
+	// supply all column vectors
 	dm3x4 dm3x4::columns (dv3 col0, dv3 col1, dv3 col2, dv3 col3) {
 		return dm3x4(
 				col0[0], col1[0], col2[0], col3[0],
@@ -78,6 +86,7 @@ namespace vector {
 				col0[2], col1[2], col2[2], col3[2]);
 	}
 	
+	// supply all cells in column major order
 	dm3x4 dm3x4::columns (
 			f64 c00, f64 c10, f64 c20,
 			f64 c01, f64 c11, f64 c21,
@@ -90,6 +99,7 @@ namespace vector {
 	}
 	
 	
+	// identity matrix
 	dm3x4 dm3x4::identity () {
 		return dm3x4(
 				1,0,0,0,
@@ -100,12 +110,14 @@ namespace vector {
 	// Casting operators
 	
 	
+	// extend/truncate matrix of other size
 	dm3x4::operator dm2 () const {
 		return dm2(
 				arr[0][0], arr[1][0],
 				arr[0][1], arr[1][1]);
 	}
 	
+	// extend/truncate matrix of other size
 	dm3x4::operator dm3 () const {
 		return dm3(
 				arr[0][0], arr[1][0], arr[2][0],
@@ -113,6 +125,7 @@ namespace vector {
 				arr[0][2], arr[1][2], arr[2][2]);
 	}
 	
+	// extend/truncate matrix of other size
 	dm3x4::operator dm4 () const {
 		return dm4(
 				arr[0][0], arr[1][0], arr[2][0], arr[3][0],
@@ -121,12 +134,14 @@ namespace vector {
 				        0,         0,         0,         1);
 	}
 	
+	// extend/truncate matrix of other size
 	dm3x4::operator dm2x3 () const {
 		return dm2x3(
 				arr[0][0], arr[1][0], arr[2][0],
 				arr[0][1], arr[1][1], arr[2][1]);
 	}
 	
+	// typecast
 	dm3x4::operator fm3x4 () const {
 		return fm3x4(
 				(f32)arr[0][0], (f32)arr[0][1], (f32)arr[0][2], (f32)arr[0][3],
@@ -302,14 +317,17 @@ namespace vector {
 	// Matrix op shortforms for working with 3x4 matricies as 3x3 matricies plus translation
 	
 	
+	// dm3x4 * dm3 = dm3x4, shortform for dm3x4 * (dm4)dm3 = dm3x4
 	dm3x4 operator* (dm3x4 const& l, dm3 const& r) {
 		return l * (dm4)r;
 	}
 	
+	// dm3x4 * dm3x4 = dm3x4, shortform for dm3x4 * (dm4)dm3x4 = dm3x4
 	dm3x4 operator* (dm3x4 const& l, dm3x4 const& r) {
 		return l * (dm4)r;
 	}
 	
+	// dm3x4 * dv3 = dv3, shortform for dm3x4 * dv4(dv3, 1) = dv3
 	dv3 operator* (dm3x4 const& l, dv3 r) {
 		return l * dv4(r, 1);
 	}

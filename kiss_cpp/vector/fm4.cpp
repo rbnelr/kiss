@@ -12,14 +12,17 @@ namespace vector {
 	//// Accessors
 	
 	
+	// get cell with r,c indecies (r=row, c=column)
 	f32 const& fm4::get (int r, int c) const {
 		return arr[c][r];
 	}
 	
+	// get matrix column
 	fv4 const& fm4::get_column (int indx) const {
 		return arr[indx];
 	}
 	
+	// get matrix row
 	fv4 fm4::get_row (int indx) const {
 		return fv4(arr[0][indx], arr[1][indx], arr[2][indx], arr[3][indx]);
 	}
@@ -31,6 +34,7 @@ namespace vector {
 		
 	}
 	
+	// supply one value for all cells
 	fm4::fm4 (f32 all): 
 	arr{
 		fv4(all, all, all, all),
@@ -40,6 +44,7 @@ namespace vector {
 		
 	}
 	
+	// supply all cells, in row major order for readability -> c<r><c> (r=row, c=column)
 	fm4::fm4 (
 			f32 c00, f32 c01, f32 c02, f32 c03,
 			f32 c10, f32 c11, f32 c12, f32 c13,
@@ -55,6 +60,7 @@ namespace vector {
 	
 	// static rows() and columns() methods are preferred over constructors, to avoid confusion if column or row vectors are supplied to the constructor
 	
+	// supply all row vectors
 	fm4 fm4::rows (fv4 row0, fv4 row1, fv4 row2, fv4 row3) {
 		return fm4(
 				row0[0], row0[1], row0[2], row0[3],
@@ -63,6 +69,7 @@ namespace vector {
 				row3[0], row3[1], row3[2], row3[3]);
 	}
 	
+	// supply all cells in row major order
 	fm4 fm4::rows (
 			f32 c00, f32 c01, f32 c02, f32 c03,
 			f32 c10, f32 c11, f32 c12, f32 c13,
@@ -75,6 +82,7 @@ namespace vector {
 				c30, c31, c32, c33);
 	}
 	
+	// supply all column vectors
 	fm4 fm4::columns (fv4 col0, fv4 col1, fv4 col2, fv4 col3) {
 		return fm4(
 				col0[0], col1[0], col2[0], col3[0],
@@ -83,6 +91,7 @@ namespace vector {
 				col0[3], col1[3], col2[3], col3[3]);
 	}
 	
+	// supply all cells in column major order
 	fm4 fm4::columns (
 			f32 c00, f32 c10, f32 c20, f32 c30,
 			f32 c01, f32 c11, f32 c21, f32 c31,
@@ -96,6 +105,7 @@ namespace vector {
 	}
 	
 	
+	// identity matrix
 	fm4 fm4::identity () {
 		return fm4(
 				1,0,0,0,
@@ -107,12 +117,14 @@ namespace vector {
 	// Casting operators
 	
 	
+	// extend/truncate matrix of other size
 	fm4::operator fm2 () const {
 		return fm2(
 				arr[0][0], arr[1][0],
 				arr[0][1], arr[1][1]);
 	}
 	
+	// extend/truncate matrix of other size
 	fm4::operator fm3 () const {
 		return fm3(
 				arr[0][0], arr[1][0], arr[2][0],
@@ -120,12 +132,14 @@ namespace vector {
 				arr[0][2], arr[1][2], arr[2][2]);
 	}
 	
+	// extend/truncate matrix of other size
 	fm4::operator fm2x3 () const {
 		return fm2x3(
 				arr[0][0], arr[1][0], arr[2][0],
 				arr[0][1], arr[1][1], arr[2][1]);
 	}
 	
+	// extend/truncate matrix of other size
 	fm4::operator fm3x4 () const {
 		return fm3x4(
 				arr[0][0], arr[1][0], arr[2][0], arr[3][0],
@@ -133,6 +147,7 @@ namespace vector {
 				arr[0][2], arr[1][2], arr[2][2], arr[3][2]);
 	}
 	
+	// typecast
 	fm4::operator dm4 () const {
 		return dm4(
 				(f64)arr[0][0], (f64)arr[0][1], (f64)arr[0][2], (f64)arr[0][3],
@@ -319,6 +334,77 @@ namespace vector {
 		ret.z = l.x * r.arr[2].x + l.y * r.arr[2].y + l.z * r.arr[2].z + l.w * r.arr[2].w;
 		ret.w = l.x * r.arr[3].x + l.y * r.arr[3].y + l.z * r.arr[3].z + l.w * r.arr[3].w;
 		return ret;
+	}
+	
+	fm4 transpose (fm4 m) {
+		return fm4::rows(m.arr[0], m.arr[1], m.arr[2], m.arr[3]);
+	}
+	
+	
+	f32 det (fm4 m) {
+		// optimized from:  // 40 muls, 28 adds, 0 divs = 68 ops
+		// to:              // 28 muls, 28 adds, 0 divs = 56 ops
+		f32 a = m.arr[0][0];
+		f32 b = m.arr[0][1];
+		f32 c = m.arr[0][2];
+		f32 d = m.arr[0][3];
+		f32 e = m.arr[1][0];
+		f32 f = m.arr[1][1];
+		f32 g = m.arr[1][2];
+		f32 h = m.arr[1][3];
+		f32 i = m.arr[2][0];
+		f32 j = m.arr[2][1];
+		f32 k = m.arr[2][2];
+		f32 l = m.arr[2][3];
+		f32 m = m.arr[3][0];
+		f32 n = m.arr[3][1];
+		f32 o = m.arr[3][2];
+		f32 p = m.arr[3][3];
+		
+		f32 lm = l*m;
+		f32 in = i*n;
+		f32 ln = l*n;
+		f32 jo = j*o;
+		f32 km = k*m;
+		f32 lo = l*o;
+		f32 kn = k*n;
+		f32 io = i*o;
+		f32 ip = i*p;
+		f32 jm = j*m;
+		f32 kp = k*p;
+		f32 jp = j*p;
+		
+		// 3D minors
+		    // 2D minors
+		    f32 det_f = kp - lo;
+		    f32 det_g = jp - ln;
+		    f32 det_h = jo - kn;
+		
+		f32 det_a = +f*det_f -g*det_g +h*det_h;
+		
+		    // 2D minors
+		    f32 det_e = kp - lo;
+		    f32 det_g = ip - lm;
+		    f32 det_h = io - km;
+		
+		f32 det_b = +e*det_e -g*det_g +h*det_h;
+		
+		    // 2D minors
+		    f32 det_e = jp - ln;
+		    f32 det_f = ip - lm;
+		    f32 det_h = in - jm;
+		
+		f32 det_c = +e*det_e -f*det_f +h*det_h;
+		
+		    // 2D minors
+		    f32 det_e = jo - kn;
+		    f32 det_f = io - km;
+		    f32 det_g = in - jm;
+		
+		f32 det_d = +e*det_e -f*det_f +g*det_g;
+		
+		
+		return +a*det_a -b*det_b +c*det_c -d*det_d;
 	}
 } // namespace vector
 

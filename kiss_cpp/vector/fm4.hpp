@@ -110,5 +110,8 @@ namespace vector {
 	fm4 operator* (fm4 const& l, fm4 const& r);
 	fv4 operator* (fm4 const& l, fv4 r);
 	fv4 operator* (fv4 l, fm4 const& r);
+	fm4 transpose (fm4 m);
+	
+	f32 det (fm4 m);
 } // namespace vector
 

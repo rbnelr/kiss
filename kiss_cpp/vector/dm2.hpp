@@ -105,5 +105,8 @@ namespace vector {
 	dm2x3 operator* (dm2 const& l, dm2x3 const& r);
 	dv2 operator* (dm2 const& l, dv2 r);
 	dv2 operator* (dv2 l, dm2 const& r);
+	dm2 transpose (dm2 m);
+	
+	f64 det (dm2 m);
 } // namespace vector
 

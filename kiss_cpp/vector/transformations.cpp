@@ -3,6 +3,7 @@
 
 namespace vector {
 	
+	
 	fm2 scale (fv2 v) {
 		return fm2(
 				v.x,   0,

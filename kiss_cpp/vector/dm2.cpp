@@ -12,14 +12,17 @@ namespace vector {
 	//// Accessors
 	
 	
+	// get cell with r,c indecies (r=row, c=column)
 	f64 const& dm2::get (int r, int c) const {
 		return arr[c][r];
 	}
 	
+	// get matrix column
 	dv2 const& dm2::get_column (int indx) const {
 		return arr[indx];
 	}
 	
+	// get matrix row
 	dv2 dm2::get_row (int indx) const {
 		return dv2(arr[0][indx], arr[1][indx]);
 	}
@@ -31,6 +34,7 @@ namespace vector {
 		
 	}
 	
+	// supply one value for all cells
 	dm2::dm2 (f64 all): 
 	arr{
 		dv2(all, all),
@@ -38,6 +42,7 @@ namespace vector {
 		
 	}
 	
+	// supply all cells, in row major order for readability -> c<r><c> (r=row, c=column)
 	dm2::dm2 (
 			f64 c00, f64 c01,
 			f64 c10, f64 c11): 
@@ -49,12 +54,14 @@ namespace vector {
 	
 	// static rows() and columns() methods are preferred over constructors, to avoid confusion if column or row vectors are supplied to the constructor
 	
+	// supply all row vectors
 	dm2 dm2::rows (dv2 row0, dv2 row1) {
 		return dm2(
 				row0[0], row0[1],
 				row1[0], row1[1]);
 	}
 	
+	// supply all cells in row major order
 	dm2 dm2::rows (
 			f64 c00, f64 c01,
 			f64 c10, f64 c11) {
@@ -63,12 +70,14 @@ namespace vector {
 				c10, c11);
 	}
 	
+	// supply all column vectors
 	dm2 dm2::columns (dv2 col0, dv2 col1) {
 		return dm2(
 				col0[0], col1[0],
 				col0[1], col1[1]);
 	}
 	
+	// supply all cells in column major order
 	dm2 dm2::columns (
 			f64 c00, f64 c10,
 			f64 c01, f64 c11) {
@@ -78,6 +87,7 @@ namespace vector {
 	}
 	
 	
+	// identity matrix
 	dm2 dm2::identity () {
 		return dm2(
 				1,0,
@@ -87,6 +97,7 @@ namespace vector {
 	// Casting operators
 	
 	
+	// extend/truncate matrix of other size
 	dm2::operator dm3 () const {
 		return dm3(
 				arr[0][0], arr[1][0],         0,
@@ -94,6 +105,7 @@ namespace vector {
 				        0,         0,         1);
 	}
 	
+	// extend/truncate matrix of other size
 	dm2::operator dm4 () const {
 		return dm4(
 				arr[0][0], arr[1][0],         0,         0,
@@ -102,12 +114,14 @@ namespace vector {
 				        0,         0,         0,         1);
 	}
 	
+	// extend/truncate matrix of other size
 	dm2::operator dm2x3 () const {
 		return dm2x3(
 				arr[0][0], arr[1][0],         0,
 				arr[0][1], arr[1][1],         0);
 	}
 	
+	// extend/truncate matrix of other size
 	dm2::operator dm3x4 () const {
 		return dm3x4(
 				arr[0][0], arr[1][0],         0,         0,
@@ -115,6 +129,7 @@ namespace vector {
 				        0,         0,         1,         0);
 	}
 	
+	// typecast
 	dm2::operator fm2 () const {
 		return fm2(
 				(f32)arr[0][0], (f32)arr[0][1],
@@ -273,6 +288,23 @@ namespace vector {
 		ret.x = l.x * r.arr[0].x + l.y * r.arr[0].y;
 		ret.y = l.x * r.arr[1].x + l.y * r.arr[1].y;
 		return ret;
+	}
+	
+	dm2 transpose (dm2 m) {
+		return dm2::rows(m.arr[0], m.arr[1]);
+	}
+	
+	
+	f64 det (dm2 m) {
+		// optimized from:  // 2 muls, 1 adds, 0 divs = 3 ops
+		// to:              // 2 muls, 1 adds, 0 divs = 3 ops
+		f64 a = m.arr[0][0];
+		f64 b = m.arr[0][1];
+		f64 c = m.arr[1][0];
+		f64 d = m.arr[1][1];
+		
+		
+		return a*d - b*c;
 	}
 } // namespace vector
 
