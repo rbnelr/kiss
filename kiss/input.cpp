@@ -4,7 +4,7 @@
 namespace kiss {
 	// get input for a frame
 	Input get_input () {
-	
+
 		{ // Pump messages
 			MSG msg;
 			while (PeekMessageA(&msg, NULL, 0,0, PM_REMOVE)) {

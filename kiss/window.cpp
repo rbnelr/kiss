@@ -9,15 +9,6 @@
 #include "gl_context.hpp"
 
 namespace kiss {
-	struct Window {
-
-		HWND	hwnd = NULL;
-		HDC		hdc;
-		HGLRC	hglcontext;
-
-		~Window ();
-	};
-
 	const iv2 default_pos = CW_USEDEFAULT;
 	const iv2 default_size = CW_USEDEFAULT;
 
@@ -27,7 +18,27 @@ namespace kiss {
 	constexpr LONG BORDERLESS_FULLSCREEN_STYLE =	WS_VISIBLE;
 	constexpr LONG BORDERLESS_FULLSCREEN_EX_STYLE =	WS_EX_APPWINDOW;
 
-	Window wnd; // only one window supported
+	struct Window_Thread {
+		std::thread thread;
+
+		Window_Thread () {
+			
+		}
+		~Window_Thread () {
+			
+		}
+	};
+
+	struct Platform_Window { // Platform specific
+		static std::weak_ptr<Window_Thread>	shared_thread;
+
+		HWND	hwnd = NULL;
+		HDC		hdc;
+		HGLRC	hglcontext;
+
+		shared_ptr<Window_Thread>	thread;
+	};
+	void delete_Platform_Window (Platform_Window* p) { delete p; }
 
 	RECT find_windows_border_sizes (DWORD style, DWORD exstyle) { // Get window border sizes
 		RECT borders = { 0, 0, 0, 0 };
@@ -39,6 +50,7 @@ namespace kiss {
 		return borders;
 	}
 
+	// register a window to recieve raw input
 	void register_raw_input_devices (HWND hwnd) {
 		RAWINPUTDEVICE	rid[2];
 		// Mouse
@@ -57,6 +69,7 @@ namespace kiss {
 		auto ret = RegisterRawInputDevices(rid, 2, sizeof(RAWINPUTDEVICE));
 	}
 
+	// open a window with a message queue on the thread this is called on
 	HWND _open_window (char const* caption, iv2 initial_size, iv2 initial_pos) {
 		auto hinstance = GetModuleHandle(NULL);
 
@@ -166,9 +179,12 @@ namespace kiss {
 		UnregisterClass((LPCTSTR)dummy_classatom, hinstance);
 	}
 
-	void open_window (char const* caption, iv2 initial_size, iv2 initial_pos) {
-	
-		HWND hwnd = _open_window(caption, initial_size, initial_pos);
+	Window::Window (char const* caption, iv2 initial_size, iv2 initial_pos):
+			platform{new Platform_Window(), delete_Platform_Window} {
+		
+		platform->hwnd = _open_window(caption, initial_size, initial_pos);
+		
+		platform->hdc = GetDC(platform->hwnd);
 		
 		// TODO: if we want to better be able to handle window resizing (since that blocks the message queue, we can seperate message processing into its own thread (or did the the message pump always have to be on the main thread?))
 		//////////////////// In renderer thread
@@ -176,38 +192,30 @@ namespace kiss {
 
 		load_wgl_with_dummy_window();
 
-		HDC hdc = GetDC(hwnd);
-		HGLRC hglcontext = setup_gl_context(hdc);
-
-		////
-		///////////////////////////////
-
-		wnd.hwnd = hwnd;
-		wnd.hdc = hdc;
-		wnd.hglcontext = hglcontext;
+		platform->hglcontext = setup_gl_context(platform->hdc);
 	}
 
-	void close_window () {
-		if (wnd.hwnd != NULL) {
-			wglMakeCurrent(wnd.hdc, NULL);
-			wglDeleteContext(wnd.hglcontext);
+	Window::~Window () { // closes window
+		if (platform->hwnd != NULL) {
+			wglMakeCurrent(platform->hdc, NULL);
+			wglDeleteContext(platform->hglcontext);
 
-			ReleaseDC(wnd.hwnd, wnd.hdc);
-			DestroyWindow(wnd.hwnd);
+			ReleaseDC(platform->hwnd, platform->hdc);
+			DestroyWindow(platform->hwnd);
 
 			// UnregisterClass not important?
 
-			wnd.hwnd = NULL;
-			wnd.hdc = NULL;
-			wnd.hglcontext = NULL;
+			platform->hwnd = NULL;
+			platform->hdc = NULL;
+			platform->hglcontext = NULL;
 		}
 	}
 
-	Window::~Window () {
-		close_window();
+	Input Window::get_input () {
+		return kiss::get_input();
 	}
 
-	void swap_buffers () {
-		SwapBuffers(wnd.hdc);
+	void Window::swap_buffers () {
+		SwapBuffers(platform->hdc);
 	}
 }

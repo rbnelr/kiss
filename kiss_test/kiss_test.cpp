@@ -1,6 +1,8 @@
 #include "kiss.hpp"
 #include "stdio.h"
 
+kiss::Input inp;
+
 void draw_spinning_triangle (v2 pos, flt size) {
 	static flt ang = 0;
 	ang += deg(2);
@@ -27,12 +29,10 @@ void draw_spinning_triangle (v2 pos, flt size) {
 	glEnd();
 }
 
-kiss::Input inp;
+void load_ortho_projection (flt cam_h, iv2 viewport_size, flt near=-10, flt far=100) {
+	flt cam_w = cam_h * ( (flt)viewport_size.x / (flt)viewport_size.y );
 
-void load_ortho_projection (flt cam_h, flt near=-10, flt far=100) {
-	flt cam_w = cam_h * ( (flt)inp.window_size.x / (flt)inp.window_size.y );
-
-	printf("inp.window_size: %d, %d\n", inp.window_size.x, inp.window_size.y);
+	printf("inp.window_size: %d, %d\n", viewport_size.x, viewport_size.y);
 
 	flt x = 2.0f / cam_w;
 	flt y = 2.0f / cam_h;
@@ -53,13 +53,15 @@ void load_ortho_projection (flt cam_h, flt near=-10, flt far=100) {
 }
 
 int main () {
-	kiss::open_window("Kiss Test");
+	auto wnd = kiss::Window("Kiss Test");
 
 	for (;;) {
-		inp = kiss::get_input();
-		if (inp.close) break;
+		inp = wnd.get_input();
 
-		load_ortho_projection(10);
+		if (inp.close)
+			break;
+
+		load_ortho_projection(10, inp.window_size);
 
 		glViewport(0,0, inp.window_size.x, inp.window_size.y);
 
@@ -68,8 +70,6 @@ int main () {
 
 		draw_spinning_triangle(0, 4);
 
-		kiss::swap_buffers();
+		wnd.swap_buffers();
 	}
-
-	kiss::close_window();
 }
