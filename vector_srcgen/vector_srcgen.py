@@ -104,7 +104,7 @@ all_matricies = list(chain.from_iterable(matricies))
 ##########
 import os
 
-dir = os.path.join('..', 'kiss_cpp', 'vector')
+dir = os.path.join('..', 'kiss', 'vector')
 gen = srcgen.Generator(dir, default_constexpr=False, default_inline=False)
 
 def util(f):
@@ -152,18 +152,11 @@ def types(f):
 
 			typedef u8					byte;
 
-			typedef s64					sptr;
-			typedef u64					uptr;
-
-			static_assert(sizeof(sptr) == sizeof(byte*), "sizeof(sptr) != sizeof(byte*)");
-			static_assert(sizeof(uptr) == sizeof(byte*), "sizeof(uptr) != sizeof(byte*)");
+			typedef intptr_t			sptr;
+			typedef uintptr_t			uptr;
 
 			typedef float				f32;
 			typedef double				f64;
-
-			typedef char const*			cstr;
-			typedef char				utf8;
-			typedef char32_t			utf32;
 		}
 		'''.strip()
 
@@ -818,7 +811,14 @@ def transformations(f):
 	f.header += '#include "vector.hpp"\n\n'
 		
 	f += 'namespace vector {\n\n'
-
+	
+	f.function('fm2', 'rotate2', 'flt ang', '''
+		flt s = sin(ang), c = cos(ang);
+		return fm2(
+			 c, -s,
+			 s,  c
+		);
+	''')
 	f.function('fm2', 'scale', 'fv2 v', '''
 		return fm2(
 			v.x,   0,
@@ -833,7 +833,31 @@ def transformations(f):
 	''')
 	
 	f += '\n'
-
+	
+	f.function('fm3', 'rotate3_X', 'flt ang', '''
+		flt s = sin(ang), c = cos(ang);
+		return fm3(
+			 1,  0,  0,
+			 0,  c, -s,
+			 0,  s,  c
+		);
+	''')
+	f.function('fm3', 'rotate2_Y', 'flt ang', '''
+		flt s = sin(ang), c = cos(ang);
+		return fm3(
+			 c,  0,  s,
+			 0,  1,  0,
+			-s,  0,  c
+		);
+	''')
+	f.function('fm3', 'rotate2_Z', 'flt ang', '''
+		flt s = sin(ang), c = cos(ang);
+		return fm3(
+			 c, -s,  0,
+			 s,  c,  0,
+			 0,  0,  1
+		);
+	''')
 	f.function('fm3', 'scale', 'fv3 v', '''
 		return fm3(
 			v.x,   0,   0,

@@ -5,9 +5,13 @@
 
 namespace vector {
 	
+	fm2 rotate2 (flt ang);
 	fm2 scale (fv2 v);
 	fm2x3 translate (fv2 v);
 	
+	fm3 rotate3_X (flt ang);
+	fm3 rotate2_Y (flt ang);
+	fm3 rotate2_Z (flt ang);
 	fm3 scale (fv3 v);
 	fm3x4 translate (fv3 v);
 } // namespace vector

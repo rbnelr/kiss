@@ -278,16 +278,16 @@ namespace vector {
 		// to:              // 30 muls, 13 adds, 1 divs = 44 ops
 		LETTERIFY
 		
-		f64 dh = d * h;
+		f64 di = d * i;
 		f64 ei = e * i;
 		f64 fh = f * h;
-		f64 eg = e * g;
-		f64 di = d * i;
 		f64 fg = f * g;
+		f64 eg = e * g;
+		f64 dh = d * h;
 		
 		f64 dheg = dh - eg;
-		f64 difg = di - fg;
 		f64 eifh = ei - fh;
+		f64 difg = di - fg;
 		
 		f64 det;
 		{ // clac determinate

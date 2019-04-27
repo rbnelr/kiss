@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.421
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "kiss_cpp", "kiss_cpp\kiss_cpp.vcxproj", "{76F13B07-E8E6-40D1-B3E7-BD70785FE202}"
-EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "vector_srcgen", "vector_srcgen\vector_srcgen.pyproj", "{29F3E3FA-481F-4204-9376-E2A5F58E09D6}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "vector_test", "vector_test\vector_test.vcxproj", "{B1624708-416B-4E64-B580-550C2EBE120E}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "kiss", "kiss\kiss.vcxproj", "{1FEDEFEB-0C1F-4655-B363-C2F35EBDE8B1}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "kiss_test", "kiss_test\kiss_test.vcxproj", "{CC36873D-A98B-4984-84AB-89FA9EDEB563}"
 	ProjectSection(ProjectDependencies) = postProject
-		{76F13B07-E8E6-40D1-B3E7-BD70785FE202} = {76F13B07-E8E6-40D1-B3E7-BD70785FE202}
+		{1FEDEFEB-0C1F-4655-B363-C2F35EBDE8B1} = {1FEDEFEB-0C1F-4655-B363-C2F35EBDE8B1}
 	EndProjectSection
 EndProject
 Global
@@ -22,14 +24,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{76F13B07-E8E6-40D1-B3E7-BD70785FE202}.Debug|Any CPU.ActiveCfg = Debug|x64
-		{76F13B07-E8E6-40D1-B3E7-BD70785FE202}.Debug|x64.ActiveCfg = Debug|x64
-		{76F13B07-E8E6-40D1-B3E7-BD70785FE202}.Debug|x64.Build.0 = Debug|x64
-		{76F13B07-E8E6-40D1-B3E7-BD70785FE202}.Debug|x86.ActiveCfg = Debug|x64
-		{76F13B07-E8E6-40D1-B3E7-BD70785FE202}.Release|Any CPU.ActiveCfg = Release|x64
-		{76F13B07-E8E6-40D1-B3E7-BD70785FE202}.Release|x64.ActiveCfg = Release|x64
-		{76F13B07-E8E6-40D1-B3E7-BD70785FE202}.Release|x64.Build.0 = Release|x64
-		{76F13B07-E8E6-40D1-B3E7-BD70785FE202}.Release|x86.ActiveCfg = Release|x64
 		{29F3E3FA-481F-4204-9376-E2A5F58E09D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{29F3E3FA-481F-4204-9376-E2A5F58E09D6}.Debug|x64.ActiveCfg = Debug|Any CPU
 		{29F3E3FA-481F-4204-9376-E2A5F58E09D6}.Debug|x86.ActiveCfg = Debug|Any CPU
@@ -46,6 +40,24 @@ Global
 		{B1624708-416B-4E64-B580-550C2EBE120E}.Release|x64.Build.0 = Release|x64
 		{B1624708-416B-4E64-B580-550C2EBE120E}.Release|x86.ActiveCfg = Release|Win32
 		{B1624708-416B-4E64-B580-550C2EBE120E}.Release|x86.Build.0 = Release|Win32
+		{1FEDEFEB-0C1F-4655-B363-C2F35EBDE8B1}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{1FEDEFEB-0C1F-4655-B363-C2F35EBDE8B1}.Debug|x64.ActiveCfg = Debug|x64
+		{1FEDEFEB-0C1F-4655-B363-C2F35EBDE8B1}.Debug|x64.Build.0 = Debug|x64
+		{1FEDEFEB-0C1F-4655-B363-C2F35EBDE8B1}.Debug|x86.ActiveCfg = Debug|x64
+		{1FEDEFEB-0C1F-4655-B363-C2F35EBDE8B1}.Release|Any CPU.ActiveCfg = Release|x64
+		{1FEDEFEB-0C1F-4655-B363-C2F35EBDE8B1}.Release|x64.ActiveCfg = Release|x64
+		{1FEDEFEB-0C1F-4655-B363-C2F35EBDE8B1}.Release|x64.Build.0 = Release|x64
+		{1FEDEFEB-0C1F-4655-B363-C2F35EBDE8B1}.Release|x86.ActiveCfg = Release|x64
+		{CC36873D-A98B-4984-84AB-89FA9EDEB563}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{CC36873D-A98B-4984-84AB-89FA9EDEB563}.Debug|x64.ActiveCfg = Debug|x64
+		{CC36873D-A98B-4984-84AB-89FA9EDEB563}.Debug|x64.Build.0 = Debug|x64
+		{CC36873D-A98B-4984-84AB-89FA9EDEB563}.Debug|x86.ActiveCfg = Debug|Win32
+		{CC36873D-A98B-4984-84AB-89FA9EDEB563}.Debug|x86.Build.0 = Debug|Win32
+		{CC36873D-A98B-4984-84AB-89FA9EDEB563}.Release|Any CPU.ActiveCfg = Release|Win32
+		{CC36873D-A98B-4984-84AB-89FA9EDEB563}.Release|x64.ActiveCfg = Release|x64
+		{CC36873D-A98B-4984-84AB-89FA9EDEB563}.Release|x64.Build.0 = Release|x64
+		{CC36873D-A98B-4984-84AB-89FA9EDEB563}.Release|x86.ActiveCfg = Release|Win32
+		{CC36873D-A98B-4984-84AB-89FA9EDEB563}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

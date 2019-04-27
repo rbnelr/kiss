@@ -25,16 +25,9 @@ namespace vector {
 	
 	typedef u8					byte;
 	
-	typedef s64					sptr;
-	typedef u64					uptr;
-	
-	static_assert(sizeof(sptr) == sizeof(byte*), "sizeof(sptr) != sizeof(byte*)");
-	static_assert(sizeof(uptr) == sizeof(byte*), "sizeof(uptr) != sizeof(byte*)");
+	typedef intptr_t			sptr;
+	typedef uintptr_t			uptr;
 	
 	typedef float				f32;
 	typedef double				f64;
-	
-	typedef char const*			cstr;
-	typedef char				utf8;
-	typedef char32_t			utf32;
 }
