@@ -8,6 +8,9 @@
 #include "wndproc.hpp"
 #include "gl_context.hpp"
 
+#include <condition_variable>
+#include <mutex>
+
 namespace kiss {
 	const iv2 default_pos = CW_USEDEFAULT;
 	const iv2 default_size = CW_USEDEFAULT;
@@ -18,25 +21,14 @@ namespace kiss {
 	constexpr LONG BORDERLESS_FULLSCREEN_STYLE =	WS_VISIBLE;
 	constexpr LONG BORDERLESS_FULLSCREEN_EX_STYLE =	WS_EX_APPWINDOW;
 
-	struct Window_Thread {
-		std::thread thread;
-
-		Window_Thread () {
-			
-		}
-		~Window_Thread () {
-			
-		}
-	};
-
 	struct Platform_Window { // Platform specific
-		static std::weak_ptr<Window_Thread>	shared_thread;
-
-		HWND	hwnd = NULL;
+		HWND	hwnd;
 		HDC		hdc;
 		HGLRC	hglcontext;
 
-		shared_ptr<Window_Thread>	thread;
+		std::thread	thread;
+
+		Thread_Input_State inp_state;
 	};
 	void delete_Platform_Window (Platform_Window* p) { delete p; }
 
@@ -70,7 +62,7 @@ namespace kiss {
 	}
 
 	// open a window with a message queue on the thread this is called on
-	HWND _open_window (char const* caption, iv2 initial_size, iv2 initial_pos) {
+	HWND open_window (char const* caption, iv2 initial_size, iv2 initial_pos) {
 		auto hinstance = GetModuleHandle(NULL);
 
 		auto hicon		= LoadIcon(NULL, IDI_WINLOGO);
@@ -115,6 +107,7 @@ namespace kiss {
 
 		return hwnd;
 	}
+
 	void load_wgl_with_dummy_window () {
 		auto hinstance = GetModuleHandle(NULL);
 
@@ -179,40 +172,78 @@ namespace kiss {
 		UnregisterClass((LPCTSTR)dummy_classatom, hinstance);
 	}
 
+	void message_loop () {
+		// Pump messages
+		MSG msg;
+		for (;;) {
+			auto res = GetMessage(&msg, NULL, 0,0);
+			if (res < 0) {
+				// error, report?
+				break;
+			} else if (res == 0) { // WM_QUIT
+				break;
+			} else {
+				TranslateMessage(&msg);
+				DispatchMessage(&msg);
+			}
+		}
+	}
+
+	Window::~Window () { // closes window
+
+		wglMakeCurrent(platform->hdc, NULL);
+		wglDeleteContext(platform->hglcontext);
+
+		ReleaseDC(platform->hwnd, platform->hdc);
+
+		PostMessage(platform->hwnd, WM_QUIT, 0,0);
+
+		platform->thread.join();
+	}
+
+	void run_window_thread (HWND* out_hwnd, Thread_Input_State* inp, std::condition_variable& cv,
+			char const* caption, iv2 initial_size, iv2 initial_pos) {
+		// Open window and write it's hwnd into the Platform_Window structure
+		HWND hwnd = open_window(caption, initial_size, initial_pos);
+		
+		Thread_Input_State::window_input_states[hwnd] = inp;
+
+		*out_hwnd = hwnd;
+		cv.notify_all(); // notify and wake up renderer thread that the window is now open and it can init the gl now
+		
+		message_loop();
+
+		DestroyWindow(hwnd);
+
+		Thread_Input_State::window_input_states.erase(hwnd);
+
+		// UnregisterClass not important?
+	}
+
 	Window::Window (char const* caption, iv2 initial_size, iv2 initial_pos):
 			platform{new Platform_Window(), delete_Platform_Window} {
 		
-		platform->hwnd = _open_window(caption, initial_size, initial_pos);
-		
+		{
+			std::condition_variable cv;
+
+			platform->thread = std::thread(run_window_thread, &platform->hwnd, &platform->inp_state, std::ref(cv),
+											caption, initial_size, initial_pos);
+
+			std::mutex m;
+
+			std::unique_lock<std::mutex> lck(m);
+			cv.wait(lck);
+		}
+
 		platform->hdc = GetDC(platform->hwnd);
 		
-		// TODO: if we want to better be able to handle window resizing (since that blocks the message queue, we can seperate message processing into its own thread (or did the the message pump always have to be on the main thread?))
-		//////////////////// In renderer thread
-		////
-
 		load_wgl_with_dummy_window();
 
 		platform->hglcontext = setup_gl_context(platform->hdc);
 	}
 
-	Window::~Window () { // closes window
-		if (platform->hwnd != NULL) {
-			wglMakeCurrent(platform->hdc, NULL);
-			wglDeleteContext(platform->hglcontext);
-
-			ReleaseDC(platform->hwnd, platform->hdc);
-			DestroyWindow(platform->hwnd);
-
-			// UnregisterClass not important?
-
-			platform->hwnd = NULL;
-			platform->hdc = NULL;
-			platform->hglcontext = NULL;
-		}
-	}
-
 	Input Window::get_input () {
-		return kiss::get_input();
+		return platform->inp_state.get_input();
 	}
 
 	void Window::swap_buffers () {

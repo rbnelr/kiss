@@ -1,14 +1,19 @@
 #include "wndproc.hpp"
 
 namespace kiss {
-
-	Input inp;
+	std::unordered_map<HWND, Thread_Input_State*> Thread_Input_State::window_input_states;
 
 	// Window message handler
 	LRESULT CALLBACK wndproc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+		auto it = Thread_Input_State::window_input_states.find(hwnd);
+		if (it == Thread_Input_State::window_input_states.end()) {
+			return DefWindowProcA(hwnd, uMsg, wParam, lParam); // not one of our windows
+		}
+		auto* inp = it->second;
+
 		switch (uMsg) {
 			case WM_CLOSE: {
-				PostQuitMessage(0);
+				inp->set_close();
 				return 0;
 			}
 
@@ -21,8 +26,7 @@ namespace kiss {
 					auto ret = GetClientRect(hwnd, &rect);
 				}
 
-				inp.window_size.x = max(w, 1);
-				inp.window_size.y = max(h, 1);
+				inp->set_window_size(max(iv2(w,h), 1));
 
 				//if (!fullscreen) {
 				//write_window_placement_save(hWnd);
@@ -34,12 +38,11 @@ namespace kiss {
 				auto x = LOWORD(lParam);
 				auto y = HIWORD(lParam);
 
-				inp._mouse_pos = iv2(x,y);
+				inp->set_mouse_pos(iv2(x,y));
 
 				return 0;
 			}
-
-
+			
 			default:
 				return DefWindowProcA(hwnd, uMsg, wParam, lParam);
 		}

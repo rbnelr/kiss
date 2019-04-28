@@ -19,8 +19,10 @@ namespace kiss {
 
 		iv2		_mouse_pos; // top down, we want bottom um, get via method in input.py:Input
 
+		void clear () { // clear frame-by-frame inputs like the close flag
+			close = false;
+
+		}
 	};
 
-	// get input for a frame
-	API Input get_input ();
 }

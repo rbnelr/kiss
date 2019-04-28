@@ -32,8 +32,6 @@ void draw_spinning_triangle (v2 pos, flt size) {
 void load_ortho_projection (flt cam_h, iv2 viewport_size, flt near=-10, flt far=100) {
 	flt cam_w = cam_h * ( (flt)viewport_size.x / (flt)viewport_size.y );
 
-	printf("inp.window_size: %d, %d\n", viewport_size.x, viewport_size.y);
-
 	flt x = 2.0f / cam_w;
 	flt y = 2.0f / cam_h;
 
