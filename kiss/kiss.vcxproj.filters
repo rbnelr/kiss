@@ -123,7 +123,7 @@
     <ClCompile Include="gl_context.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="wndproc.cpp">
+    <ClCompile Include="wgl_api.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -132,9 +132,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="kiss.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="window.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="glad\glad.h">
@@ -254,10 +251,16 @@
     <ClInclude Include="include.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="wndproc.hpp">
+    <ClInclude Include="sanitize_windows_h.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="sanitize_windows_h.hpp">
+    <ClInclude Include="window.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="wgl_api.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gl_api.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

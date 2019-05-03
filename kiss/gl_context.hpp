@@ -3,8 +3,8 @@
 
 #include "sanitize_windows_h.hpp"
 
-#include "glad/glad_wgl.h"
-#include "glad/glad.h"
+#include "gl_api.hpp"
+#include "wgl_api.hpp"
 
 namespace kiss {
 	void APIENTRY ogl_debuproc (GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, char const* message, void const* userParam);

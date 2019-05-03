@@ -279,14 +279,14 @@ namespace vector {
 		LETTERIFY
 		
 		f32 di = d * i;
-		f32 ei = e * i;
 		f32 fh = f * h;
 		f32 fg = f * g;
-		f32 eg = e * g;
+		f32 ei = e * i;
 		f32 dh = d * h;
+		f32 eg = e * g;
 		
-		f32 dheg = dh - eg;
 		f32 eifh = ei - fh;
+		f32 dheg = dh - eg;
 		f32 difg = di - fg;
 		
 		f32 det;

@@ -68,7 +68,7 @@ namespace vector {
 	
 	// componentwise ternary c ? l : r
 	bv4 select (bv4 c, bv4 l, bv4 r) {
-		return c.x ? l.x : r.x, c.y ? l.y : r.y, c.z ? l.z : r.z, c.w ? l.w : r.w;
+		return bv4(c.x ? l.x : r.x, c.y ? l.y : r.y, c.z ? l.z : r.z, c.w ? l.w : r.w);
 	}
 }// namespace vector
 

@@ -85,7 +85,7 @@ namespace vector {
 	
 	// componentwise ternary c ? l : r
 	fv2 select (bv2 c, fv2 l, fv2 r) {
-		return c.x ? l.x : r.x, c.y ? l.y : r.y;
+		return fv2(c.x ? l.x : r.x, c.y ? l.y : r.y);
 	}
 	
 	//// misc ops

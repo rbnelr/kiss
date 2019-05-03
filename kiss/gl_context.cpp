@@ -62,10 +62,8 @@ namespace kiss {
 
 		wglMakeCurrent(hdc, hglcontext);
 
-		gladLoadWGL(hdc); // Do I need to call this if i alreay called it on the dummy context?
-		gladLoadGL();
-
-		glDebugMessageCallbackARB(ogl_debuproc, 0);
+		WGL_Api::init_singleton(hdc); // Do I need to call this if i alreay called it on the dummy context?
+		GL_Api::init_singleton();
 
 		// setting up some commonly needed opengl state
 		if (GLAD_GL_ARB_debug_output) {

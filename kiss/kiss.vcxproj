@@ -113,13 +113,14 @@
     <ClCompile Include="vector\u8v2.cpp" />
     <ClCompile Include="vector\u8v3.cpp" />
     <ClCompile Include="vector\u8v4.cpp" />
+    <ClCompile Include="wgl_api.cpp" />
     <ClCompile Include="window.cpp" />
-    <ClCompile Include="wndproc.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="glad\glad.h" />
     <ClInclude Include="glad\glad_wgl.h" />
     <ClInclude Include="glad\khrplatform.h" />
+    <ClInclude Include="gl_api.hpp" />
     <ClInclude Include="include.hpp" />
     <ClInclude Include="gl_context.hpp" />
     <ClInclude Include="input.hpp" />
@@ -159,8 +160,8 @@
     <ClInclude Include="vector\u8v4.hpp" />
     <ClInclude Include="vector\util.hpp" />
     <ClInclude Include="vector\vector.hpp" />
+    <ClInclude Include="wgl_api.hpp" />
     <ClInclude Include="window.hpp" />
-    <ClInclude Include="wndproc.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="TODO.txt" />

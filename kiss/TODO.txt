@@ -1,8 +1,2 @@
 
-implement type deducing print function with nice printf-style format string
-- AFAIK in c++ variadic functions can either be:
- - C varargs -> don't know about types, no go
- - variadic templates, IIRC there is way to turn a variable number of arguments into an array via wrapper function
-  -> templates are horrible though
- - just autogenerate a bunch of functions print_1arg, print_2arg, print_3arg and have them prepare a tagged union with copy/ref to vales and pass this to the actual print func
-
+N windows - 1 event thread, kind of forces the main thread to be the event thread, because the main thread is special in that it quits the app on returning by default

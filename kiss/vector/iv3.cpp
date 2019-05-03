@@ -89,7 +89,7 @@ namespace vector {
 	
 	// componentwise ternary c ? l : r
 	iv3 select (bv3 c, iv3 l, iv3 r) {
-		return c.x ? l.x : r.x, c.y ? l.y : r.y, c.z ? l.z : r.z;
+		return iv3(c.x ? l.x : r.x, c.y ? l.y : r.y, c.z ? l.z : r.z);
 	}
 	
 	//// misc ops

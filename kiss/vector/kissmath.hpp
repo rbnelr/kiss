@@ -25,6 +25,9 @@
 #define F64_INF							(__builtin_inf())
 #define F32_QNAN						((float)__builtin_nan("0"))
 #define F64_QNAN						(__builtin_nan("0"))
+
+#define NOINLINE						__attribute__((noinline)) // for testing/debugging purposes
+#define FORCEINLINE						__attribute__((always_inline))
 #endif
 
 namespace vector {

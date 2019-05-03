@@ -1,25 +1,47 @@
 #include "window.hpp"
-#include "input.hpp"
-
-#include "glad/glad_wgl.h"
-
-#include "sanitize_windows_h.hpp"
-
-#include "wndproc.hpp"
-#include "gl_context.hpp"
-
-#include <condition_variable>
-#include <mutex>
 
 namespace kiss {
 	const iv2 default_pos = CW_USEDEFAULT;
 	const iv2 default_size = CW_USEDEFAULT;
 
+	Window::Window (std::string caption, iv2 initial_size, iv2 initial_pos) {
+
+		auto window = Windows_Thread::get_singleton().open_window(caption, initial_size, initial_pos);
+		
+		setup_gl_context(platform->hdc);
+	}
+	
 	constexpr LONG WINDOWED_STYLE =					WS_VISIBLE|WS_OVERLAPPEDWINDOW;
 	constexpr LONG WINDOWED_EX_STYLE =				WS_EX_APPWINDOW|WS_EX_WINDOWEDGE;
 
 	constexpr LONG BORDERLESS_FULLSCREEN_STYLE =	WS_VISIBLE;
 	constexpr LONG BORDERLESS_FULLSCREEN_EX_STYLE =	WS_EX_APPWINDOW;
+
+	struct Thread_Input_State {
+		std::mutex	mutex; // mutex to lock inp structure
+		Input		inp; // input state, gets modified by wndproc, and read (copied) by renderer thread
+
+		void set_close () {
+			std::unique_lock<std::mutex> lck(mutex);
+			inp.close = true;
+		}
+		void set_window_size (iv2 val) {
+			std::unique_lock<std::mutex> lck(mutex);
+			inp.window_size = val;
+		}
+		void set_mouse_pos (iv2 val) {
+			std::unique_lock<std::mutex> lck(mutex);
+			inp._mouse_pos = val;
+		}
+
+		Input get_input () {
+			std::unique_lock<std::mutex> lck(mutex);
+
+			Input copy = inp;
+			inp.clear();
+			return copy;
+		}
+	};
 
 	struct Platform_Window { // Platform specific
 		HWND	hwnd;
@@ -31,6 +53,70 @@ namespace kiss {
 		Thread_Input_State inp_state;
 	};
 	void delete_Platform_Window (Platform_Window* p) { delete p; }
+
+	std::unordered_map<HWND, Platform_Window*> windows; // only modified and read from message_loop thread
+	
+	// Window message handler
+	LRESULT CALLBACK wndproc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+		Platform_Window*	wnd = nullptr;
+		Thread_Input_State*	inp = nullptr;
+
+		if (uMsg != WM_NCCREATE) {
+			auto it = windows.find(hwnd);
+			if (it == windows.end()) {
+				return DefWindowProcA(hwnd, uMsg, wParam, lParam); // not one of our windows
+			}
+			wnd = it->second;
+			inp = &wnd->inp_state;
+		}
+		
+		switch (uMsg) {
+			case WM_NCCREATE: {
+				auto* cs = (CREATESTRUCT*)lParam;
+				wnd = (Platform_Window*)cs->lpCreateParams;
+				windows[hwnd] = wnd;
+				return TRUE;
+			}
+			case WM_NCDESTROY: {
+				windows.erase(hwnd);
+				return 0;
+			}
+
+			case WM_CLOSE: {
+				inp->set_close();
+				return 0;
+			}
+
+			case WM_SIZE: {
+				auto w = LOWORD(lParam);
+				auto h = HIWORD(lParam);
+
+				RECT rect;
+				{
+					auto ret = GetClientRect(hwnd, &rect);
+				}
+
+				inp->set_window_size(max(iv2(w,h), 1));
+
+				//if (!fullscreen) {
+				//write_window_placement_save(hWnd);
+				//}
+				return 0;
+			}
+
+			case WM_MOUSEMOVE: {
+				auto x = LOWORD(lParam);
+				auto y = HIWORD(lParam);
+
+				inp->set_mouse_pos(iv2(x,y));
+
+				return 0;
+			}
+
+			default:
+				return DefWindowProcA(hwnd, uMsg, wParam, lParam);
+		}
+	}
 
 	RECT find_windows_border_sizes (DWORD style, DWORD exstyle) { // Get window border sizes
 		RECT borders = { 0, 0, 0, 0 };
@@ -62,7 +148,7 @@ namespace kiss {
 	}
 
 	// open a window with a message queue on the thread this is called on
-	HWND open_window (char const* caption, iv2 initial_size, iv2 initial_pos) {
+	HWND open_window (Platform_Window* wnd, char const* caption, iv2 initial_size, iv2 initial_pos) {
 		auto hinstance = GetModuleHandle(NULL);
 
 		auto hicon		= LoadIcon(NULL, IDI_WINLOGO);
@@ -87,7 +173,6 @@ namespace kiss {
 			wndclass.hIcon = 			hicon;
 			wndclass.hCursor = 			hcursor;
 			wndclass.lpszClassName =	"kisslib_gl_window";
-			wndclass.cbWndExtra =		sizeof(Window*);
 
 			classatom = RegisterClass(&wndclass);
 		}
@@ -98,7 +183,8 @@ namespace kiss {
 			exstyle, (LPCSTR)classatom, caption,
 			style & ~WS_VISIBLE, // not visible yet
 			initial_pos.x, initial_pos.y, initial_size.x, initial_size.y,
-			NULL, NULL, hinstance, NULL);
+			NULL, NULL, hinstance,
+			wnd); // Pass window pointer to WindowProc which caches it in a hashmap in WM_NCCREATE
 
 		//
 		register_raw_input_devices(hwnd);
@@ -160,7 +246,12 @@ namespace kiss {
 		//auto wglCreateContext version = glGetString(GL_VERSION);
 
 		//
-		gladLoadWGL(dummy_hdc);
+		WGL_Api::init_singleton(dummy_hdc);
+
+		if (wglChoosePixelFormatARB == NULL)
+			int a = 5;
+
+		std::cout << "Thread " << std::this_thread::get_id() <<": "<< wglChoosePixelFormatARB << std::endl;
 
 		// destroy dummy stuff
 		wglMakeCurrent(dummy_hdc, NULL);
@@ -201,45 +292,19 @@ namespace kiss {
 		platform->thread.join();
 	}
 
-	void run_window_thread (HWND* out_hwnd, Thread_Input_State* inp, std::condition_variable& cv,
-			char const* caption, iv2 initial_size, iv2 initial_pos) {
+	void run_window_thread (Platform_Window* wnd, std::condition_variable& cv,
+							std::string caption, iv2 initial_size, iv2 initial_pos) {
 		// Open window and write it's hwnd into the Platform_Window structure
-		HWND hwnd = open_window(caption, initial_size, initial_pos);
-		
-		Thread_Input_State::window_input_states[hwnd] = inp;
+		HWND hwnd = open_window(wnd, caption.c_str(), initial_size, initial_pos);
 
-		*out_hwnd = hwnd;
+		wnd->hwnd = hwnd;
 		cv.notify_all(); // notify and wake up renderer thread that the window is now open and it can init the gl now
 		
 		message_loop();
 
 		DestroyWindow(hwnd);
 
-		Thread_Input_State::window_input_states.erase(hwnd);
-
 		// UnregisterClass not important?
-	}
-
-	Window::Window (char const* caption, iv2 initial_size, iv2 initial_pos):
-			platform{new Platform_Window(), delete_Platform_Window} {
-		
-		{
-			std::condition_variable cv;
-
-			platform->thread = std::thread(run_window_thread, &platform->hwnd, &platform->inp_state, std::ref(cv),
-											caption, initial_size, initial_pos);
-
-			std::mutex m;
-
-			std::unique_lock<std::mutex> lck(m);
-			cv.wait(lck);
-		}
-
-		platform->hdc = GetDC(platform->hwnd);
-		
-		load_wgl_with_dummy_window();
-
-		platform->hglcontext = setup_gl_context(platform->hdc);
 	}
 
 	Input Window::get_input () {

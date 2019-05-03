@@ -188,6 +188,9 @@ def kissmath(f):
 				#define F64_INF							(__builtin_inf())
 				#define F32_QNAN						((float)__builtin_nan("0"))
 				#define F64_QNAN						(__builtin_nan("0"))
+
+				#define NOINLINE						__attribute__((noinline)) // for testing/debugging purposes
+				#define FORCEINLINE						__attribute__((always_inline))
 			#endif
 		'''
 
@@ -506,7 +509,7 @@ def gen_vector(V, f):
 	comparison_op('!=')
 	f.function(f'bool', 'equal', f'{V} l, {V} r', 'return all(l == r);', comment='vectors are equal, equivalent to all(l == r)')
 	
-	f.function(f'{V}', 'select', f'{BV} c, {V} l, {V} r', 'return %s;' % ', '.join(f'c.{d} ? l.{d} : r.{d}' for d in dims),
+	f.function(f'{V}', 'select', f'{BV} c, {V} l, {V} r', f'return {V}(%s);' % ', '.join(f'c.{d} ? l.{d} : r.{d}' for d in dims),
 		comment='componentwise ternary c ? l : r')
 	
 	if str(T) != 'bool':
@@ -842,7 +845,7 @@ def transformations(f):
 			 0,  s,  c
 		);
 	''')
-	f.function('fm3', 'rotate2_Y', 'flt ang', '''
+	f.function('fm3', 'rotate3_Y', 'flt ang', '''
 		flt s = sin(ang), c = cos(ang);
 		return fm3(
 			 c,  0,  s,
@@ -850,7 +853,7 @@ def transformations(f):
 			-s,  0,  c
 		);
 	''')
-	f.function('fm3', 'rotate2_Z', 'flt ang', '''
+	f.function('fm3', 'rotate3_Z', 'flt ang', '''
 		flt s = sin(ang), c = cos(ang);
 		return fm3(
 			 c, -s,  0,

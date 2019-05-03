@@ -3,8 +3,8 @@
 
 #include "kissmath.hpp"
 
-#include "dv4.hpp"
 #include "dv3.hpp"
+#include "dv4.hpp"
 
 namespace vector {
 	

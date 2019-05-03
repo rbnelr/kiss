@@ -36,7 +36,7 @@ namespace vector {
 		);
 	}
 	
-	fm3 rotate2_Y (flt ang) {
+	fm3 rotate3_Y (flt ang) {
 		flt s = sin(ang), c = cos(ang);
 		return fm3(
 				    c,  0,  s,
@@ -45,7 +45,7 @@ namespace vector {
 		);
 	}
 	
-	fm3 rotate2_Z (flt ang) {
+	fm3 rotate3_Z (flt ang) {
 		flt s = sin(ang), c = cos(ang);
 		return fm3(
 				    c, -s,  0,
