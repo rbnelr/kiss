@@ -8,7 +8,7 @@
 #define NOMINMAX 1
 #endif
 
-#include <windows.h>
+#include "windows.h"
 
 #undef near
 #undef far

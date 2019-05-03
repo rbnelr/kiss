@@ -1,26 +1,31 @@
 #pragma once
-#include "include.hpp"
-#include "input.hpp"
+#include "move_only.hpp"
+#include "smart_ptr.hpp"
 #include "vector/vector.hpp"
+#include "input.hpp"
+
+#include <string>
 
 namespace kiss {
-	API_VAR const iv2 default_pos;
-	API_VAR const iv2 default_size;
+	extern const iv2 default_pos;
+	extern const iv2 default_size;
 
-	struct Platform_Window;
+	class Platform_Window;
 
-	struct Window {
-		MOVE_ONLY_CLASS(Window)
+	class Window {
+		MOVE_ONLY_CLASS_DECL(Window);
+		unique_ptr<Platform_Window> impl; // Hide implementation so that user does not need to indirectly include windows.h etc.
+	public:
 
-		Platform_Window* platform_impl; // pointer to platform specific to hide windows.h
+		// opens a window
+		Window (std::string const& caption, iv2 initial_size = default_pos, iv2 initial_pos = default_size);
+		// closes window
+		~Window();
 
-		Window (std::string caption, iv2 initial_size=default_size, iv2 initial_pos=default_pos); // opens a window
-		~Window (); // closes window
-
-		Input get_input (); // get input for a frame
-		void swap_buffers ();
+		// get input for a frame
+		Input get_input ();
 	};
-	inline void swap (Window& l, Window& r) {
-		std::swap(l.platform_impl, r.platform_impl);
-	}
+	void swap (Window& l, Window& r);
+
+	void swap_buffers (Window& wnd);
 }

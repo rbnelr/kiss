@@ -1,35 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="vector">
       <UniqueIdentifier>{b0846c6a-4524-484a-a228-49b80b90e4a9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="api">
+      <UniqueIdentifier>{f265a9f6-a30d-492c-86bb-396d666c8c40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="detail">
+      <UniqueIdentifier>{e569fc81-eeb5-49a0-b5fa-1f63b2ae7686}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="detail\win32">
+      <UniqueIdentifier>{4a9076d3-4d3e-457b-9d17-735829b8474e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="glad">
+      <UniqueIdentifier>{c8704d01-49d1-46c1-b887-e3d5b56a5f9d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="input.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="window.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="glad\glad.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="glad\glad_wgl.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="vector\bv2.cpp">
       <Filter>vector</Filter>
     </ClCompile>
@@ -120,29 +108,23 @@
     <ClCompile Include="vector\transformations.cpp">
       <Filter>vector</Filter>
     </ClCompile>
-    <ClCompile Include="gl_context.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="win32_window.cpp">
+      <Filter>detail\win32</Filter>
     </ClCompile>
-    <ClCompile Include="wgl_api.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="window.cpp">
+      <Filter>api</Filter>
+    </ClCompile>
+    <ClCompile Include="glad\glad.c">
+      <Filter>glad</Filter>
+    </ClCompile>
+    <ClCompile Include="glad\glad_wgl.c">
+      <Filter>glad</Filter>
+    </ClCompile>
+    <ClCompile Include="win32_windows_thread.cpp">
+      <Filter>detail\win32</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="input.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="kiss.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="glad\glad.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="glad\glad_wgl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="glad\khrplatform.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="vector\bv2.hpp">
       <Filter>vector</Filter>
     </ClInclude>
@@ -242,26 +224,41 @@
     <ClInclude Include="vector\transformations.hpp">
       <Filter>vector</Filter>
     </ClInclude>
-    <ClInclude Include="string.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="kiss.hpp">
+      <Filter>api</Filter>
     </ClInclude>
-    <ClInclude Include="gl_context.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="sanitize_windows_h.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="input.hpp">
+      <Filter>api</Filter>
     </ClInclude>
     <ClInclude Include="window.hpp">
-      <Filter>Header Files</Filter>
+      <Filter>api</Filter>
     </ClInclude>
-    <ClInclude Include="wgl_api.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="smart_ptr.hpp">
+      <Filter>api</Filter>
     </ClInclude>
-    <ClInclude Include="gl_api.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="move_only.hpp">
+      <Filter>api</Filter>
+    </ClInclude>
+    <ClInclude Include="win32_window.hpp">
+      <Filter>detail\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="win32_window_proc.hpp">
+      <Filter>detail\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="glad\glad.h">
+      <Filter>glad</Filter>
+    </ClInclude>
+    <ClInclude Include="glad\glad_wgl.h">
+      <Filter>glad</Filter>
+    </ClInclude>
+    <ClInclude Include="glad\khrplatform.h">
+      <Filter>glad</Filter>
+    </ClInclude>
+    <ClInclude Include="opengl_api.hpp">
+      <Filter>api</Filter>
+    </ClInclude>
+    <ClInclude Include="win32_windows_thread.hpp">
+      <Filter>detail\win32</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

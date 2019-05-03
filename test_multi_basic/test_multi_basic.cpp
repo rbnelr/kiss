@@ -11,7 +11,7 @@ void window (int ngon_n) {
 
 		draw(inp.window_size, ngon_n);
 
-		kiss_wnd.swap_buffers();
+		swap_buffers(kiss_wnd);
 	}
 }
 

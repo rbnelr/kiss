@@ -14,7 +14,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{1FEDEFEB-0C1F-4655-B363-C2F35EBDE8B1}</ProjectGuid>
     <RootNamespace>kisscpp</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -81,8 +81,6 @@
   <ItemGroup>
     <ClCompile Include="glad\glad.c" />
     <ClCompile Include="glad\glad_wgl.c" />
-    <ClCompile Include="gl_context.cpp" />
-    <ClCompile Include="input.cpp" />
     <ClCompile Include="vector\bv2.cpp" />
     <ClCompile Include="vector\bv3.cpp" />
     <ClCompile Include="vector\bv4.cpp" />
@@ -113,20 +111,19 @@
     <ClCompile Include="vector\u8v2.cpp" />
     <ClCompile Include="vector\u8v3.cpp" />
     <ClCompile Include="vector\u8v4.cpp" />
-    <ClCompile Include="wgl_api.cpp" />
+    <ClCompile Include="win32_window.cpp" />
+    <ClCompile Include="win32_windows_thread.cpp" />
     <ClCompile Include="window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="glad\glad.h" />
     <ClInclude Include="glad\glad_wgl.h" />
     <ClInclude Include="glad\khrplatform.h" />
-    <ClInclude Include="gl_api.hpp" />
-    <ClInclude Include="include.hpp" />
-    <ClInclude Include="gl_context.hpp" />
     <ClInclude Include="input.hpp" />
     <ClInclude Include="kiss.hpp" />
-    <ClInclude Include="sanitize_windows_h.hpp" />
-    <ClInclude Include="string.hpp" />
+    <ClInclude Include="move_only.hpp" />
+    <ClInclude Include="opengl_api.hpp" />
+    <ClInclude Include="smart_ptr.hpp" />
     <ClInclude Include="vector\bv2.hpp" />
     <ClInclude Include="vector\bv3.hpp" />
     <ClInclude Include="vector\bv4.hpp" />
@@ -160,7 +157,9 @@
     <ClInclude Include="vector\u8v4.hpp" />
     <ClInclude Include="vector\util.hpp" />
     <ClInclude Include="vector\vector.hpp" />
-    <ClInclude Include="wgl_api.hpp" />
+    <ClInclude Include="win32_window.hpp" />
+    <ClInclude Include="win32_windows_thread.hpp" />
+    <ClInclude Include="win32_window_proc.hpp" />
     <ClInclude Include="window.hpp" />
   </ItemGroup>
   <ItemGroup>

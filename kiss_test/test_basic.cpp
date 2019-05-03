@@ -11,7 +11,7 @@ int main () {
 
 		draw(inp.window_size);
 
-		kiss_wnd.swap_buffers();
+		swap_buffers(kiss_wnd);
 	}
 	return 0;
 }

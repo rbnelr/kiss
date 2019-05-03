@@ -2,12 +2,7 @@
 
 #include "vector/vector.hpp"
 
-#include "input.hpp"
 #include "window.hpp"
+#include "input.hpp"
 
-// Include gl interface without including windows.h
-#ifdef _WIN32
-#define APIENTRY __stdcall
-#endif
-
-#include "glad/glad.h"
+#include "opengl_api.hpp"
