@@ -126,6 +126,9 @@
     <ClCompile Include="thread_name.cpp">
       <Filter>api</Filter>
     </ClCompile>
+    <ClCompile Include="opengl_context.cpp">
+      <Filter>detail\win32</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="vector\bv2.hpp">
@@ -270,6 +273,12 @@
       <Filter>detail\win32</Filter>
     </ClInclude>
     <ClInclude Include="thread_name.hpp">
+      <Filter>api</Filter>
+    </ClInclude>
+    <ClInclude Include="opengl_context.hpp">
+      <Filter>detail\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="wgl_api.hpp">
       <Filter>api</Filter>
     </ClInclude>
   </ItemGroup>

@@ -18,8 +18,8 @@ void load_ortho_projection (flt cam_h, iv2 viewport_size, flt near=-10, flt far=
 		0, 0, 0, 1
 	);
 
-	//glMatrixMode(GL_PROJECTION);
-	//glLoadMatrixf(&cam_to_clip.arr[0][0]);
+	glMatrixMode(GL_PROJECTION);
+	glLoadMatrixf(&cam_to_clip.arr[0][0]);
 
 }
 
@@ -28,7 +28,7 @@ void draw_spinning_ngon (int n, v2 pos, flt size) {
 	ori += deg(2);
 	ori = wrap(ori, deg(360));
 
-	//glBegin(GL_TRIANGLE_FAN);
+	glBegin(GL_TRIANGLE_FAN);
 
 	flt ang = deg(360) / (flt)n;
 
@@ -45,20 +45,20 @@ void draw_spinning_ngon (int n, v2 pos, flt size) {
 		col[a] = b;
 		col[(a+1) % 3] = 1 -b;
 
-		//glVertex2f(vert.x, vert.y);
-		//glColor3f(col.x, col.y, col.z);
+		glVertex2f(vert.x, vert.y);
+		glColor3f(col.x, col.y, col.z);
 	}
 
-	//glEnd();
+	glEnd();
 }
 
 void draw (iv2 window_size, int ngon_n=3) {
 	load_ortho_projection(10, window_size);
 
-	//glViewport(0,0, window_size.x, window_size.y);
+	glViewport(0,0, window_size.x, window_size.y);
 
-	//glClearColor(0.03f, 0.03f, 0.03f, 1);
-	//glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	glClearColor(0.03f, 0.03f, 0.03f, 1);
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
 	draw_spinning_ngon(ngon_n, 0, 4);
 }

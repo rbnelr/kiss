@@ -5,6 +5,10 @@
 #include "thread_name.hpp"
 
 namespace kiss {
+	//////////////
+	// Actual win32 windowing calls all done on one thread
+	//////////////
+
 	extern const iv2 default_pos;
 	extern const iv2 default_size;
 
@@ -56,22 +60,31 @@ namespace kiss {
 	}
 
 	HWND Window_Thread::open_window (Platform_Window* window, string_view caption, iv2 initial_size, iv2 initial_pos) {
+		if (initial_size.x != default_size.x)
+			initial_size.x += border_sizes.left + border_sizes.right;
+		if (initial_size.y != default_size.y)
+			initial_size.y += border_sizes.top + border_sizes.bottom;
+
 		auto hwnd = CreateWindowEx(
-			WINDOWED_EX_STYLE, L"kisslib_window", utf8_to_wchar(caption).c_str(), WINDOWED_STYLE,
+			WINDOWED_EX_STYLE, (LPCWSTR)(uptr)wnd_classatom, utf8_to_wchar(caption).c_str(), WINDOWED_STYLE,
 			initial_pos.x, initial_pos.y, initial_size.x, initial_size.y,
 			NULL, NULL, hinstance, window);
 		assert(hwnd != INVALID_HANDLE_VALUE);
 
+		auto hdc = GetDC(hwnd);
+		assert(hdc != NULL);
+
 		window->hwnd = hwnd;
-		window->hdc = GetDC(hwnd);
+		window->hdc = hdc;
 
 		return hwnd;
 	}
 	void Window_Thread::close_window (Platform_Window* window) {
-		ReleaseDC(window->get_hwnd(), window->get_hdc());
+		auto dc = ReleaseDC(window->get_hwnd(), window->get_hdc());
+		assert(dc == 1);
 
-		auto res = DestroyWindow(window->get_hwnd());
-		assert(res != FALSE);
+		auto wnd = DestroyWindow(window->get_hwnd());
+		assert(wnd != 0);
 	}
 
 	void Window_Thread::thread_proc () {
@@ -85,7 +98,8 @@ namespace kiss {
 
 		message_loop();
 
-		UnregisterClass((LPCWSTR)(uptr)wnd_classatom, hinstance);
+		auto cls = UnregisterClass((LPCWSTR)(uptr)wnd_classatom, hinstance);
+		assert(cls != 0);
 	}
 
 	void Window_Thread::message_loop () {
@@ -119,6 +133,48 @@ namespace kiss {
 		}
 	}
 
+	LRESULT CALLBACK wndproc (HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+		auto* thr = Window_Thread::singleton.get(); // this has to always be constant at this point, threadsafe
+		auto* wnd = thr->get_window(hwnd);
+
+		if (!wnd && uMsg != WM_NCCREATE) {
+			return DefWindowProc(hwnd, uMsg, wParam, lParam);
+		}
+
+		switch (uMsg) {
+
+			case WM_NCCREATE: {
+				auto* cs = (CREATESTRUCT*)lParam;
+				auto* wnd = (Platform_Window*)cs->lpCreateParams;
+
+				thr->register_window(hwnd, wnd);
+			} return TRUE;
+
+			case WM_NCDESTROY: {
+				thr->unregister_window(hwnd);
+			} return 0;
+
+			case WM_CLOSE: {
+				wnd->input_state.set_close(true);
+			} return 0;
+
+			default:
+				return DefWindowProc(hwnd, uMsg, wParam, lParam);
+		}
+	}
+
+	//////////////
+	// Bookkeeping happening between all threads that create windows to handle the message thread being on another thread
+	//////////////
+
+	Input Platform_Window::get_input () {
+		return input_state.get_input_for_frame();
+	}
+
+	void Platform_Window::swap_buffers () {
+		SwapBuffers(hdc);
+	}
+
 	unique_ptr<Window_Thread> Window_Thread::singleton;
 	std::mutex Window_Thread::singleton_mtx;
 
@@ -149,15 +205,6 @@ namespace kiss {
 		}
 	}
 
-	Input Platform_Window::get_input () {
-		return input_state.get_input_for_frame();
-	}
-
-	void Platform_Window::swap_buffers () {
-		SwapBuffers(hdc);
-	}
-
-	//// Window thread
 	void Window_Thread::execute_on_thread (std::function<void()> f) {
 		remote_proc_caller.execute_on_thread(f);
 	}
@@ -169,36 +216,6 @@ namespace kiss {
 		execute_on_thread([] () { PostQuitMessage(0); });
 
 		thread.join();
-	}
-
-	LRESULT CALLBACK wndproc (HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-		auto* thr = Window_Thread::singleton.get(); // this has to always exist at this point, threadsafe
-		auto* wnd = thr->get_window(hwnd);
-
-		if (!wnd && uMsg != WM_NCCREATE) {
-			return DefWindowProc(hwnd, uMsg, wParam, lParam);
-		}
-
-		switch (uMsg) {
-
-			case WM_NCCREATE: {
-				auto* cs = (CREATESTRUCT*)lParam;
-				auto* wnd = (Platform_Window*)cs->lpCreateParams;
-
-				thr->register_window(hwnd, wnd);
-			} return TRUE;
-
-			case WM_NCDESTROY: {
-				thr->unregister_window(hwnd);
-			} return 0;
-
-			case WM_CLOSE: {
-				wnd->input_state.set_close(true);
-			} return 0;
-
-			default:
-				return DefWindowProc(hwnd, uMsg, wParam, lParam);
-		}
 	}
 
 	void Window_Thread::register_window (HWND hwnd, Platform_Window* window) {

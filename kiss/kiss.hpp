@@ -5,5 +5,6 @@
 
 #include "window.hpp"
 #include "input.hpp"
+#include "opengl_context.hpp"
 
 #include "opengl_api.hpp"
