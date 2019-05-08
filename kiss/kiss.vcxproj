@@ -21,14 +21,14 @@
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -81,6 +81,8 @@
   <ItemGroup>
     <ClCompile Include="glad\glad.c" />
     <ClCompile Include="glad\glad_wgl.c" />
+    <ClCompile Include="string.cpp" />
+    <ClCompile Include="thread_name.cpp" />
     <ClCompile Include="vector\bv2.cpp" />
     <ClCompile Include="vector\bv3.cpp" />
     <ClCompile Include="vector\bv4.cpp" />
@@ -112,10 +114,10 @@
     <ClCompile Include="vector\u8v3.cpp" />
     <ClCompile Include="vector\u8v4.cpp" />
     <ClCompile Include="win32_window.cpp" />
-    <ClCompile Include="win32_windows_thread.cpp" />
     <ClCompile Include="window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="clean_windows_h.hpp" />
     <ClInclude Include="glad\glad.h" />
     <ClInclude Include="glad\glad_wgl.h" />
     <ClInclude Include="glad\khrplatform.h" />
@@ -124,6 +126,8 @@
     <ClInclude Include="move_only.hpp" />
     <ClInclude Include="opengl_api.hpp" />
     <ClInclude Include="smart_ptr.hpp" />
+    <ClInclude Include="string.hpp" />
+    <ClInclude Include="thread_name.hpp" />
     <ClInclude Include="vector\bv2.hpp" />
     <ClInclude Include="vector\bv3.hpp" />
     <ClInclude Include="vector\bv4.hpp" />
@@ -158,9 +162,9 @@
     <ClInclude Include="vector\util.hpp" />
     <ClInclude Include="vector\vector.hpp" />
     <ClInclude Include="win32_window.hpp" />
-    <ClInclude Include="win32_windows_thread.hpp" />
-    <ClInclude Include="win32_window_proc.hpp" />
+    <ClInclude Include="win32_window_input.hpp" />
     <ClInclude Include="window.hpp" />
+    <ClInclude Include="win32_remote_proc_caller.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="TODO.txt" />

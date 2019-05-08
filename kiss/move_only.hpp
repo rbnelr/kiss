@@ -30,7 +30,6 @@ void swap (T& l, T& r) {
 #define MOVE_ONLY_CLASS(CLASS) \
 	public: \
 	friend void swap (CLASS& l, CLASS& r); \
-	CLASS () {} \
 	CLASS& operator= (CLASS& r) = delete; \
 	CLASS (CLASS& r) = delete; \
 	CLASS& operator= (CLASS&& r) {	swap(*this, r);	return *this; } \
@@ -40,14 +39,12 @@ void swap (T& l, T& r) {
 #define MOVE_ONLY_CLASS_DECL(CLASS) \
 	public: \
 	friend void swap (CLASS& l, CLASS& r); \
-	CLASS (); \
 	CLASS& operator= (CLASS& r) = delete; \
 	CLASS (CLASS& r) = delete; \
 	CLASS& operator= (CLASS&& r); \
 	CLASS (CLASS&& r); \
 	private:
 #define MOVE_ONLY_CLASS_DEF(CLASS) \
-	CLASS::CLASS () = default; \
 	CLASS& CLASS::operator= (CLASS&& r) {	swap(*this, r);	return *this; } \
 	CLASS::CLASS (CLASS&& r) {				swap(*this, r); }
 
@@ -56,7 +53,6 @@ void swap (T& l, T& r) {
 // Can still pass the class around by allocating it with new or make_unique
 #define NO_MOVE_COPY_CLASS(CLASS) \
 	public: \
-	CLASS () {} \
 	CLASS& operator= (CLASS& r) = delete; \
 	CLASS (CLASS& r) = delete; \
 	CLASS& operator= (CLASS&& r) = delete; \

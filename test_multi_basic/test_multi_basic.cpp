@@ -1,7 +1,10 @@
 #include "../test_util/test_util.hpp"
+#include "thread_name.hpp"
 
 void window (int ngon_n) {
-	auto kiss_wnd = kiss::Window("Kiss Test Window");
+	kiss::set_current_thread_name(kiss::prints("Window Renderer %d", ngon_n));
+
+	auto kiss_wnd = kiss::Window(kiss::prints("Kiss Test Window %d", ngon_n), 500);
 
 	for (;;) {
 		auto inp = kiss_wnd.get_input();
@@ -11,7 +14,7 @@ void window (int ngon_n) {
 
 		draw(inp.window_size, ngon_n);
 
-		swap_buffers(kiss_wnd);
+		kiss_wnd.swap_buffers();
 	}
 }
 
@@ -22,14 +25,14 @@ void window (int ngon_n) {
 int main () {
 	
 	std::vector<std::thread> threads;
-	for (int n=3; n<5; ++n) {
+	for (int n=3; n<8; ++n) {
 		threads.emplace_back(window, n);
 	}
 
 	int i=0;
 	for (auto& thr : threads) {
 		thr.join();
-		printf("joined thread %d\n", i);
+		//printf("joined thread %d\n", i++);
 	}
 
 	return 0;

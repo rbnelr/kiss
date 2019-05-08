@@ -120,8 +120,11 @@
     <ClCompile Include="glad\glad_wgl.c">
       <Filter>glad</Filter>
     </ClCompile>
-    <ClCompile Include="win32_windows_thread.cpp">
+    <ClCompile Include="string.cpp">
       <Filter>detail\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="thread_name.cpp">
+      <Filter>api</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -242,9 +245,6 @@
     <ClInclude Include="win32_window.hpp">
       <Filter>detail\win32</Filter>
     </ClInclude>
-    <ClInclude Include="win32_window_proc.hpp">
-      <Filter>detail\win32</Filter>
-    </ClInclude>
     <ClInclude Include="glad\glad.h">
       <Filter>glad</Filter>
     </ClInclude>
@@ -257,8 +257,20 @@
     <ClInclude Include="opengl_api.hpp">
       <Filter>api</Filter>
     </ClInclude>
-    <ClInclude Include="win32_windows_thread.hpp">
+    <ClInclude Include="clean_windows_h.hpp">
       <Filter>detail\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="string.hpp">
+      <Filter>api</Filter>
+    </ClInclude>
+    <ClInclude Include="win32_window_input.hpp">
+      <Filter>detail\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="win32_remote_proc_caller.hpp">
+      <Filter>detail\win32</Filter>
+    </ClInclude>
+    <ClInclude Include="thread_name.hpp">
+      <Filter>api</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

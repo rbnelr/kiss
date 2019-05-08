@@ -3,8 +3,7 @@
 #include "smart_ptr.hpp"
 #include "vector/vector.hpp"
 #include "input.hpp"
-
-#include <string>
+#include "string.hpp"
 
 namespace kiss {
 	extern const iv2 default_pos;
@@ -14,18 +13,18 @@ namespace kiss {
 
 	class Window {
 		MOVE_ONLY_CLASS_DECL(Window);
-		unique_ptr<Platform_Window> impl; // Hide implementation so that user does not need to indirectly include windows.h etc.
 	public:
+		unique_ptr<Platform_Window> platform; // Hide implementation so that user does not need to indirectly include windows.h etc.
 
 		// opens a window
-		Window (std::string const& caption, iv2 initial_size = default_pos, iv2 initial_pos = default_size);
+		Window (string_view caption, iv2 initial_size = default_pos, iv2 initial_pos = default_size);
 		// closes window
 		~Window();
 
 		// get input for a frame
 		Input get_input ();
+
+		void swap_buffers ();
 	};
 	void swap (Window& l, Window& r);
-
-	void swap_buffers (Window& wnd);
 }
