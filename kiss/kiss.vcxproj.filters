@@ -120,13 +120,16 @@
     <ClCompile Include="glad\glad_wgl.c">
       <Filter>glad</Filter>
     </ClCompile>
-    <ClCompile Include="string.cpp">
-      <Filter>detail\win32</Filter>
-    </ClCompile>
     <ClCompile Include="thread_name.cpp">
       <Filter>api</Filter>
     </ClCompile>
-    <ClCompile Include="opengl_context.cpp">
+    <ClCompile Include="win32_opengl_context.cpp">
+      <Filter>detail\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="win32_string.cpp">
+      <Filter>detail\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="timer.cpp">
       <Filter>detail\win32</Filter>
     </ClCompile>
   </ItemGroup>
@@ -275,10 +278,13 @@
     <ClInclude Include="thread_name.hpp">
       <Filter>api</Filter>
     </ClInclude>
-    <ClInclude Include="opengl_context.hpp">
-      <Filter>detail\win32</Filter>
-    </ClInclude>
     <ClInclude Include="wgl_api.hpp">
+      <Filter>api</Filter>
+    </ClInclude>
+    <ClInclude Include="opengl_context.hpp">
+      <Filter>api</Filter>
+    </ClInclude>
+    <ClInclude Include="timer.hpp">
       <Filter>api</Filter>
     </ClInclude>
   </ItemGroup>

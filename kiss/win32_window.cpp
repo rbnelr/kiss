@@ -29,7 +29,7 @@ namespace kiss {
 		auto hcursor	= LoadCursor(NULL, IDC_ARROW);
 
 		WNDCLASS wndclass = {}; // Initialize to zero
-		wndclass.style =			CS_OWNDC;
+		wndclass.style =			CS_OWNDC|CS_HREDRAW|CS_VREDRAW; // CS_HREDRAW|CS_VREDRAW might prevent flicker with opengl apps
 		wndclass.lpfnWndProc =		wndproc;
 		wndclass.hInstance =		hinstance;
 		wndclass.hIcon = 			hicon;
@@ -133,6 +133,10 @@ namespace kiss {
 		}
 	}
 
+	/* TODO: improve window resizing
+		https://stackoverflow.com/questions/10615272/opengl-flickering-damaged-with-window-resize-and-dwm-active
+		https://stackoverflow.com/questions/53000291/how-to-smooth-ugly-jitter-flicker-jumping-when-resizing-windows-especially-drag/53000292#53000292
+	*/
 	LRESULT CALLBACK wndproc (HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 		auto* thr = Window_Thread::singleton.get(); // this has to always be constant at this point, threadsafe
 		auto* wnd = thr->get_window(hwnd);
@@ -158,6 +162,22 @@ namespace kiss {
 				wnd->input_state.set_close(true);
 			} return 0;
 
+			case WM_SIZE: {
+				int w = LOWORD(lParam);
+				int h = HIWORD(lParam);
+				iv2 sz = iv2(w,h);
+				sz = max(sz, 1);
+
+				wnd->input_state.set_window_size(sz);
+			} return 0;
+
+			case WM_PAINT: {
+					
+			} return 0;
+			case WM_ERASEBKGND: {
+				// flicker prevention
+			} return 1;
+
 			default:
 				return DefWindowProc(hwnd, uMsg, wParam, lParam);
 		}
@@ -169,10 +189,6 @@ namespace kiss {
 
 	Input Platform_Window::get_input () {
 		return input_state.get_input_for_frame();
-	}
-
-	void Platform_Window::swap_buffers () {
-		SwapBuffers(hdc);
 	}
 
 	unique_ptr<Window_Thread> Window_Thread::singleton;

@@ -81,8 +81,9 @@
   <ItemGroup>
     <ClCompile Include="glad\glad.c" />
     <ClCompile Include="glad\glad_wgl.c" />
-    <ClCompile Include="opengl_context.cpp" />
-    <ClCompile Include="string.cpp" />
+    <ClCompile Include="timer.cpp" />
+    <ClCompile Include="win32_opengl_context.cpp" />
+    <ClCompile Include="win32_string.cpp" />
     <ClCompile Include="thread_name.cpp" />
     <ClCompile Include="vector\bv2.cpp" />
     <ClCompile Include="vector\bv3.cpp" />
@@ -130,6 +131,7 @@
     <ClInclude Include="smart_ptr.hpp" />
     <ClInclude Include="string.hpp" />
     <ClInclude Include="thread_name.hpp" />
+    <ClInclude Include="timer.hpp" />
     <ClInclude Include="vector\bv2.hpp" />
     <ClInclude Include="vector\bv3.hpp" />
     <ClInclude Include="vector\bv4.hpp" />

@@ -1,2 +1,2 @@
 
-N windows - 1 event thread, kind of forces the main thread to be the event thread, because the main thread is special in that it quits the app on returning by default
+change glad generator so that it generates a c++ file with a struct that contains all function pointers and extension flags to allow multiple instances of the opengl api to exist (for multithreading) (although the driver is supposed to return the same functions for identical opengl versions/pixel formats i think)

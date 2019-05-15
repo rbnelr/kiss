@@ -19,8 +19,4 @@ namespace kiss {
 	Input Window::get_input () {
 		return platform->get_input();
 	}
-
-	void Window::swap_buffers () {
-		platform->swap_buffers();
-	}
 }

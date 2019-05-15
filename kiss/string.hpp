@@ -14,8 +14,8 @@ namespace kiss {
 		T const*	begin;
 		T const*	end;
 
-		constexpr T const* c_str () const { return begin; }
-		constexpr size_t size () const { return end -begin; }
+		/*constexpr*/ T const* c_str () const { return begin; } // constexpr caused a internal compiler error in MSVC17 at some point
+		/*constexpr*/ size_t size () const { return end -begin; }
 
 		constexpr basic_string_view (std::basic_string<T> const& s): begin{s.data()}, end{s.data() + s.size()} {}
 		constexpr basic_string_view (char const* s): begin{s}, end{s + strlen(s)} {}

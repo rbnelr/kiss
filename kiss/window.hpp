@@ -23,8 +23,6 @@ namespace kiss {
 
 		// get input for a frame
 		Input get_input ();
-
-		void swap_buffers ();
 	};
 	void swap (Window& l, Window& r);
 }

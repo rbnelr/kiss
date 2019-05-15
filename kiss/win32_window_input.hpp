@@ -17,6 +17,10 @@ namespace kiss {
 			SCOPED_LOCK();
 			i.close = b;
 		}
+		void set_window_size (iv2 sz) {
+			SCOPED_LOCK();
+			i.window_size = sz;
+		}
 		
 		Input copy_input () {
 			return i;
