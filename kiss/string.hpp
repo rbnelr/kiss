@@ -33,7 +33,7 @@ namespace kiss {
 		for (;;) {
 			auto ret = vsnprintf(&(*s)[old_size], s->size() -old_size +1, format, vl); // i think i'm technically not allowed to overwrite the null terminator
 			ret = ret >= 0 ? ret : 0;
-			bool was_bienough = ret < (s->size() -old_size +1);
+			bool was_bienough = (size_t)ret < (s->size() -old_size +1);
 			s->resize(old_size +ret);
 			if (was_bienough) break;
 			// buffer was to small, buffer size was increased

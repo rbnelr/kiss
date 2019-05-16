@@ -1,10 +1,9 @@
 #include "../test_util/test_util.hpp"
-#include "win32_window.hpp"
 #include "timer.hpp"
 
 int main () {
 	auto kiss_wnd = kiss::Window("Kiss Test Window", 500);
-	auto ogl = kiss::Opengl_Context(kiss_wnd, {3,1}, true);
+	auto ogl = kiss::Opengl_Context(kiss_wnd, {3,1}, true, true);
 
 	Ngon_Spinner ngon;
 
