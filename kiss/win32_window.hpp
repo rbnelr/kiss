@@ -37,7 +37,6 @@ namespace kiss {
 		std::unordered_map<HWND, Platform_Window*> windows;
 
 		HINSTANCE hinstance;
-		RECT border_sizes;
 		ATOM wnd_classatom;
 
 		HWND open_window (Platform_Window* window, string_view caption, iv2 initial_size, iv2 initial_pos);

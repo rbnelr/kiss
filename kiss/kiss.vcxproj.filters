@@ -1,139 +1,77 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Text Include="TODO.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="kiss">
+      <UniqueIdentifier>{a3d3ab40-d2db-4791-b8fe-499f0b083bd4}</UniqueIdentifier>
+    </Filter>
     <Filter Include="vector">
-      <UniqueIdentifier>{b0846c6a-4524-484a-a228-49b80b90e4a9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="api">
-      <UniqueIdentifier>{f265a9f6-a30d-492c-86bb-396d666c8c40}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="detail">
-      <UniqueIdentifier>{e569fc81-eeb5-49a0-b5fa-1f63b2ae7686}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="detail\win32">
-      <UniqueIdentifier>{4a9076d3-4d3e-457b-9d17-735829b8474e}</UniqueIdentifier>
+      <UniqueIdentifier>{fa844248-a7fa-488c-8492-65e930cd06a7}</UniqueIdentifier>
     </Filter>
     <Filter Include="glad">
-      <UniqueIdentifier>{c8704d01-49d1-46c1-b887-e3d5b56a5f9d}</UniqueIdentifier>
+      <UniqueIdentifier>{24433e9e-f4e9-4c75-a0d7-4d377b69ca20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="stb">
+      <UniqueIdentifier>{47dc1bb7-ad6b-4794-a042-4661cdfbf5cb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="vector\bv2.cpp">
-      <Filter>vector</Filter>
-    </ClCompile>
-    <ClCompile Include="vector\bv3.cpp">
-      <Filter>vector</Filter>
-    </ClCompile>
-    <ClCompile Include="vector\bv4.cpp">
-      <Filter>vector</Filter>
-    </ClCompile>
-    <ClCompile Include="vector\dv2.cpp">
-      <Filter>vector</Filter>
-    </ClCompile>
-    <ClCompile Include="vector\dv3.cpp">
-      <Filter>vector</Filter>
-    </ClCompile>
-    <ClCompile Include="vector\dv4.cpp">
-      <Filter>vector</Filter>
-    </ClCompile>
-    <ClCompile Include="vector\fv2.cpp">
-      <Filter>vector</Filter>
-    </ClCompile>
-    <ClCompile Include="vector\fv3.cpp">
-      <Filter>vector</Filter>
-    </ClCompile>
-    <ClCompile Include="vector\fv4.cpp">
-      <Filter>vector</Filter>
-    </ClCompile>
-    <ClCompile Include="vector\iv2.cpp">
-      <Filter>vector</Filter>
-    </ClCompile>
-    <ClCompile Include="vector\iv3.cpp">
-      <Filter>vector</Filter>
-    </ClCompile>
-    <ClCompile Include="vector\iv4.cpp">
-      <Filter>vector</Filter>
-    </ClCompile>
-    <ClCompile Include="vector\kissmath.cpp">
-      <Filter>vector</Filter>
-    </ClCompile>
-    <ClCompile Include="vector\s64v2.cpp">
-      <Filter>vector</Filter>
-    </ClCompile>
-    <ClCompile Include="vector\s64v3.cpp">
-      <Filter>vector</Filter>
-    </ClCompile>
-    <ClCompile Include="vector\s64v4.cpp">
-      <Filter>vector</Filter>
-    </ClCompile>
-    <ClCompile Include="vector\u8v2.cpp">
-      <Filter>vector</Filter>
-    </ClCompile>
-    <ClCompile Include="vector\u8v3.cpp">
-      <Filter>vector</Filter>
-    </ClCompile>
-    <ClCompile Include="vector\u8v4.cpp">
-      <Filter>vector</Filter>
-    </ClCompile>
-    <ClCompile Include="vector\dm2.cpp">
-      <Filter>vector</Filter>
-    </ClCompile>
-    <ClCompile Include="vector\dm2x3.cpp">
-      <Filter>vector</Filter>
-    </ClCompile>
-    <ClCompile Include="vector\dm3.cpp">
-      <Filter>vector</Filter>
-    </ClCompile>
-    <ClCompile Include="vector\dm3x4.cpp">
-      <Filter>vector</Filter>
-    </ClCompile>
-    <ClCompile Include="vector\dm4.cpp">
-      <Filter>vector</Filter>
-    </ClCompile>
-    <ClCompile Include="vector\fm2.cpp">
-      <Filter>vector</Filter>
-    </ClCompile>
-    <ClCompile Include="vector\fm2x3.cpp">
-      <Filter>vector</Filter>
-    </ClCompile>
-    <ClCompile Include="vector\fm3.cpp">
-      <Filter>vector</Filter>
-    </ClCompile>
-    <ClCompile Include="vector\fm3x4.cpp">
-      <Filter>vector</Filter>
-    </ClCompile>
-    <ClCompile Include="vector\fm4.cpp">
-      <Filter>vector</Filter>
-    </ClCompile>
-    <ClCompile Include="vector\transformations.cpp">
-      <Filter>vector</Filter>
-    </ClCompile>
-    <ClCompile Include="win32_window.cpp">
-      <Filter>detail\win32</Filter>
-    </ClCompile>
-    <ClCompile Include="window.cpp">
-      <Filter>api</Filter>
-    </ClCompile>
-    <ClCompile Include="glad\glad.c">
+    <ClInclude Include="clean_windows_h.hpp">
+      <Filter>kiss</Filter>
+    </ClInclude>
+    <ClInclude Include="input.hpp">
+      <Filter>kiss</Filter>
+    </ClInclude>
+    <ClInclude Include="kiss.hpp">
+      <Filter>kiss</Filter>
+    </ClInclude>
+    <ClInclude Include="move_only.hpp">
+      <Filter>kiss</Filter>
+    </ClInclude>
+    <ClInclude Include="opengl_api.hpp">
+      <Filter>kiss</Filter>
+    </ClInclude>
+    <ClInclude Include="opengl_context.hpp">
+      <Filter>kiss</Filter>
+    </ClInclude>
+    <ClInclude Include="smart_ptr.hpp">
+      <Filter>kiss</Filter>
+    </ClInclude>
+    <ClInclude Include="string.hpp">
+      <Filter>kiss</Filter>
+    </ClInclude>
+    <ClInclude Include="thread_name.hpp">
+      <Filter>kiss</Filter>
+    </ClInclude>
+    <ClInclude Include="timer.hpp">
+      <Filter>kiss</Filter>
+    </ClInclude>
+    <ClInclude Include="wgl_api.hpp">
+      <Filter>kiss</Filter>
+    </ClInclude>
+    <ClInclude Include="win32_remote_proc_caller.hpp">
+      <Filter>kiss</Filter>
+    </ClInclude>
+    <ClInclude Include="win32_window.hpp">
+      <Filter>kiss</Filter>
+    </ClInclude>
+    <ClInclude Include="win32_window_input.hpp">
+      <Filter>kiss</Filter>
+    </ClInclude>
+    <ClInclude Include="window.hpp">
+      <Filter>kiss</Filter>
+    </ClInclude>
+    <ClInclude Include="glad\khrplatform.h">
       <Filter>glad</Filter>
-    </ClCompile>
-    <ClCompile Include="glad\glad_wgl.c">
+    </ClInclude>
+    <ClInclude Include="glad\glad.h">
       <Filter>glad</Filter>
-    </ClCompile>
-    <ClCompile Include="thread_name.cpp">
-      <Filter>api</Filter>
-    </ClCompile>
-    <ClCompile Include="win32_opengl_context.cpp">
-      <Filter>detail\win32</Filter>
-    </ClCompile>
-    <ClCompile Include="win32_string.cpp">
-      <Filter>detail\win32</Filter>
-    </ClCompile>
-    <ClCompile Include="timer.cpp">
-      <Filter>detail\win32</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
+    </ClInclude>
+    <ClInclude Include="glad\glad_wgl.h">
+      <Filter>glad</Filter>
+    </ClInclude>
     <ClInclude Include="vector\bv2.hpp">
       <Filter>vector</Filter>
     </ClInclude>
@@ -143,6 +81,21 @@
     <ClInclude Include="vector\bv4.hpp">
       <Filter>vector</Filter>
     </ClInclude>
+    <ClInclude Include="vector\dm2.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\dm2x3.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\dm3.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\dm3x4.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\dm4.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
     <ClInclude Include="vector\dv2.hpp">
       <Filter>vector</Filter>
     </ClInclude>
@@ -150,6 +103,21 @@
       <Filter>vector</Filter>
     </ClInclude>
     <ClInclude Include="vector\dv4.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\fm2.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\fm2x3.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\fm3.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\fm3x4.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
+    <ClInclude Include="vector\fm4.hpp">
       <Filter>vector</Filter>
     </ClInclude>
     <ClInclude Include="vector\fv2.hpp">
@@ -182,6 +150,9 @@
     <ClInclude Include="vector\s64v4.hpp">
       <Filter>vector</Filter>
     </ClInclude>
+    <ClInclude Include="vector\transformations.hpp">
+      <Filter>vector</Filter>
+    </ClInclude>
     <ClInclude Include="vector\types.hpp">
       <Filter>vector</Filter>
     </ClInclude>
@@ -200,95 +171,139 @@
     <ClInclude Include="vector\vector.hpp">
       <Filter>vector</Filter>
     </ClInclude>
-    <ClInclude Include="vector\dm2.hpp">
-      <Filter>vector</Filter>
+    <ClInclude Include="color.hpp">
+      <Filter>kiss</Filter>
     </ClInclude>
-    <ClInclude Include="vector\dm2x3.hpp">
-      <Filter>vector</Filter>
+    <ClInclude Include="image.hpp">
+      <Filter>kiss</Filter>
     </ClInclude>
-    <ClInclude Include="vector\dm3.hpp">
-      <Filter>vector</Filter>
+    <ClInclude Include="texture.hpp">
+      <Filter>kiss</Filter>
     </ClInclude>
-    <ClInclude Include="vector\dm3x4.hpp">
-      <Filter>vector</Filter>
-    </ClInclude>
-    <ClInclude Include="vector\dm4.hpp">
-      <Filter>vector</Filter>
-    </ClInclude>
-    <ClInclude Include="vector\fm2.hpp">
-      <Filter>vector</Filter>
-    </ClInclude>
-    <ClInclude Include="vector\fm2x3.hpp">
-      <Filter>vector</Filter>
-    </ClInclude>
-    <ClInclude Include="vector\fm3.hpp">
-      <Filter>vector</Filter>
-    </ClInclude>
-    <ClInclude Include="vector\fm3x4.hpp">
-      <Filter>vector</Filter>
-    </ClInclude>
-    <ClInclude Include="vector\fm4.hpp">
-      <Filter>vector</Filter>
-    </ClInclude>
-    <ClInclude Include="vector\transformations.hpp">
-      <Filter>vector</Filter>
-    </ClInclude>
-    <ClInclude Include="kiss.hpp">
-      <Filter>api</Filter>
-    </ClInclude>
-    <ClInclude Include="input.hpp">
-      <Filter>api</Filter>
-    </ClInclude>
-    <ClInclude Include="window.hpp">
-      <Filter>api</Filter>
-    </ClInclude>
-    <ClInclude Include="smart_ptr.hpp">
-      <Filter>api</Filter>
-    </ClInclude>
-    <ClInclude Include="move_only.hpp">
-      <Filter>api</Filter>
-    </ClInclude>
-    <ClInclude Include="win32_window.hpp">
-      <Filter>detail\win32</Filter>
-    </ClInclude>
-    <ClInclude Include="glad\glad.h">
-      <Filter>glad</Filter>
-    </ClInclude>
-    <ClInclude Include="glad\glad_wgl.h">
-      <Filter>glad</Filter>
-    </ClInclude>
-    <ClInclude Include="glad\khrplatform.h">
-      <Filter>glad</Filter>
-    </ClInclude>
-    <ClInclude Include="opengl_api.hpp">
-      <Filter>api</Filter>
-    </ClInclude>
-    <ClInclude Include="clean_windows_h.hpp">
-      <Filter>detail\win32</Filter>
-    </ClInclude>
-    <ClInclude Include="string.hpp">
-      <Filter>api</Filter>
-    </ClInclude>
-    <ClInclude Include="win32_window_input.hpp">
-      <Filter>detail\win32</Filter>
-    </ClInclude>
-    <ClInclude Include="win32_remote_proc_caller.hpp">
-      <Filter>detail\win32</Filter>
-    </ClInclude>
-    <ClInclude Include="thread_name.hpp">
-      <Filter>api</Filter>
-    </ClInclude>
-    <ClInclude Include="wgl_api.hpp">
-      <Filter>api</Filter>
-    </ClInclude>
-    <ClInclude Include="opengl_context.hpp">
-      <Filter>api</Filter>
-    </ClInclude>
-    <ClInclude Include="timer.hpp">
-      <Filter>api</Filter>
+    <ClInclude Include="stb\stb_image.h">
+      <Filter>stb</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="TODO.txt" />
+    <ClCompile Include="thread_name.cpp">
+      <Filter>kiss</Filter>
+    </ClCompile>
+    <ClCompile Include="timer.cpp">
+      <Filter>kiss</Filter>
+    </ClCompile>
+    <ClCompile Include="win32_opengl_context.cpp">
+      <Filter>kiss</Filter>
+    </ClCompile>
+    <ClCompile Include="win32_string.cpp">
+      <Filter>kiss</Filter>
+    </ClCompile>
+    <ClCompile Include="win32_window.cpp">
+      <Filter>kiss</Filter>
+    </ClCompile>
+    <ClCompile Include="window.cpp">
+      <Filter>kiss</Filter>
+    </ClCompile>
+    <ClCompile Include="glad\glad.c">
+      <Filter>glad</Filter>
+    </ClCompile>
+    <ClCompile Include="glad\glad_wgl.c">
+      <Filter>glad</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\bv2.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\bv3.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\bv4.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\dm2.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\dm2x3.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\dm3.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\dm3x4.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\dm4.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\dv2.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\dv3.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\dv4.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\fm2.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\fm2x3.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\fm3.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\fm3x4.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\fm4.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\fv2.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\fv3.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\fv4.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\iv2.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\iv3.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\iv4.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\kissmath.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\s64v2.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\s64v3.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\s64v4.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\transformations.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\u8v2.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\u8v3.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="vector\u8v4.cpp">
+      <Filter>vector</Filter>
+    </ClCompile>
+    <ClCompile Include="texture.cpp">
+      <Filter>kiss</Filter>
+    </ClCompile>
+    <ClCompile Include="stb\stb_image.c">
+      <Filter>stb</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

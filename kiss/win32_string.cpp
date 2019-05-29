@@ -7,7 +7,7 @@ namespace kiss {
 		// overallocate, this might be more performant than having to process the utf8 twice
 		std::basic_string<wchar_t> wstr (utf8.size() +1, '\0'); // wchar string can never be longer than number of utf8 bytes, right?
 
-		auto res = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, utf8.c_str(), -1, &wstr[0], (int)wstr.size());
+		auto res = (size_t)MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, utf8.c_str(), -1, &wstr[0], (int)wstr.size());
 		assert(res > 0 && res <= wstr.size());
 
 		wstr.resize(res -1);

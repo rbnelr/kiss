@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
       <Platform>x64</Platform>
@@ -12,11 +20,24 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{1FEDEFEB-0C1F-4655-B363-C2F35EBDE8B1}</ProjectGuid>
-    <RootNamespace>kisscpp</RootNamespace>
+    <ProjectGuid>{3AD11A97-1E0F-408D-976F-55EBF1CA27BB}</ProjectGuid>
+    <RootNamespace>kiss</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
@@ -35,30 +56,59 @@
   </ImportGroup>
   <ImportGroup Label="Shared">
   </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\optimized.props" />
+  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\optimized.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <TargetName>kiss</TargetName>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <TargetName>kiss</TargetName>
-  </PropertyGroup>
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <FloatingPointExceptions>
+      </FloatingPointExceptions>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <ConformanceMode>true</ConformanceMode>
-      <PreprocessToFile>
-      </PreprocessToFile>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <FloatingPointExceptions>
+      </FloatingPointExceptions>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <FloatingPointExceptions>
+      </FloatingPointExceptions>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -68,68 +118,35 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <ConformanceMode>true</ConformanceMode>
-      <PreprocessToFile>
-      </PreprocessToFile>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <FloatingPointExceptions>
+      </FloatingPointExceptions>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="glad\glad.c" />
-    <ClCompile Include="glad\glad_wgl.c" />
-    <ClCompile Include="timer.cpp" />
-    <ClCompile Include="win32_opengl_context.cpp" />
-    <ClCompile Include="win32_string.cpp" />
-    <ClCompile Include="thread_name.cpp" />
-    <ClCompile Include="vector\bv2.cpp" />
-    <ClCompile Include="vector\bv3.cpp" />
-    <ClCompile Include="vector\bv4.cpp" />
-    <ClCompile Include="vector\dm2.cpp" />
-    <ClCompile Include="vector\dm2x3.cpp" />
-    <ClCompile Include="vector\dm3.cpp" />
-    <ClCompile Include="vector\dm3x4.cpp" />
-    <ClCompile Include="vector\dm4.cpp" />
-    <ClCompile Include="vector\dv2.cpp" />
-    <ClCompile Include="vector\dv3.cpp" />
-    <ClCompile Include="vector\dv4.cpp" />
-    <ClCompile Include="vector\fm2.cpp" />
-    <ClCompile Include="vector\fm2x3.cpp" />
-    <ClCompile Include="vector\fm3.cpp" />
-    <ClCompile Include="vector\fm3x4.cpp" />
-    <ClCompile Include="vector\fm4.cpp" />
-    <ClCompile Include="vector\fv2.cpp" />
-    <ClCompile Include="vector\fv3.cpp" />
-    <ClCompile Include="vector\fv4.cpp" />
-    <ClCompile Include="vector\iv2.cpp" />
-    <ClCompile Include="vector\iv3.cpp" />
-    <ClCompile Include="vector\iv4.cpp" />
-    <ClCompile Include="vector\kissmath.cpp" />
-    <ClCompile Include="vector\s64v2.cpp" />
-    <ClCompile Include="vector\s64v3.cpp" />
-    <ClCompile Include="vector\s64v4.cpp" />
-    <ClCompile Include="vector\transformations.cpp" />
-    <ClCompile Include="vector\u8v2.cpp" />
-    <ClCompile Include="vector\u8v3.cpp" />
-    <ClCompile Include="vector\u8v4.cpp" />
-    <ClCompile Include="win32_window.cpp" />
-    <ClCompile Include="window.cpp" />
+    <Text Include="TODO.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="clean_windows_h.hpp" />
+    <ClInclude Include="color.hpp" />
     <ClInclude Include="glad\glad.h" />
     <ClInclude Include="glad\glad_wgl.h" />
     <ClInclude Include="glad\khrplatform.h" />
+    <ClInclude Include="image.hpp" />
     <ClInclude Include="input.hpp" />
     <ClInclude Include="kiss.hpp" />
     <ClInclude Include="move_only.hpp" />
     <ClInclude Include="opengl_api.hpp" />
     <ClInclude Include="opengl_context.hpp" />
     <ClInclude Include="smart_ptr.hpp" />
+    <ClInclude Include="stb\stb_image.h" />
     <ClInclude Include="string.hpp" />
+    <ClInclude Include="texture.hpp" />
     <ClInclude Include="thread_name.hpp" />
     <ClInclude Include="timer.hpp" />
     <ClInclude Include="vector\bv2.hpp" />
@@ -166,13 +183,52 @@
     <ClInclude Include="vector\util.hpp" />
     <ClInclude Include="vector\vector.hpp" />
     <ClInclude Include="wgl_api.hpp" />
+    <ClInclude Include="win32_remote_proc_caller.hpp" />
     <ClInclude Include="win32_window.hpp" />
     <ClInclude Include="win32_window_input.hpp" />
     <ClInclude Include="window.hpp" />
-    <ClInclude Include="win32_remote_proc_caller.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="TODO.txt" />
+    <ClCompile Include="glad\glad.c" />
+    <ClCompile Include="glad\glad_wgl.c" />
+    <ClCompile Include="stb\stb_image.c" />
+    <ClCompile Include="texture.cpp" />
+    <ClCompile Include="thread_name.cpp" />
+    <ClCompile Include="timer.cpp" />
+    <ClCompile Include="vector\bv2.cpp" />
+    <ClCompile Include="vector\bv3.cpp" />
+    <ClCompile Include="vector\bv4.cpp" />
+    <ClCompile Include="vector\dm2.cpp" />
+    <ClCompile Include="vector\dm2x3.cpp" />
+    <ClCompile Include="vector\dm3.cpp" />
+    <ClCompile Include="vector\dm3x4.cpp" />
+    <ClCompile Include="vector\dm4.cpp" />
+    <ClCompile Include="vector\dv2.cpp" />
+    <ClCompile Include="vector\dv3.cpp" />
+    <ClCompile Include="vector\dv4.cpp" />
+    <ClCompile Include="vector\fm2.cpp" />
+    <ClCompile Include="vector\fm2x3.cpp" />
+    <ClCompile Include="vector\fm3.cpp" />
+    <ClCompile Include="vector\fm3x4.cpp" />
+    <ClCompile Include="vector\fm4.cpp" />
+    <ClCompile Include="vector\fv2.cpp" />
+    <ClCompile Include="vector\fv3.cpp" />
+    <ClCompile Include="vector\fv4.cpp" />
+    <ClCompile Include="vector\iv2.cpp" />
+    <ClCompile Include="vector\iv3.cpp" />
+    <ClCompile Include="vector\iv4.cpp" />
+    <ClCompile Include="vector\kissmath.cpp" />
+    <ClCompile Include="vector\s64v2.cpp" />
+    <ClCompile Include="vector\s64v3.cpp" />
+    <ClCompile Include="vector\s64v4.cpp" />
+    <ClCompile Include="vector\transformations.cpp" />
+    <ClCompile Include="vector\u8v2.cpp" />
+    <ClCompile Include="vector\u8v3.cpp" />
+    <ClCompile Include="vector\u8v4.cpp" />
+    <ClCompile Include="win32_opengl_context.cpp" />
+    <ClCompile Include="win32_string.cpp" />
+    <ClCompile Include="win32_window.cpp" />
+    <ClCompile Include="window.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -6,21 +6,22 @@
 
 namespace vector {
 	//// forward declarations
-	union dv3;
-	union dv4;
-	union bv2;
-	union bv2;
-	union fv2;
-	union iv2;
-	union s64v2;
-	union u8v2;
+	struct dv3;
+	struct dv4;
+	struct bv2;
+	struct bv2;
+	struct fv2;
+	struct iv2;
+	struct s64v2;
+	struct u8v2;
 	
-	union dv2 {
-		struct {
-			f64	x, y;
+	struct dv2 {
+		union {
+			struct {
+				f64	x, y;
+			};
+			f64		arr[2];
 		};
-		f64		arr[2];
-		
 		
 		inline FORCEINLINE f64& operator[] (int i) {
 			return arr[i];

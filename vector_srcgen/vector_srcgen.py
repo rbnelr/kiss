@@ -416,7 +416,7 @@ def gen_vector(V, f):
 	f.header += '\nnamespace vector {\n'
 		
 	f.header += '//// forward declarations\n'
-	f.header += ''.join(f'union {n};\n' for n in forward_decl_vecs)
+	f.header += ''.join(f'struct {n};\n' for n in forward_decl_vecs)
 	
 	#
 	f.source += ''.join(f'#include "{n}.hpp"\n' for n in forward_decl_vecs)
@@ -424,12 +424,13 @@ def gen_vector(V, f):
 	f.source += '\nnamespace vector {\n'
 
 	f.header += f'''
-		union {V} {{
-			struct {{
-				{T}	{', '.join(dims)};
+		struct {V} {{
+			union {{
+				struct {{
+					{T}	{', '.join(dims)};
+				}};
+				{T}		arr[{size}];
 			}};
-			{T}		arr[{size}];
-
 		'''
 		
 	f.method(V, f'{T}&', 'operator[]', 'int i', 'return arr[i];', forceinline=True)
